@@ -187,6 +187,7 @@ void normal_keys(unsigned char Tecla1,int x,int y) {
 		case 'Y': sumar = true; break;
 	}
 
+	draw_scene();
 }
 
 //***************************************************************************
@@ -207,7 +208,7 @@ void special_keys(int Tecla1,int x,int y) {
 		case GLUT_KEY_DOWN:Observer_angle_x++;break;
 		case GLUT_KEY_PAGE_UP:Observer_distance*=1.2;break;
 		case GLUT_KEY_PAGE_DOWN:Observer_distance/=1.2;break;
-		}
+	}
 	glutPostRedisplay();
 }
 
