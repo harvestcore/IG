@@ -309,6 +309,46 @@ void Models::reduceStep(TypeObject object) {
     }
 }
 
+void Models::addStepALL() {
+    v_Ply_Revolution.moreSteps();
+    regenerate(PLY_REVOLUTION);
+
+    v_Cylinder.moreSteps();
+    regenerate(CYLINDER);
+
+    v_Glass.moreSteps();
+    regenerate(GLASS);
+
+    v_Glass_Inverted.moreSteps();
+    regenerate(GLASS_INVERTED);
+
+    v_Cone.moreSteps();
+    regenerate(CONE);
+
+    v_Tube.moreSteps();
+    regenerate(TUBE);
+}
+
+void Models::reduceStepALL() {
+    v_Ply_Revolution.lessSteps();
+    regenerate(PLY_REVOLUTION);
+
+    v_Cylinder.lessSteps();
+    regenerate(CYLINDER);
+
+    v_Glass.lessSteps();
+    regenerate(GLASS);
+
+    v_Glass_Inverted.lessSteps();
+    regenerate(GLASS_INVERTED);
+
+    v_Cone.lessSteps();
+    regenerate(CONE);
+
+    v_Tube.lessSteps();
+    regenerate(TUBE);
+}
+
 void Models::regenerate(TypeObject object) {
     switch (object) {
         case PLY_REVOLUTION:

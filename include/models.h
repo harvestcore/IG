@@ -191,6 +191,8 @@ class Models {
         void initializeModels();
         void addStep(TypeObject object);
         void reduceStep(TypeObject object);
+        void addStepALL();
+        void reduceStepALL();
         void regenerate(TypeObject object);
         void setAnguloInicioAnguloFinal(double inicio, double final);
 };

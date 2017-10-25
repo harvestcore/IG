@@ -212,14 +212,15 @@ void Revolution3DObject::generateByRevolution(char axis, bool addCovers) {
     int aux_cover = -1;
     int num_triangs = 0;
 
-    double ini = (PI / 180) * angulo_inicio;
-    double fin = (PI / 180) * angulo_final;
+    /*
+    //double ini = (PI / 180) * angulo_inicio;
+    //double fin = (PI / 180) * angulo_final;
 
-    double to_rotate = fin - ini;
+    //double to_rotate = fin - ini;
 
-    double rotationAngle = to_rotate / (steps-1);
+    //double rotationAngle = to_rotate / (steps-1);
 
-    vector<_vertex3f> profile_original = profile;
+    //vector<_vertex3f> profile_original = profile;
 
     switch (axis) {
         case 'x':
@@ -237,11 +238,12 @@ void Revolution3DObject::generateByRevolution(char axis, bool addCovers) {
                 profile[i] = rotate_Z(profile[i], ini);
             break;
     }
+    */
 
     /**
     *   Angulo de rotacion de los puntos
     */
-    //double rotationAngle = 2 * PI / steps;
+    double rotationAngle = 2 * PI / steps;
 
     /**
     *   Si quiero añadir tapas añado los puntos que necesito.

@@ -195,8 +195,8 @@ class Revolution3DObject: public PlyObject {
         */
         vector<_vertex3f> profile;
 
-        double angulo_inicio = 90.0;
-        double angulo_final = 270.0;
+        double angulo_inicio = 0.0;
+        double angulo_final = 0.0;
 
         /**
         *   Funciones para rotar un punto sobre los ejes.
