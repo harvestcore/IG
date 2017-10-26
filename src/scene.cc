@@ -21,13 +21,23 @@ using namespace std;
 Models modelos;
 vector<ViewMode> modos(4, NULL_);
 TypeObject objeto = _NULL;
+
 _vertex3f aux1 = {0.5,0,0};
 _vertex3f aux2 = {-0.5,0,0};
 _vertex3f aux3 = {0,0,0.5};
 _vertex3f aux4 = {0,0,-0.5};
+_vertex3f aux5 = {0,0.5,0};
+_vertex3f aux6 = {0,-0.5,0};
 
 bool sumar = false;
 bool restar = false;
+
+bool updown = false;
+bool rotate = false;
+
+bool mover = false;
+bool rotar = false;
+
 
 
 // tamaño de los ejes
@@ -177,24 +187,39 @@ void normal_keys(unsigned char Tecla1,int x,int y) {
 		case 'F': modos = changeMode(modos, SOLID, 2); break;
 		case 'C': modos = changeMode(modos, CHESS, 3); break;
 
-		case '1': objeto = changeObject(objeto, CUBE); break;
-		case '2': objeto = changeObject(objeto, TETRAHEDRON); break;
-		case '3': objeto = changeObject(objeto, PLY_STATIC); break;
-		case '4': objeto = changeObject(objeto, PLY_REVOLUTION); break;
-		case '5': objeto = changeObject(objeto, CYLINDER); break;
-		case '6': objeto = changeObject(objeto, GLASS); break;
-		case '7': objeto = changeObject(objeto, GLASS_INVERTED); break;
-		case '8': objeto = changeObject(objeto, CONE); break;
-		case '9': objeto = changeObject(objeto, TUBE); break;
-		case '0': objeto = changeObject(objeto, TEST); break;
-
 		case 'T': restar = true; break;
 		case 'Y': sumar = true; break;
 
-		case 'K': modelos.test.move(aux1); break;
-		case 'H': modelos.test.move(aux2); break;
-		case 'U': modelos.test.move(aux4); break;
-		case 'J': modelos.test.move(aux3); break;
+		case '4': if (mover) modelos.test.move(aux2); break;
+		case '6': if (mover) modelos.test.move(aux1); break;
+		case '8':
+			if (mover) {
+				if (updown) modelos.test.move(aux5);
+				else modelos.test.move(aux4);
+			}
+
+			if (rotar) {
+				if (rotate) modelos.test.rotate(aux5);
+				else modelos.test.rotate(aux4);
+			}
+			break;
+
+		case '2':
+			if (mover) {
+				if (updown) modelos.test.move(aux6);
+				else modelos.test.move(aux3);
+			}
+
+			if (rotar) {
+				if (rotate) modelos.test.rotate(aux6);
+				else modelos.test.rotate(aux3);
+			}
+			break;
+
+		case '5': updown = !updown; break;
+		case '7': rotar = !rotar; mover = false; break;
+		case '9': mover = !mover; rotar = false; break;
+
 	}
 
 	draw_scene();
@@ -218,6 +243,17 @@ void special_keys(int Tecla1,int x,int y) {
 		case GLUT_KEY_DOWN:Observer_angle_x++;break;
 		case GLUT_KEY_PAGE_UP:Observer_distance*=1.2;break;
 		case GLUT_KEY_PAGE_DOWN:Observer_distance/=1.2;break;
+
+		case GLUT_KEY_F1: objeto = changeObject(objeto, CUBE); break;
+		case GLUT_KEY_F2: objeto = changeObject(objeto, TETRAHEDRON); break;
+		case GLUT_KEY_F3: objeto = changeObject(objeto, PLY_STATIC); break;
+		case GLUT_KEY_F4: objeto = changeObject(objeto, PLY_REVOLUTION); break;
+		case GLUT_KEY_F5: objeto = changeObject(objeto, CYLINDER); break;
+		case GLUT_KEY_F6: objeto = changeObject(objeto, GLASS); break;
+		case GLUT_KEY_F7: objeto = changeObject(objeto, GLASS_INVERTED); break;
+		case GLUT_KEY_F8: objeto = changeObject(objeto, CONE); break;
+		case GLUT_KEY_F9: objeto = changeObject(objeto, TUBE); break;
+		case GLUT_KEY_F10: objeto = changeObject(objeto, TEST); break;
 	}
 	glutPostRedisplay();
 }
