@@ -198,14 +198,14 @@ class Revolution3DObject: public PlyObject {
         double angulo_inicio = 0.0;
         double angulo_final = 0.0;
 
-        /**
-        *   Funciones para rotar un punto sobre los ejes.
-        */
-        _vertex3f rotate_X(_vertex3f point, double angle);
-        _vertex3f rotate_Y(_vertex3f point, double angle);
-        _vertex3f rotate_Z(_vertex3f point, double angle);
-
 	public:
+
+		/**
+		*   Funciones para rotar un punto sobre los ejes.
+		*/
+		_vertex3f rotate_X(_vertex3f point, double angle);
+		_vertex3f rotate_Y(_vertex3f point, double angle);
+		_vertex3f rotate_Z(_vertex3f point, double angle);
 
         /**
         *   Constructor de la clase.
@@ -242,6 +242,15 @@ class Revolution3DObject: public PlyObject {
         *   Revoluciona el perfil tantas veces como steps indique.
         */
         void generateByRevolution(char axis, bool addCovers);
+};
+
+class ComplexObject: public Revolution3DObject {
+	private:
+	public:
+		ComplexObject();
+		void move(_vertex3f t);
+		void rotate(_vertex3f r);
+		void scale(_vertex3f s);
 };
 
 #endif

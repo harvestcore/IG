@@ -22,5 +22,6 @@
 vector<ViewMode> changeMode(vector<ViewMode> oldMode, ViewMode newMode, int  i);
 TypeObject changeObject(TypeObject oldObject, TypeObject newObject);
 void drawModels(Models mods, TypeObject object, vector<ViewMode> mode);
+void move(Models mods);
 
 #endif

@@ -561,3 +561,36 @@ _vertex3f Revolution3DObject::rotate_Z(_vertex3f point, double angle) {
 
     return aux;
 }
+
+ComplexObject::ComplexObject() {
+}
+
+void ComplexObject::move(_vertex3f t) {
+    for (unsigned int i = 0; i < points.size(); ++i) {
+        points[i].x = points[i].x + t.x;
+        points[i].y = points[i].y + t.y;
+        points[i].z = points[i].z + t.z;
+    }
+}
+
+void ComplexObject::rotate(_vertex3f r) {
+    for (unsigned int i = 0; i < points.size(); ++i) {
+        points[i] = rotate_X(points[i], r.x);
+    }
+
+    for (unsigned int i = 0; i < points.size(); ++i) {
+        points[i] = rotate_Y(points[i], r.y);
+    }
+
+    for (unsigned int i = 0; i < points.size(); ++i) {
+        points[i] = rotate_Z(points[i], r.z);
+    }
+}
+
+void ComplexObject::scale(_vertex3f s){
+    for (unsigned int i = 0; i < points.size(); ++i) {
+        points[i].x = points[i].x * s.x;
+        points[i].y = points[i].y * s.y;
+        points[i].z = points[i].z * s.z;
+    }
+}

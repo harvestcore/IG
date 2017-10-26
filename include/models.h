@@ -184,6 +184,7 @@ class Models {
         Glass_Inverted v_Glass_Inverted;
         Cone v_Cone;
         Tube v_Tube;
+        ComplexObject test;
 
         Models();
         void setModelsAreGenerated(bool mod);

@@ -21,6 +21,10 @@ using namespace std;
 Models modelos;
 vector<ViewMode> modos(4, NULL_);
 TypeObject objeto = _NULL;
+_vertex3f aux1 = {0.5,0,0};
+_vertex3f aux2 = {-0.5,0,0};
+_vertex3f aux3 = {0,0,0.5};
+_vertex3f aux4 = {0,0,-0.5};
 
 bool sumar = false;
 bool restar = false;
@@ -182,9 +186,15 @@ void normal_keys(unsigned char Tecla1,int x,int y) {
 		case '7': objeto = changeObject(objeto, GLASS_INVERTED); break;
 		case '8': objeto = changeObject(objeto, CONE); break;
 		case '9': objeto = changeObject(objeto, TUBE); break;
+		case '0': objeto = changeObject(objeto, TEST); break;
 
 		case 'T': restar = true; break;
 		case 'Y': sumar = true; break;
+
+		case 'K': modelos.test.move(aux1); break;
+		case 'H': modelos.test.move(aux2); break;
+		case 'U': modelos.test.move(aux4); break;
+		case 'J': modelos.test.move(aux3); break;
 	}
 
 	draw_scene();
