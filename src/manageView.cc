@@ -156,5 +156,5 @@ void move(Models mods) {
     aux.x = 1;
     aux.y = 0;
     aux.z = 0;
-    mods.test.move(aux);
+    mods.test.move(2,0,0);
 }

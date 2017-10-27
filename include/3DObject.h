@@ -248,7 +248,7 @@ class ComplexObject: public Revolution3DObject {
 	private:
 	public:
 		ComplexObject();
-		void move(_vertex3f t);
+		void move(GLfloat x, GLfloat y, GLfloat z);
 		void rotate(_vertex3f r);
 		void scale(_vertex3f s);
 };

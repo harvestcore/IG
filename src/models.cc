@@ -214,8 +214,6 @@ void Sphere::createProfileSphere(){
     point.x = 0;
     point.y = -radius;
     point.z = 0;
-
-
 }
 
 Models::Models() {
@@ -263,10 +261,10 @@ void Models::initializeModels() {
     v_Tube = aux_tube;
     v_Tube.generateByRevolution('y', false);
 
-    vector<_vertex3f> points = {{-1,-1,1},{1,-1,1},
-              {-1,1,1},{1,1,1},
-              {-1,-1,-1},{1,-1,-1},
-              {-1,1,-1},{1,1,-1}};
+    vector<_vertex3f> points = {{-0.5,-0.5,0.5},{0.5,-0.5,0.5},
+              {-0.5,0.5,0.5},{0.5,0.5,0.5},
+              {-0.5,-0.5,-0.5},{0.5,-0.5,-0.5},
+              {-0.5,0.5,-0.5},{0.5,0.5,-0.5}};
 
     vector<_vertex3i> triangles = {{0,1,2},{1,2,3},{1,3,5},{5,3,7},
                  {5,7,4},{4,7,6},{4,6,0},{0,6,2},

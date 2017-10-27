@@ -145,7 +145,6 @@ void draw_objects() {
 //**************************************************************************
 //
 //***************************************************************************
-
 void draw_scene(void) {
 	clear_window();
 	change_observer();
@@ -192,12 +191,12 @@ void normal_keys(unsigned char Tecla1,int x,int y) {
 		case 'T': restar = true; break;
 		case 'Y': sumar = true; break;
 
-		case '4': if (mover) modelos.test.move(aux2); break;
-		case '6': if (mover) modelos.test.move(aux1); break;
+		case '4': if (mover) modelos.test.move(2,0,0); break;
+		case '6': if (mover) modelos.test.move(2,0,0); break;
 		case '8':
 			if (mover) {
-				if (updown) modelos.test.move(aux5);
-				else modelos.test.move(aux4);
+				if (updown) modelos.test.move(2,0,0);
+				else modelos.test.move(2,0,0);
 			}
 
 			if (rotar) {
@@ -208,8 +207,8 @@ void normal_keys(unsigned char Tecla1,int x,int y) {
 
 		case '2':
 			if (mover) {
-				if (updown) modelos.test.move(aux6);
-				else modelos.test.move(aux3);
+				if (updown) modelos.test.move(2,0,0);
+				else modelos.test.move(2,0,0);
 			}
 
 			if (rotar) {
@@ -221,8 +220,9 @@ void normal_keys(unsigned char Tecla1,int x,int y) {
 		case '5': updown = !updown; rotate = !rotate; break;
 		case '7': rotar = !rotar; mover = false; break;
 		case '9': mover = !mover; rotar = false; break;
-		case 'H': modelos.test.scale({1.05,1,1}); break;
-		case 'G': modelos.test.scale({0.95,1,1}); break;
+		case 'H': modelos.test.scale({20,60,20}); break;
+		case 'G': modelos.test.move(2,0,0); break;
+		case 'J': modelos.test.rotate({50,1,1}); break;
 
 	}
 

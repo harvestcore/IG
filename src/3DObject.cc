@@ -565,25 +565,25 @@ _vertex3f Revolution3DObject::rotate_Z(_vertex3f point, double angle) {
 ComplexObject::ComplexObject() {
 }
 
-void ComplexObject::move(_vertex3f t) {
-    for (unsigned int i = 0; i < points.size(); ++i) {
-        points[i].x = points[i].x + t.x;
-        points[i].y = points[i].y + t.y;
-        points[i].z = points[i].z + t.z;
-    }
+void ComplexObject::move(GLfloat x, GLfloat y, GLfloat z) {
+    glMatrixMode(GL_MODELVIEW);
+        glTranslatef(x,y,z);
+    glEnd();
+
+    drawMesh();
 }
 
 void ComplexObject::rotate(_vertex3f r) {
     for (unsigned int i = 0; i < points.size(); ++i) {
-        points[i] = rotate_X(points[i], r.x);
+        points[i] = rotate_X(points[i], (2 * PI)/r.x);
     }
 
     for (unsigned int i = 0; i < points.size(); ++i) {
-        points[i] = rotate_Y(points[i], r.y);
+        points[i] = rotate_Y(points[i], (2 * PI)/r.y);
     }
 
     for (unsigned int i = 0; i < points.size(); ++i) {
-        points[i] = rotate_Z(points[i], r.z);
+        points[i] = rotate_Z(points[i], (2 * PI)/r.z);
     }
 }
 
