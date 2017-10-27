@@ -142,6 +142,7 @@ void draw_objects() {
 	drawModels(modelos, objeto, modos);
 
 	boxx.drawMesh();
+	modelos.v_Cube.drawMesh();
 }
 
 
