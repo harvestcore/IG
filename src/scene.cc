@@ -15,12 +15,15 @@
 #include "manageView.h"
 #include "types.h"
 #include "3DObject.h"
+#include "machine.h"
 
 using namespace std;
 
 Models modelos;
 vector<ViewMode> modos(4, NULL_);
 TypeObject objeto = _NULL;
+
+Box boxx(5.0, 5.0, 1.0);
 
 _vertex3f aux1 = {0.5,0,0};
 _vertex3f aux2 = {-0.5,0,0};
@@ -137,6 +140,8 @@ void draw_objects() {
 	}
 
 	drawModels(modelos, objeto, modos);
+
+	boxx.drawMesh();
 }
 
 
@@ -199,8 +204,8 @@ void normal_keys(unsigned char Tecla1,int x,int y) {
 			}
 
 			if (rotar) {
-				if (rotate) modelos.test.rotate(aux5);
-				else modelos.test.rotate(aux4);
+				if (rotate) modelos.test.rotate({0,-0.5,0});
+				else modelos.test.rotate({-0.5,0,0});
 			}
 			break;
 
@@ -211,14 +216,16 @@ void normal_keys(unsigned char Tecla1,int x,int y) {
 			}
 
 			if (rotar) {
-				if (rotate) modelos.test.rotate(aux6);
-				else modelos.test.rotate(aux3);
+				if (rotate) modelos.test.rotate({0,0.5,0});
+				else modelos.test.rotate({0.5,0,0});
 			}
 			break;
 
-		case '5': updown = !updown; break;
+		case '5': updown = !updown; rotate = !rotate; break;
 		case '7': rotar = !rotar; mover = false; break;
 		case '9': mover = !mover; rotar = false; break;
+		case 'H': modelos.test.scale({1.05,1,1}); break;
+		case 'G': modelos.test.scale({0.95,1,1}); break;
 
 	}
 

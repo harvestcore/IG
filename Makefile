@@ -10,7 +10,7 @@ TARGET = $(BIN)/main
 
 all: $(BIN)/main
 
-$(OBJ)/3DObject.o: $(SRC)/3DObject.cc $(INC)/3DObject.h 
+$(OBJ)/3DObject.o: $(SRC)/3DObject.cc $(INC)/3DObject.h
 	$(CXX) -c -std=c++14 -o $(OBJ)/3DObject.o -g -I$(INC) $(SRC)/3DObject.cc
 
 $(OBJ)/file_ply_stl.o: $(SRC)/file_ply_stl.cc $(INC)/file_ply_stl.h
@@ -22,11 +22,14 @@ $(OBJ)/manageView.o: $(SRC)/manageView.cc $(INC)/manageView.h
 $(OBJ)/models.o: $(SRC)/models.cc $(INC)/models.h
 	$(CXX) -c -std=c++14 -o $(OBJ)/models.o -g -I$(INC) $(SRC)/models.cc
 
-$(LIB)/libformas.a: $(OBJ)/3DObject.o $(OBJ)/file_ply_stl.o $(OBJ)/manageView.o $(OBJ)/models.o
-	ar rsv $(LIB)/libformas.a $(OBJ)/3DObject.o $(OBJ)/file_ply_stl.o $(OBJ)/manageView.o $(OBJ)/models.o
+$(OBJ)/machine.o: $(SRC)/machine.cc $(INC)/machine.h
+	$(CXX) -c -std=c++14 -o $(OBJ)/machine.o -g -I$(INC) $(SRC)/machine.cc
 
-$(OBJ)/main.o: $(SRC)/scene.cc 
-	$(CXX) -c -std=c++14 -o $(OBJ)/main.o -g -I$(INC) $(SRC)/scene.cc 
+$(LIB)/libformas.a: $(OBJ)/3DObject.o $(OBJ)/file_ply_stl.o $(OBJ)/manageView.o $(OBJ)/models.o $(OBJ)/machine.o
+	ar rsv $(LIB)/libformas.a $(OBJ)/3DObject.o $(OBJ)/file_ply_stl.o $(OBJ)/manageView.o $(OBJ)/models.o $(OBJ)/machine.o
+
+$(OBJ)/main.o: $(SRC)/scene.cc
+	$(CXX) -c -std=c++14 -o $(OBJ)/main.o -g -I$(INC) $(SRC)/scene.cc
 
 $(TARGET): $(OBJ)/main.o $(LIB)/libformas.a
 	$(CXX) -L$(LIB)/ -o $(TARGET) $(OBJ)/main.o -lformas $(LDFLAGS)
