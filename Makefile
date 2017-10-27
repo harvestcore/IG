@@ -22,11 +22,11 @@ $(OBJ)/manageView.o: $(SRC)/manageView.cc $(INC)/manageView.h
 $(OBJ)/models.o: $(SRC)/models.cc $(INC)/models.h
 	$(CXX) -c -std=c++14 -o $(OBJ)/models.o -g -I$(INC) $(SRC)/models.cc
 
-$(OBJ)/machine.o: $(SRC)/machine.cc $(INC)/machine.h
-	$(CXX) -c -std=c++14 -o $(OBJ)/machine.o -g -I$(INC) $(SRC)/machine.cc
+$(OBJ)/articulatedArm.o: $(SRC)/articulatedArm.cc $(INC)/articulatedArm.h
+	$(CXX) -c -std=c++14 -o $(OBJ)/articulatedArm.o -g -I$(INC) $(SRC)/articulatedArm.cc
 
-$(LIB)/libformas.a: $(OBJ)/3DObject.o $(OBJ)/file_ply_stl.o $(OBJ)/manageView.o $(OBJ)/models.o $(OBJ)/machine.o
-	ar rsv $(LIB)/libformas.a $(OBJ)/3DObject.o $(OBJ)/file_ply_stl.o $(OBJ)/manageView.o $(OBJ)/models.o $(OBJ)/machine.o
+$(LIB)/libformas.a: $(OBJ)/3DObject.o $(OBJ)/file_ply_stl.o $(OBJ)/manageView.o $(OBJ)/models.o $(OBJ)/articulatedArm.o
+	ar rsv $(LIB)/libformas.a $(OBJ)/3DObject.o $(OBJ)/file_ply_stl.o $(OBJ)/manageView.o $(OBJ)/models.o $(OBJ)/articulatedArm.o
 
 $(OBJ)/main.o: $(SRC)/scene.cc
 	$(CXX) -c -std=c++14 -o $(OBJ)/main.o -g -I$(INC) $(SRC)/scene.cc

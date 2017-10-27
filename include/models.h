@@ -50,7 +50,7 @@ class StaticModel : public Object3D{
 *   Encapsula todos los objetos de recolución y añade una altura y radios para
 *   crear objetos según deseemos.
 */
-class RevolutionModel : public Revolution3DObject{
+class RevolutionModel : public ComplexObject{
     protected:
         GLfloat height;
         GLfloat topRadius;
@@ -102,7 +102,7 @@ class Ply_Static: public PlyObject {
 /**
 *   Clase para crear ply de revolución.
 */
-class Ply_Revolution: public Revolution3DObject {
+class Ply_Revolution: public RevolutionModel {
     private:
     public:
         Ply_Revolution();
@@ -164,6 +164,17 @@ class Tube: public RevolutionModel {
         Tube();
         Tube(double radius, double height);
         void createTube();
+};
+
+class Sphere: public ComplexObject {
+    private:
+        GLfloat radius;
+    public:
+        Sphere();
+        Sphere(int steps, int radius);
+        void setRadius(GLfloat newRadius);
+        void createProfileSphere();
+
 };
 
 

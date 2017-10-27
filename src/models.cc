@@ -195,6 +195,31 @@ void Tube::createTube() {
     steps = 10;
 }
 
+Sphere::Sphere() {
+}
+
+Sphere::Sphere(int newSteps, int newRadius) {
+    steps = newSteps;
+    radius = newRadius;
+}
+
+void Sphere::setRadius(GLfloat newRadius){
+    radius = newRadius;
+}
+
+void Sphere::createProfileSphere(){
+    vector<_vertex3f> aux(steps);
+    _vertex3f point;
+
+    point.x = 0;
+    point.y = -radius;
+    point.z = 0;
+
+    for (int i = 0; i < steps; ++i) {
+        aux[i] = 
+    }
+}
+
 Models::Models() {
 }
 
