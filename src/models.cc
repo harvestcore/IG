@@ -215,9 +215,7 @@ void Sphere::createProfileSphere(){
     point.y = -radius;
     point.z = 0;
 
-    for (int i = 0; i < steps; ++i) {
-        aux[i] = 
-    }
+
 }
 
 Models::Models() {

@@ -15,7 +15,7 @@
 #include "manageView.h"
 #include "types.h"
 #include "3DObject.h"
-#include "machine.h"
+#include "articulatedArm.h"
 
 using namespace std;
 
@@ -23,7 +23,6 @@ Models modelos;
 vector<ViewMode> modos(4, NULL_);
 TypeObject objeto = _NULL;
 
-Box boxx(5.0, 5.0, 1.0);
 
 _vertex3f aux1 = {0.5,0,0};
 _vertex3f aux2 = {-0.5,0,0};
@@ -140,9 +139,6 @@ void draw_objects() {
 	}
 
 	drawModels(modelos, objeto, modos);
-
-	boxx.drawMesh();
-	modelos.v_Cube.drawMesh();
 }
 
 

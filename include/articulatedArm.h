@@ -13,15 +13,15 @@ class Hand: public ComplexObject {
 class Arm: public RevolutionModel {
     private:
     public:
-        Box();
-        Box(double newTopRadius, double newBottomRadius, double newHeight);
+        Arm();
+        Arm(double newTopRadius, double newBottomRadius, double newHeight);
         void createArm();
 };
 
 class ArticulatedArm {
     private:
         bool armGenerated = false;
-        
+
     public:
 };
 

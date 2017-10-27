@@ -15,7 +15,7 @@
 #include "3DObject.h"
 #include "vertex.h"
 #include "models.h"
-#include "machine.h"
+#include "articulatedArm.h"
 
 using namespace std;
 
