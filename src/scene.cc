@@ -143,6 +143,8 @@ void draw_objects() {
 	drawModels(modelos, objeto, modos);
 
 	watt.draw();
+	Cube xd;
+	//xd.drawMesh();
 }
 
 

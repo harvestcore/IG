@@ -65,6 +65,8 @@ double RevolutionModel::getHeight() const {
 }
 
 Cube::Cube() {
+  setSide(1);
+  createCube();
 }
 
 Cube::Cube(double newSide) {
@@ -84,6 +86,8 @@ void Cube::createCube() {
 }
 
 Tetrahedron::Tetrahedron() {
+  setSide(1);
+  createTetrahedron();
 }
 
 Tetrahedron::Tetrahedron(double newSide) {
@@ -121,6 +125,10 @@ void Ply_Revolution::createPly_Revolution(const string &filename) {
 }
 
 Cylinder::Cylinder() {
+  setTopRadius(1);
+  setBottomRadius(1);
+  setHeight(1);
+  createCylinder();
 }
 
 Cylinder::Cylinder(double newRadius, double newHeight) {
@@ -136,6 +144,10 @@ void Cylinder::createCylinder() {
 }
 
 Glass::Glass() {
+  setTopRadius(0.5);
+  setBottomRadius(0.25);
+  setHeight(1);
+  createGlass();
 }
 
 Glass::Glass(double newTopRadius, double newBottomRadius, double newHeight) {
@@ -151,6 +163,10 @@ void Glass::createGlass() {
 }
 
 Glass_Inverted::Glass_Inverted() {
+  setTopRadius(0.25);
+  setBottomRadius(0.5);
+  setHeight(1);
+  createGlass_Inverted();
 }
 
 Glass_Inverted::Glass_Inverted(double newTopRadius, double newBottomRadius, double newHeight) {
@@ -166,6 +182,10 @@ void Glass_Inverted::createGlass_Inverted() {
 }
 
 Cone::Cone() {
+  setTopRadius(0.5);
+  setBottomRadius(0.5);
+  setHeight(1);
+  createCone();
 }
 
 Cone::Cone(double newRadius, double newHeight) {
@@ -181,6 +201,10 @@ void Cone::createCone() {
 }
 
 Tube::Tube() {
+  setTopRadius(0.5);
+  setBottomRadius(0.5);
+  setHeight(1);
+  createTube();
 }
 
 Tube::Tube(double newRadius, double newHeight) {
@@ -196,6 +220,8 @@ void Tube::createTube() {
 }
 
 Sphere::Sphere() {
+  steps = 25;
+  radius = 0.5;
 }
 
 Sphere::Sphere(int newSteps, int newRadius) {
