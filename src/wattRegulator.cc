@@ -15,18 +15,17 @@
 #include "3DObject.h"
 #include "vertex.h"
 #include "models.h"
-#include "articulatedArm.h"
+#include "wattRegulator.h"
 
 using namespace std;
 
-Arm::Arm() {
+
+WattRegulator::WattRegulator() {
 }
 
-Arm::Arm(double newTopRadius, double newBottomRadius, double newHeight) {
-    topRadius = newTopRadius;
-    bottomRadius = newBottomRadius;
-    height = newHeight;
-}
-
-void Arm::createArm() {
+void WattRegulator::draw() {
+  glMatrixMode(GL_MODELVIEW);
+  glTranslate(0,4,0);
+  glScale(10,4,10);
+  base.drawMesh();
 }

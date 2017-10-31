@@ -15,13 +15,15 @@
 #include "manageView.h"
 #include "types.h"
 #include "3DObject.h"
-#include "articulatedArm.h"
+#include "wattRegulator.h"
 
 using namespace std;
 
 Models modelos;
 vector<ViewMode> modos(4, NULL_);
 TypeObject objeto = _NULL;
+
+WattRegulator watt;
 
 
 _vertex3f aux1 = {0.5,0,0};
@@ -139,6 +141,8 @@ void draw_objects() {
 	}
 
 	drawModels(modelos, objeto, modos);
+
+	watt.draw();
 }
 
 
