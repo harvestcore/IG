@@ -4,55 +4,52 @@
 #include "models.h"
 #include "3DObject.h"
 
-class Disco {
-  private:
-    Cylinder disco1;
-
-  public:
-    Disco();
-    void draw();
-};
-
 class SoporteLateral {
-  private:
+    private:
 
-  public:
-    SoporteLateral();
-    void draw();
-
+    public:
+        SoporteLateral();
+        void draw();
 };
 
 class BrazoLateral {
-  private:
-    Cylinder brazo;
-    SoporteLateral soporte;
-    Sphere esfera;
+    private:
+        Cylinder brazo_lat;
+        //Sphere bola;
 
-  public:
-    BrazoLateral();
-    void draw();
+    public:
+        BrazoLateral();
+        void draw();
+};
 
+class Disco {
+    private:
+        Cylinder disco_sup;
+        BrazoLateral lat_1;
+
+    public:
+        Disco();
+        void draw();
 };
 
 class BrazoPrincipal {
-  private:
-    Cylinder brazo;
-    Disco disco_sup;
+    private:
+        Cylinder brazo;
+        Disco disco_sup;
 
-  public:
-    BrazoPrincipal();
-    void draw();
-
+    public:
+        BrazoPrincipal();
+        void draw();
 };
 
 class WattRegulator {
-  private:
-    Cube base;
-    BrazoPrincipal brazo;
+    private:
+        Cube base;
+        BrazoPrincipal brazo;
 
-  public:
-    WattRegulator();
-    void draw();
+    public:
+        WattRegulator();
+        void draw();
 };
 
 #endif

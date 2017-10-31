@@ -86,8 +86,8 @@ void Cube::createCube() {
 }
 
 Tetrahedron::Tetrahedron() {
-  setSide(1);
-  createTetrahedron();
+    setSide(1);
+    createTetrahedron();
 }
 
 Tetrahedron::Tetrahedron(double newSide) {
@@ -121,14 +121,13 @@ Ply_Revolution::Ply_Revolution(const string &filename) {
 void Ply_Revolution::createPly_Revolution(const string &filename) {
     readPly(filename);
     setProfile(getVectorPoints());
-    steps = 10;
 }
 
 Cylinder::Cylinder() {
-  setTopRadius(1);
-  setBottomRadius(1);
-  setHeight(1);
-  createCylinder();
+    setTopRadius(1);
+    setBottomRadius(1);
+    setHeight(1);
+    createCylinder();
 }
 
 Cylinder::Cylinder(double newRadius, double newHeight) {
@@ -140,14 +139,13 @@ Cylinder::Cylinder(double newRadius, double newHeight) {
 
 void Cylinder::createCylinder() {
     profile = {{0,-height,0},{bottomRadius,-height,0},{topRadius,height,0},{0,height,0}};
-    steps = 10;
 }
 
 Glass::Glass() {
-  setTopRadius(0.5);
-  setBottomRadius(0.25);
-  setHeight(1);
-  createGlass();
+    setTopRadius(1);
+    setBottomRadius(0.5);
+    setHeight(1);
+    createGlass();
 }
 
 Glass::Glass(double newTopRadius, double newBottomRadius, double newHeight) {
@@ -159,14 +157,13 @@ Glass::Glass(double newTopRadius, double newBottomRadius, double newHeight) {
 
 void Glass::createGlass() {
     profile = {{0,-height,0},{bottomRadius,-height,0},{topRadius,height,0}};
-    steps = 10;
 }
 
 Glass_Inverted::Glass_Inverted() {
-  setTopRadius(0.25);
-  setBottomRadius(0.5);
-  setHeight(1);
-  createGlass_Inverted();
+    setTopRadius(0.5);
+    setBottomRadius(1);
+    setHeight(1);
+    createGlass_Inverted();
 }
 
 Glass_Inverted::Glass_Inverted(double newTopRadius, double newBottomRadius, double newHeight) {
@@ -178,14 +175,13 @@ Glass_Inverted::Glass_Inverted(double newTopRadius, double newBottomRadius, doub
 
 void Glass_Inverted::createGlass_Inverted() {
     profile = {{topRadius,-height,0},{bottomRadius,height,0},{0,height,0}};
-    steps = 10;
 }
 
 Cone::Cone() {
-  setTopRadius(0.5);
-  setBottomRadius(0.5);
-  setHeight(1);
-  createCone();
+    setTopRadius(0.5);
+    setBottomRadius(0.5);
+    setHeight(1);
+    createCone();
 }
 
 Cone::Cone(double newRadius, double newHeight) {
@@ -197,14 +193,13 @@ Cone::Cone(double newRadius, double newHeight) {
 
 void Cone::createCone() {
     profile = {{0,-height,0},{bottomRadius,-height,0},{0,height,0}};
-    steps = 10;
 }
 
 Tube::Tube() {
-  setTopRadius(0.5);
-  setBottomRadius(0.5);
-  setHeight(1);
-  createTube();
+    setTopRadius(0.5);
+    setBottomRadius(0.5);
+    setHeight(1);
+    createTube();
 }
 
 Tube::Tube(double newRadius, double newHeight) {
@@ -216,12 +211,10 @@ Tube::Tube(double newRadius, double newHeight) {
 
 void Tube::createTube() {
     profile = {{bottomRadius,-height,0},{topRadius,height,0}};
-    steps = 10;
 }
 
 Sphere::Sphere() {
-  steps = 25;
-  radius = 0.5;
+    radius = 0.5;
 }
 
 Sphere::Sphere(int newSteps, int newRadius) {
