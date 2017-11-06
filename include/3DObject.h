@@ -225,8 +225,8 @@ class Revolution3DObject: public PlyObject {
         void setSteps(int newSteps);
         int getSteps() const;
 
-        void setAnguloInicio(double inicio);
-        void setAnguloFinal(double final);
+        void setAnguloInicio(double newAngulo_inicio);
+        void setAnguloFinal(double newAngulo_final);
 
         /**
         *   Aumenta las diviones del objeto.
@@ -242,15 +242,6 @@ class Revolution3DObject: public PlyObject {
         *   Revoluciona el perfil tantas veces como steps indique.
         */
         void generateByRevolution(char axis, bool addCovers);
-};
-
-class ComplexObject: public Revolution3DObject {
-	private:
-	public:
-		ComplexObject();
-		void move(GLfloat x, GLfloat y, GLfloat z);
-		void rotate(_vertex3f r);
-		void scale(_vertex3f s);
 };
 
 #endif

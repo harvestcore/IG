@@ -188,12 +188,12 @@ int Revolution3DObject::getSteps() const {
     return steps;
 }
 
-void Revolution3DObject::setAnguloInicio(double inicio) {
-    angulo_inicio = inicio;
+void Revolution3DObject::setAnguloInicio(double newAngulo_inicio) {
+    angulo_inicio = newAngulo_inicio;
 }
 
-void Revolution3DObject::setAnguloFinal(double final) {
-    angulo_final = final;
+void Revolution3DObject::setAnguloFinal(double newAngulo_final) {
+    angulo_final = newAngulo_final;
 }
 
 void Revolution3DObject::moreSteps() {
@@ -213,14 +213,15 @@ void Revolution3DObject::generateByRevolution(char axis, bool addCovers) {
     int num_triangs = 0;
 
     /*
-    //double ini = (PI / 180) * angulo_inicio;
-    //double fin = (PI / 180) * angulo_final;
 
-    //double to_rotate = fin - ini;
+    double ini = (PI / 180) * angulo_inicio;
+    double fin = (PI / 180) * angulo_final;
 
-    //double rotationAngle = to_rotate / (steps-1);
+    double to_rotate = fin - ini;
 
-    //vector<_vertex3f> profile_original = profile;
+    double rotationAngle = to_rotate / (steps-1);
+
+    vector<_vertex3f> profile_original = profile;
 
     switch (axis) {
         case 'x':
@@ -238,7 +239,9 @@ void Revolution3DObject::generateByRevolution(char axis, bool addCovers) {
                 profile[i] = rotate_Z(profile[i], ini);
             break;
     }
+
     */
+
 
     /**
     *   Angulo de rotacion de los puntos
@@ -560,37 +563,4 @@ _vertex3f Revolution3DObject::rotate_Z(_vertex3f point, double angle) {
     aux.z = point.z;
 
     return aux;
-}
-
-ComplexObject::ComplexObject() {
-}
-
-void ComplexObject::move(GLfloat x, GLfloat y, GLfloat z) {
-    glMatrixMode(GL_MODELVIEW);
-        glTranslatef(x,y,z);
-    glEnd();
-
-    drawMesh();
-}
-
-void ComplexObject::rotate(_vertex3f r) {
-    for (unsigned int i = 0; i < points.size(); ++i) {
-        points[i] = rotate_X(points[i], (2 * PI)/r.x);
-    }
-
-    for (unsigned int i = 0; i < points.size(); ++i) {
-        points[i] = rotate_Y(points[i], (2 * PI)/r.y);
-    }
-
-    for (unsigned int i = 0; i < points.size(); ++i) {
-        points[i] = rotate_Z(points[i], (2 * PI)/r.z);
-    }
-}
-
-void ComplexObject::scale(_vertex3f s){
-    for (unsigned int i = 0; i < points.size(); ++i) {
-        points[i].x = points[i].x * s.x;
-        points[i].y = points[i].y * s.y;
-        points[i].z = points[i].z * s.z;
-    }
 }

@@ -12,20 +12,21 @@ class SoporteLateral {
         void draw();
 };
 
-class BrazoLateral {
+class BrazosLaterales {
     private:
-        Cylinder brazo_lat;
+        Cylinder brazo_izq;
+        Cylinder brazo_der;
         //Sphere bola;
 
     public:
-        BrazoLateral();
+        BrazosLaterales();
         void draw();
 };
 
 class Disco {
     private:
         Cylinder disco_sup;
-        BrazoLateral lat_1;
+        BrazosLaterales laterales;
 
     public:
         Disco();

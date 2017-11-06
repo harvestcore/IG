@@ -19,22 +19,33 @@
 
 using namespace std;
 
-BrazoLateral::BrazoLateral() {
+BrazosLaterales::BrazosLaterales() {
 }
 
-void BrazoLateral::draw() {
-    //brazo_lat.generateByRevolution('y', false);
-    //brazo_lat.drawMesh();
-    /*
+void BrazosLaterales::draw() {
+    brazo_izq.generateByRevolution('y', false);
+
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
-    glTranslatef(0,14,0);
-    glScalef(1,6,1);
-    glRotatef(45,1,1,1);
-    brazo_lat.drawMesh();
-    brazo_lat.drawEdges();
+    glTranslatef(-4,10,0);
+    glRotatef(135,0,0,1);
+    glScalef(0.5,6,0.5);
+    brazo_izq.drawMesh();
+    brazo_izq.drawEdges();
+    brazo_izq.drawChess();
     glPopMatrix();
-    */
+
+    brazo_der.generateByRevolution('y', false);
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glTranslatef(4,10,0);
+    glRotatef(225,0,0,1);
+    glScalef(0.5,6,0.5);
+    brazo_der.drawMesh();
+    brazo_der.drawEdges();
+    brazo_der.drawChess();
+    glPopMatrix();
 }
 
 Disco::Disco() {
@@ -49,10 +60,10 @@ void Disco::draw() {
     glScalef(3,1,3);
     disco_sup.drawMesh();
     disco_sup.drawEdges();
+    disco_sup.drawChess();
     glPopMatrix();
 
-    lat_1.draw();
-    //lat_2.draw();
+    laterales.draw();
 }
 
 BrazoPrincipal::BrazoPrincipal() {
@@ -67,6 +78,7 @@ void BrazoPrincipal::draw() {
     glScalef(1,10,1);
     brazo.drawMesh();
     brazo.drawEdges();
+    brazo.drawChess();
     glPopMatrix();
 
     disco_sup.draw();
@@ -81,7 +93,8 @@ void WattRegulator::draw() {
     glTranslatef(0,1,0);
     glScalef(5,2,5);
     base.drawMesh();
-    base.drawEdges();
+    //base.drawEdges();
+    base.drawChess();
     glPopMatrix();
 
     brazo.draw();

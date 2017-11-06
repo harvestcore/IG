@@ -137,24 +137,5 @@ void drawModels(Models mods, TypeObject object, vector<ViewMode> mode) {
             if (mode[3] == CHESS)
                 mods.v_Tube.drawChess();
             break;
-
-        case TEST:
-            if (mode[0] == MESH)
-                mods.test.drawMesh();
-            if (mode[1] == EDGES)
-                mods.test.drawEdges();
-            if (mode[2] == SOLID)
-                mods.test.drawSolid();
-            if (mode[3] == CHESS)
-                mods.test.drawChess();
-            break;
     }
-}
-
-void move(Models mods) {
-    _vertex3f aux;
-    aux.x = 1;
-    aux.y = 0;
-    aux.z = 0;
-    mods.test.move(2,0,0);
 }

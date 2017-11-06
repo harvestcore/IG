@@ -143,8 +143,30 @@ void draw_objects() {
 	drawModels(modelos, objeto, modos);
 
 	watt.draw();
-	Cube xd;
+
+	Cylinder xd(3, 5);
+	xd.setAnguloInicio(45);
+	xd.setAnguloFinal(90);
+	xd.generateByRevolution('y', false);
+
 	//xd.drawMesh();
+	//xd.drawChess();
+
+	Sphere bola(10, 15);
+	//bola.createProfileSphere('z');
+	//bola.drawMesh();
+
+	PlyObject esfera("/home/angel/Dropbox/Universidad/Tercero/P2_2/ply/sphere.ply");
+
+
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glScalef(0.01,0.01,0.01);
+	esfera.drawMesh();
+	glPopMatrix();
+
+
+	//esfera.drawMesh();
 }
 
 
@@ -196,40 +218,6 @@ void normal_keys(unsigned char Tecla1,int x,int y) {
 
 		case 'T': restar = true; break;
 		case 'Y': sumar = true; break;
-
-		case '4': if (mover) modelos.test.move(2,0,0); break;
-		case '6': if (mover) modelos.test.move(2,0,0); break;
-		case '8':
-			if (mover) {
-				if (updown) modelos.test.move(2,0,0);
-				else modelos.test.move(2,0,0);
-			}
-
-			if (rotar) {
-				if (rotate) modelos.test.rotate({0,-0.5,0});
-				else modelos.test.rotate({-0.5,0,0});
-			}
-			break;
-
-		case '2':
-			if (mover) {
-				if (updown) modelos.test.move(2,0,0);
-				else modelos.test.move(2,0,0);
-			}
-
-			if (rotar) {
-				if (rotate) modelos.test.rotate({0,0.5,0});
-				else modelos.test.rotate({0.5,0,0});
-			}
-			break;
-
-		case '5': updown = !updown; rotate = !rotate; break;
-		case '7': rotar = !rotar; mover = false; break;
-		case '9': mover = !mover; rotar = false; break;
-		case 'H': modelos.test.scale({20,60,20}); break;
-		case 'G': modelos.test.move(2,0,0); break;
-		case 'J': modelos.test.rotate({50,1,1}); break;
-
 	}
 
 	draw_scene();

@@ -50,7 +50,7 @@ class StaticModel : public Object3D{
 *   Encapsula todos los objetos de recolución y añade una altura y radios para
 *   crear objetos según deseemos.
 */
-class RevolutionModel : public ComplexObject{
+class RevolutionModel : public Revolution3DObject{
     protected:
         GLfloat height;
         GLfloat topRadius;
@@ -64,6 +64,8 @@ class RevolutionModel : public ComplexObject{
         double getTopRadius() const;
         double getBottomRadius() const;
         double getHeight() const;
+
+        void Status();
 };
 
 /**
@@ -166,14 +168,14 @@ class Tube: public RevolutionModel {
         void createTube();
 };
 
-class Sphere: public ComplexObject {
+class Sphere: public Revolution3DObject {
     private:
         GLfloat radius;
     public:
         Sphere();
         Sphere(int steps, int radius);
-        void setRadius(GLfloat newRadius);
-        void createProfileSphere();
+        void setRadius(double newRadius);
+        void createProfileSphere(char axis);
 
 };
 
@@ -195,7 +197,6 @@ class Models {
         Glass_Inverted v_Glass_Inverted;
         Cone v_Cone;
         Tube v_Tube;
-        ComplexObject test;
 
         Models();
         void setModelsAreGenerated(bool mod);

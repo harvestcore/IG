@@ -64,6 +64,13 @@ double RevolutionModel::getHeight() const {
     return (double) height;
 }
 
+void RevolutionModel::Status() {
+    cout << "steps: " << steps << endl;
+    cout << "height: " << height << endl;
+    cout << "topRadius: " << topRadius << endl;
+    cout << "bottomRadius: " << bottomRadius << endl;
+}
+
 Cube::Cube() {
   setSide(1);
   createCube();
@@ -222,17 +229,58 @@ Sphere::Sphere(int newSteps, int newRadius) {
     radius = newRadius;
 }
 
-void Sphere::setRadius(GLfloat newRadius){
-    radius = newRadius;
+void Sphere::setRadius(double newRadius){
+    radius = (GLfloat) newRadius;
 }
 
-void Sphere::createProfileSphere(){
-    vector<_vertex3f> aux(steps);
-    _vertex3f point;
+void Sphere::createProfileSphere(char axis){
+    vector<_vertex3f> bola(1);
+    vector<_vertex3f> test(steps);
 
+    _vertex3f point;
     point.x = 0;
     point.y = -radius;
     point.z = 0;
+
+    bola[0] = point;
+
+    //Revolution3DObject aux;
+    //aux.addSinglePoint(point);
+    profile = points = bola;
+    //aux.drawMesh();
+    //aux.generateByRevolution('y', false);
+    //profile = points;
+
+    double ini = (PI / 180) * 0;
+    double fin = (PI / 180) * 180;
+
+    double to_rotate = fin - ini;
+
+    double rotationAngle = to_rotate / (steps-1);
+
+    _vertex3f rotar = profile[0];
+
+    for (int i = 0; i < steps; ++i) {
+        switch (axis) {
+            case 'x':
+                for (unsigned int i = 0; i < profile.size(); ++i)
+                    test[i] = rotate_X(rotar, rotationAngle);
+                break;
+
+            case 'y':
+                for (unsigned int i = 0; i < profile.size(); ++i)
+                    test[i] = rotate_Y(rotar, rotationAngle);
+                break;
+
+            case 'z':
+                for (unsigned int i = 0; i < profile.size(); ++i)
+                    test[i] = rotate_Z(rotar, rotationAngle);
+                break;
+        }
+        rotar = test[i];
+    }
+
+    points = test;
 }
 
 Models::Models() {
@@ -289,8 +337,6 @@ void Models::initializeModels() {
                  {5,7,4},{4,7,6},{4,6,0},{0,6,2},
                  {4,0,1},{4,1,5},{2,6,3},{3,6,7}};
 
-    test.addPoints(points);
-    test.addTriangles(triangles);
 }
 
 void Models::addStep(TypeObject object) {

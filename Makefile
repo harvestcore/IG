@@ -40,15 +40,15 @@ $(TARGET): $(OBJ)/main.o $(LIB)/libformas.a
 clean:
 	rm -f ./$(OBJ)/*.o
 	rm -f ./$(LIB)/*.a
-	rm -f $(TARGETS)
+	rm -f $(TARGET)
 
 superclean:
 	rm -f *.o
 	rm *~
-	rm -f $(TARGETS)
+	rm -f $(TARGET)
 
 tgz:
 	rm -f *.o
 	rm *~
-	rm -f $(TARGETS)
-	tar -zcvf $(TARGETS).tgz *
+	rm -f $(TARGET)
+	tar -zcvf $(TARGET).tgz *
