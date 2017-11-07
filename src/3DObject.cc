@@ -242,7 +242,6 @@ void Revolution3DObject::generateByRevolution(char axis, bool addCovers) {
 
     */
 
-
     /**
     *   Angulo de rotacion de los puntos
     */
@@ -297,7 +296,6 @@ void Revolution3DObject::generateByRevolution(char axis, bool addCovers) {
     /**
     *   Comprobamos si tiene tapa superior o inferior.
     */
-
     switch (axis) {
         case 'x':
             if(profile[0].z == 0)

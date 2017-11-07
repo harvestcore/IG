@@ -170,13 +170,8 @@ class Tube: public RevolutionModel {
 
 class Sphere: public Revolution3DObject {
     private:
-        GLfloat radius;
     public:
         Sphere();
-        Sphere(int steps, int radius);
-        void setRadius(double newRadius);
-        void createProfileSphere(char axis);
-
 };
 
 

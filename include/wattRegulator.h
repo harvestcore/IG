@@ -4,11 +4,35 @@
 #include "models.h"
 #include "3DObject.h"
 
-class SoporteLateral {
+class Soportes {
     private:
+        Cylinder soporte_izq;
+        Cylinder soporte_der;
 
     public:
-        SoporteLateral();
+        Soportes();
+        void draw();
+};
+
+class Anillo {
+    private:
+        Cylinder anillo_central;
+        Cylinder varilla;
+        Soportes soportes_laterales;
+
+    public:
+        Anillo();
+        void draw();
+};
+
+class Esferas {
+    private:
+        Sphere bola_izq;
+        Sphere bola_der;
+        Anillo anillo_central;
+
+    public:
+        Esferas();
         void draw();
 };
 
@@ -16,7 +40,7 @@ class BrazosLaterales {
     private:
         Cylinder brazo_izq;
         Cylinder brazo_der;
-        //Sphere bola;
+        Esferas bolas;
 
     public:
         BrazosLaterales();

@@ -221,66 +221,9 @@ void Tube::createTube() {
 }
 
 Sphere::Sphere() {
-    radius = 0.5;
-}
-
-Sphere::Sphere(int newSteps, int newRadius) {
-    steps = newSteps;
-    radius = newRadius;
-}
-
-void Sphere::setRadius(double newRadius){
-    radius = (GLfloat) newRadius;
-}
-
-void Sphere::createProfileSphere(char axis){
-    vector<_vertex3f> bola(1);
-    vector<_vertex3f> test(steps);
-
-    _vertex3f point;
-    point.x = 0;
-    point.y = -radius;
-    point.z = 0;
-
-    bola[0] = point;
-
-    //Revolution3DObject aux;
-    //aux.addSinglePoint(point);
-    profile = points = bola;
-    //aux.drawMesh();
-    //aux.generateByRevolution('y', false);
-    //profile = points;
-
-    double ini = (PI / 180) * 0;
-    double fin = (PI / 180) * 180;
-
-    double to_rotate = fin - ini;
-
-    double rotationAngle = to_rotate / (steps-1);
-
-    _vertex3f rotar = profile[0];
-
-    for (int i = 0; i < steps; ++i) {
-        switch (axis) {
-            case 'x':
-                for (unsigned int i = 0; i < profile.size(); ++i)
-                    test[i] = rotate_X(rotar, rotationAngle);
-                break;
-
-            case 'y':
-                for (unsigned int i = 0; i < profile.size(); ++i)
-                    test[i] = rotate_Y(rotar, rotationAngle);
-                break;
-
-            case 'z':
-                for (unsigned int i = 0; i < profile.size(); ++i)
-                    test[i] = rotate_Z(rotar, rotationAngle);
-                break;
-        }
-        rotar = test[i];
-    }
-
-    points = test;
+    Ply_Static aux("/home/angel/Dropbox/Universidad/Tercero/P2_2/ply/sphere.ply");
+    points = aux.getVectorPoints();
+    triangles = aux.getVectorTriangles();
 }
 
 Models::Models() {

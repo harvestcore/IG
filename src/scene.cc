@@ -24,6 +24,9 @@ vector<ViewMode> modos(4, NULL_);
 TypeObject objeto = _NULL;
 
 WattRegulator watt;
+Cylinder cilindro;
+bool hay_cilindro = false;
+double grado = 90.0;
 
 
 _vertex3f aux1 = {0.5,0,0};
@@ -142,31 +145,21 @@ void draw_objects() {
 
 	drawModels(modelos, objeto, modos);
 
-	watt.draw();
+	//watt.draw();
 
-	Cylinder xd(3, 5);
-	xd.setAnguloInicio(45);
-	xd.setAnguloFinal(90);
-	xd.generateByRevolution('y', false);
-
-	//xd.drawMesh();
-	//xd.drawChess();
-
-	Sphere bola(10, 15);
-	//bola.createProfileSphere('z');
-	//bola.drawMesh();
-
-	PlyObject esfera("/home/angel/Dropbox/Universidad/Tercero/P2_2/ply/sphere.ply");
-
-
-	glMatrixMode(GL_MODELVIEW);
-	glPushMatrix();
-	glScalef(0.01,0.01,0.01);
-	esfera.drawMesh();
-	glPopMatrix();
-
-
-	//esfera.drawMesh();
+	if (hay_cilindro) {
+		cilindro.generateByRevolution('y', false);
+		glMatrixMode(GL_MODELVIEW);
+		glPushMatrix();
+		glTranslatef(0,2,0);
+		glRotatef(grado,0,0,1);
+		glTranslatef(0,-2,0);
+		glTranslatef(0,2,0);
+		glRotatef(90,0,0,1);
+		glScalef(0.3,6,0.3);
+		cilindro.drawChess();
+		glPopMatrix();
+	}
 }
 
 
@@ -218,6 +211,10 @@ void normal_keys(unsigned char Tecla1,int x,int y) {
 
 		case 'T': restar = true; break;
 		case 'Y': sumar = true; break;
+
+		case 'G': hay_cilindro = !hay_cilindro; break;
+		case 'H': grado++; break;
+		case 'J': grado--; break;
 	}
 
 	draw_scene();
@@ -251,7 +248,6 @@ void special_keys(int Tecla1,int x,int y) {
 		case GLUT_KEY_F7: objeto = changeObject(objeto, GLASS_INVERTED); break;
 		case GLUT_KEY_F8: objeto = changeObject(objeto, CONE); break;
 		case GLUT_KEY_F9: objeto = changeObject(objeto, TUBE); break;
-		case GLUT_KEY_F10: objeto = changeObject(objeto, TEST); break;
 	}
 	glutPostRedisplay();
 }
