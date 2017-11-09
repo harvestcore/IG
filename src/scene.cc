@@ -23,7 +23,7 @@ Models modelos;
 vector<ViewMode> modos(4, NULL_);
 TypeObject objeto = _NULL;
 
-WattRegulator watt;
+Watt watt;
 Cylinder cilindro;
 bool hay_cilindro = false;
 double grado = 90.0;
@@ -145,21 +145,23 @@ void draw_objects() {
 
 	drawModels(modelos, objeto, modos);
 
-	//watt.draw();
+	watt.draw();
 
 	if (hay_cilindro) {
 		cilindro.generateByRevolution('y', false);
 		glMatrixMode(GL_MODELVIEW);
 		glPushMatrix();
-		glTranslatef(0,2,0);
+		glTranslatef(-3,2,0);
 		glRotatef(grado,0,0,1);
-		glTranslatef(0,-2,0);
+		glTranslatef(3,-2,0);
 		glTranslatef(0,2,0);
 		glRotatef(90,0,0,1);
 		glScalef(0.3,6,0.3);
 		cilindro.drawChess();
 		glPopMatrix();
 	}
+	watt.giro();
+	glutPostRedisplay();
 }
 
 
@@ -215,6 +217,16 @@ void normal_keys(unsigned char Tecla1,int x,int y) {
 		case 'G': hay_cilindro = !hay_cilindro; break;
 		case 'H': grado++; break;
 		case 'J': grado--; break;
+
+		case 'V': watt.incrementarAngulo(); break;
+		case 'B': watt.decrementarAngulo(); break;
+
+		case 'N': watt.incrementarDisco(); break;
+		case 'M': watt.decrementarDisco(); break;
+
+		case 'Z': watt.incrementarAnguloInf(); break;
+		case 'X': watt.decrementarAnguloInf(); break;
+
 	}
 
 	draw_scene();

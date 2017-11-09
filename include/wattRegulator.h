@@ -4,77 +4,74 @@
 #include "models.h"
 #include "3DObject.h"
 
-class Soportes {
+class Laterales {
     private:
-        Cylinder soporte_izq;
-        Cylinder soporte_der;
+        Cylinder tubo;
+        Sphere bola;
+
+        double angulo_superior = 35;
+        double angulo_inferior = 41;
+
+        double altura_disco_central = 6;
 
     public:
-        Soportes();
+        Laterales();
+        void draw();
+
+        void incrementarAnguloSuperior();
+        void reducirAnguloSuperior();
+
+        void incrementarAnguloInferior();
+        void reducirAnguloInferior();
+
+        void incrementarDiscoCentral();
+        void reducirDiscoCentral();
+
+        void comprobarMovimiento();
+};
+
+class Brazo_Disco {
+    private:
+      Cylinder brazo_disco;
+
+    public:
+        Brazo_Disco();
         void draw();
 };
 
-class Anillo {
+class Pie {
     private:
-        Cylinder anillo_central;
-        Cylinder varilla;
-        Soportes soportes_laterales;
+        Cube pie;
 
     public:
-        Anillo();
+        Pie();
         void draw();
 };
 
-class Esferas {
+class Watt {
     private:
-        Sphere bola_izq;
-        Sphere bola_der;
-        Anillo anillo_central;
+        Pie pie;
+        Brazo_Disco brazo_disco;
+        Laterales laterales;
+
+        double angulo_giro;
+        double velocidad = 1;
 
     public:
-        Esferas();
+        Watt();
         void draw();
+
+        void incrementarAngulo();
+        void decrementarAngulo();
+
+        void incrementarAnguloInf();
+        void decrementarAnguloInf();
+
+        void incrementarDisco();
+        void decrementarDisco();
+
+        void giro();
 };
 
-class BrazosLaterales {
-    private:
-        Cylinder brazo_izq;
-        Cylinder brazo_der;
-        Esferas bolas;
-
-    public:
-        BrazosLaterales();
-        void draw();
-};
-
-class Disco {
-    private:
-        Cylinder disco_sup;
-        BrazosLaterales laterales;
-
-    public:
-        Disco();
-        void draw();
-};
-
-class BrazoPrincipal {
-    private:
-        Cylinder brazo;
-        Disco disco_sup;
-
-    public:
-        BrazoPrincipal();
-        void draw();
-};
-
-class WattRegulator {
-    private:
-        Cube base;
-        BrazoPrincipal brazo;
-
-    public:
-        WattRegulator();
-        void draw();
-};
 
 #endif

@@ -16,175 +16,220 @@
 #include "vertex.h"
 #include "models.h"
 #include "wattRegulator.h"
+#include <thread>
+#include <chrono>
 
 using namespace std;
 
-Soportes::Soportes() {
+Laterales::Laterales() {
 }
 
-void Soportes::draw() {
-    soporte_izq.generateByRevolution('y', false);
+void Laterales::draw() {
+    comprobarMovimiento();
 
+    tubo.generateByRevolution('y', false);
 
+    // Brazo superior izq
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
-    glTranslatef(-4.5,8,0);
-    glRotatef(105,0,0,1);
-    glTranslatef(4.5,-8,0);
-    glTranslatef(-4.5,8,0);
+
+    glTranslatef(-1.5,12,0);
+    glRotatef(angulo_superior,0,0,1);
+    glTranslatef(1.5,-12,0);     // origen
+
+    glTranslatef(-5.5,12,0);
     glRotatef(90,0,0,1);
-    glScalef(0.3,6,0.3);
-    //soporte_izq.drawMesh();
-    //soporte_izq.drawEdges();
-    soporte_izq.drawChess();
+    glScalef(0.3,8,0.3);
+    tubo.drawChess();
     glPopMatrix();
 
-    soporte_der.generateByRevolution('y', false);
-
+    // Brazo superior der
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
-    glTranslatef(4.5,8,0);
+
+    glTranslatef(1.5,12,0);
+    glRotatef(360 - angulo_superior,0,0,1);
+    glTranslatef(-1.5,-12,0);     // origen
+
+    glTranslatef(5,12,0);
     glRotatef(270,0,0,1);
-    glScalef(0.3,6,0.3);
-    //soporte_der.drawMesh();
-    //soporte_der.drawEdges();
-    soporte_der.drawChess();
+    glScalef(0.3,8,0.3);
+    tubo.drawChess();
     glPopMatrix();
-}
 
-Anillo::Anillo() {
-}
-
-void Anillo::draw() {
-    varilla.generateByRevolution('y', false);
-
+    // Brazo inferior izq
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
-    glTranslatef(1,5.8,0);
+
+    glTranslatef(-1.5,altura_disco_central,0);
+    glRotatef(360-angulo_inferior,0,0,1);
+    glTranslatef(1.5,-altura_disco_central,0);     // origen
+
+    glTranslatef(-4,altura_disco_central,0);     // sitio
+    glRotatef(90,0,0,1);
+    glScalef(0.2,5,0.2);
+    tubo.drawChess();
+    glPopMatrix();
+
+    // Brazo inferior der
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+
+    glTranslatef(1.5,altura_disco_central,0);
+    glRotatef(angulo_inferior,0,0,1);
+    glTranslatef(-1.5,-altura_disco_central,0);     // origen
+
+    glTranslatef(4,altura_disco_central,0);
+    glRotatef(270,0,0,1);
+    glScalef(0.2,5,0.2);
+    tubo.drawChess();
+    glPopMatrix();
+
+    // Disco central
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glTranslatef(0,altura_disco_central,0);
+    glScalef(3.5,0.8,3.5);
+    tubo.drawChess();
+    glPopMatrix();
+
+    // Varilla central
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glTranslatef(1,altura_disco_central-2,0);
     glScalef(0.2,4,0.2);
-    //anillo_central.drawMesh();
-    //anillo_central.drawEdges();
-    varilla.drawChess();
+    tubo.drawChess();
     glPopMatrix();
 
-    anillo_central.generateByRevolution('y', false);
+    //cout << "angulo_superior: " << angulo_superior << endl;
+    //cout << "angulo_inferior: " << angulo_inferior << endl;
+    //cout << "-------------------" << endl;
 
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glTranslatef(0,8,0);
-    glScalef(3,0.8,3);
-    //anillo_central.drawMesh();
-    //anillo_central.drawEdges();
-    anillo_central.drawChess();
-    glPopMatrix();
-
-    soportes_laterales.draw();
 }
 
-Esferas::Esferas() {
+void Laterales::incrementarAnguloSuperior() {
+    angulo_superior += 0.95;
 }
 
-void Esferas::draw() {
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glTranslatef(-8.5,12,0);
-    glScalef(0.009,0.009,0.009);
-    //bola_izq.drawMesh();
-    //bola_izq.drawEdges();
-    bola_izq.drawChess();
-    glPopMatrix();
-
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glTranslatef(8.5,12,0);
-    glScalef(0.009,0.009,0.009);
-    //bola_der.drawMesh();
-    //bola_der.drawEdges();
-    bola_der.drawChess();
-    glPopMatrix();
-
-    anillo_central.draw();
+void Laterales::reducirAnguloSuperior() {
+    angulo_superior -= 0.95;
 }
 
-BrazosLaterales::BrazosLaterales() {
+void Laterales::incrementarAnguloInferior() {
+    angulo_inferior += 0.75;
 }
 
-void BrazosLaterales::draw() {
-    brazo_izq.generateByRevolution('y', false);
-
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glTranslatef(-4.5,12,0);
-    glRotatef(90,0,0,1);
-    glScalef(0.3,6,0.3);
-    //brazo_izq.drawMesh();
-    //brazo_izq.drawEdges();
-    brazo_izq.drawChess();
-    glPopMatrix();
-
-    brazo_der.generateByRevolution('y', false);
-
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glTranslatef(4.5,12,0);
-    glRotatef(270,0,0,1);
-    glScalef(0.3,6,0.3);
-    //brazo_der.drawMesh();
-    //brazo_der.drawEdges();
-    brazo_der.drawChess();
-    glPopMatrix();
-
-    bolas.draw();
+void Laterales::reducirAnguloInferior() {
+    angulo_inferior -= 0.75;
 }
 
-Disco::Disco() {
+void Laterales::incrementarDiscoCentral() {
+    altura_disco_central += 0.13;
+    reducirAnguloSuperior();
+    reducirAnguloInferior();
 }
 
-void Disco::draw() {
-    disco_sup.generateByRevolution('y', false);
-
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glTranslatef(0,12,0);
-    glScalef(3,0.8,3);
-    //disco_sup.drawMesh();
-    //disco_sup.drawEdges();
-    disco_sup.drawChess();
-    glPopMatrix();
-
-    laterales.draw();
+void Laterales::reducirDiscoCentral() {
+    altura_disco_central -= 0.13;
+    incrementarAnguloSuperior();
+    incrementarAnguloInferior();
 }
 
-BrazoPrincipal::BrazoPrincipal() {
+void Laterales::comprobarMovimiento() {
+    if (altura_disco_central < 6) {
+        altura_disco_central = 6;
+        angulo_superior = 35;
+        angulo_inferior = 41;
+    }
+
+    if (altura_disco_central > 11.2) {
+        altura_disco_central = 11.2;
+        angulo_superior = -3;
+        angulo_inferior = 11;
+    }
 }
 
-void BrazoPrincipal::draw() {
-    brazo.generateByRevolution('y', false);
+Brazo_Disco::Brazo_Disco() {
+}
+
+void Brazo_Disco::draw() {
+    brazo_disco.generateByRevolution('y', false);
 
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glTranslatef(0,7,0);
     glScalef(0.5,10,0.5);
-    //brazo.drawMesh();
-    //brazo.drawEdges();
-    brazo.drawChess();
+    brazo_disco.drawChess();
     glPopMatrix();
 
-    disco_sup.draw();
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glTranslatef(0,12,0);
+    glScalef(3.5,0.8,3.5);
+    brazo_disco.drawChess();
+    glPopMatrix();
 }
 
-WattRegulator::WattRegulator() {
+
+Pie::Pie() {
 }
 
-void WattRegulator::draw() {
+void Pie::draw() {
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glTranslatef(0,1,0);
     glScalef(7,2,7);
-    //base.drawMesh();
-    //base.drawEdges();
-    base.drawChess();
+    pie.drawChess();
     glPopMatrix();
+}
 
-    brazo.draw();
+Watt::Watt() {
+}
+
+void Watt::draw() {
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+        glTranslatef(0,-5,0);
+        pie.draw();
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glRotatef(angulo_giro,0,1,0);
+        brazo_disco.draw();
+        laterales.draw();
+        glPopMatrix();
+    glPopMatrix();
+}
+
+void Watt::incrementarAngulo() {
+    laterales.incrementarAnguloSuperior();
+}
+
+void Watt::decrementarAngulo() {
+    laterales.reducirAnguloSuperior();
+}
+
+void Watt::incrementarAnguloInf() {
+    laterales.incrementarAnguloInferior();
+}
+
+void Watt::decrementarAnguloInf() {
+    laterales.reducirAnguloInferior();
+}
+
+void Watt::incrementarDisco() {
+    laterales.incrementarDiscoCentral();
+    velocidad += 0.5;
+}
+
+void Watt::decrementarDisco() {
+    laterales.reducirDiscoCentral();
+    velocidad -= 0.5;
+}
+
+void Watt::giro() {
+    if (velocidad < 1) velocidad = 1;
+    if (velocidad > 5) velocidad = 5;
+
+
+    angulo_giro += 0.7 * velocidad;
 }
