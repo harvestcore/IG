@@ -10,6 +10,7 @@
 #include "stdio.h"
 #include <GL/glut.h>
 #include <ctype.h>
+#include <string>
 #include "vertex.h"
 #include "models.h"
 #include "manageView.h"
@@ -24,9 +25,14 @@ vector<ViewMode> modos(4, NULL_);
 TypeObject objeto = _NULL;
 
 Watt watt;
-Cylinder cilindro;
-bool hay_cilindro = false;
-double grado = 90.0;
+bool actualizar = false;
+
+
+// Contador de FPS
+bool showFPS = false;
+double tiempo;
+int frames = 0, fps = 0;
+double base_time = 0;
 
 
 _vertex3f aux1 = {0.5,0,0};
@@ -147,21 +153,12 @@ void draw_objects() {
 
 	watt.draw();
 
-	if (hay_cilindro) {
-		cilindro.generateByRevolution('y', false);
-		glMatrixMode(GL_MODELVIEW);
-		glPushMatrix();
-		glTranslatef(-3,2,0);
-		glRotatef(grado,0,0,1);
-		glTranslatef(3,-2,0);
-		glTranslatef(0,2,0);
-		glRotatef(90,0,0,1);
-		glScalef(0.3,6,0.3);
-		cilindro.drawChess();
-		glPopMatrix();
+	if (watt.isSpinning())	{
+		watt.giro();
+		glutPostRedisplay();
 	}
-	watt.giro();
-	glutPostRedisplay();
+
+	frames++;
 }
 
 
@@ -174,6 +171,15 @@ void draw_scene(void) {
 	draw_axis();
 	draw_objects();
 	glutSwapBuffers();
+
+	tiempo = glutGet(GLUT_ELAPSED_TIME);
+	if ((tiempo - base_time) > 1000.0) {
+		fps=frames*1000.0/(tiempo - base_time);
+		base_time = tiempo;
+		frames=0;
+	}
+
+	if (showFPS) cout << "FPS: " << fps << endl;
 }
 
 
@@ -214,19 +220,11 @@ void normal_keys(unsigned char Tecla1,int x,int y) {
 		case 'T': restar = true; break;
 		case 'Y': sumar = true; break;
 
-		case 'G': hay_cilindro = !hay_cilindro; break;
-		case 'H': grado++; break;
-		case 'J': grado--; break;
+		case 'X': watt.aumentarVelocidad(); break;
+		case 'Z': watt.decrementarVelocidad(); break;
 
-		case 'V': watt.incrementarAngulo(); break;
-		case 'B': watt.decrementarAngulo(); break;
-
-		case 'N': watt.incrementarDisco(); break;
-		case 'M': watt.decrementarDisco(); break;
-
-		case 'Z': watt.incrementarAnguloInf(); break;
-		case 'X': watt.decrementarAnguloInf(); break;
-
+		case 'A': watt.toggleSpinning(); break;
+		case 'S': showFPS = !showFPS; break;
 	}
 
 	draw_scene();
@@ -325,7 +323,7 @@ int main(int argc, char **argv) {
 
 	// llamada para crear la ventana, indicando el titulo (no se visualiza hasta que se llama
 	// al bucle de eventos)
-	glutCreateWindow("Practica 2. Angel Gomez Martin");
+	glutCreateWindow("Practica 3. Angel Gomez Martin");
 
 	// asignación de la funcion llamada "dibujar" al evento de dibujo
 	glutDisplayFunc(draw_scene);

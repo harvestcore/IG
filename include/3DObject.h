@@ -188,7 +188,7 @@ class Revolution3DObject: public PlyObject {
         /**
         *   Divisiones del objeto.
         */
-        int steps = 20;
+        int steps = 30;
 
         /**
         *   Perfil del objeto, nunca se modifica.

@@ -1,3 +1,14 @@
+//####################################################
+//
+//  Ángel Gómez Martín
+//  agomezm@correo.ugr.es
+//  3º A - Informática Gráfica 2017-18
+//	GII - ETSIIT
+//
+//  file: wattRegulator.h
+//
+//####################################################
+
 #ifndef __ARM__H__
 #define	__ARM__H__
 
@@ -18,14 +29,14 @@ class Laterales {
         Laterales();
         void draw();
 
-        void incrementarAnguloSuperior();
-        void reducirAnguloSuperior();
+        void incrementarAnguloSuperior(double velocidad);
+        void reducirAnguloSuperior(double velocidad);
 
-        void incrementarAnguloInferior();
-        void reducirAnguloInferior();
+        void incrementarAnguloInferior(double velocidad);
+        void reducirAnguloInferior(double velocidad);
 
-        void incrementarDiscoCentral();
-        void reducirDiscoCentral();
+        void incrementarDiscoCentral(double velocidad);
+        void decrementarDiscoCentral(double velocidad);
 
         void comprobarMovimiento();
 };
@@ -57,6 +68,8 @@ class Watt {
         double angulo_giro;
         double velocidad = 1;
 
+        bool girando = false;
+
     public:
         Watt();
         void draw();
@@ -67,10 +80,14 @@ class Watt {
         void incrementarAnguloInf();
         void decrementarAnguloInf();
 
-        void incrementarDisco();
-        void decrementarDisco();
+        void aumentarVelocidad();
+        void decrementarVelocidad();
 
+        void control();
         void giro();
+
+        void toggleSpinning();
+        bool isSpinning();
 };
 
 
