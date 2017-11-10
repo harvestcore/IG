@@ -303,7 +303,7 @@ void Watt::decrementarVelocidad() {
 
 void Watt::control() {
     if (velocidad < 1) velocidad = 1;
-    //if (velocidad > 8.4) velocidad = 8.4;
+    if (velocidad > 25) velocidad = 25;
 
     //cout << "vel: " << velocidad << endl;
 }
