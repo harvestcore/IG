@@ -148,6 +148,7 @@ void draw_objects() {
 	drawModels(modelos, objeto, modos);
 
 	if (modelos.v_Watt.isSpinning())	{
+		//glutIdleFunc(modelos.v_Watt.giro());
 		modelos.v_Watt.giro();
 		glutPostRedisplay();
 	}
