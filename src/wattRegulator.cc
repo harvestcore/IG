@@ -149,31 +149,45 @@ void Laterales::show(ViewMode mode, TypeObject type) {
 }
 
 void Laterales::incrementarAnguloSuperior(double velocidad) {
-    angulo_superior += 0.105 * velocidad;
+    if (velocidad < 8.5) {
+        angulo_superior += 0.105 * velocidad;
+    }
 }
 
 void Laterales::reducirAnguloSuperior(double velocidad) {
-    angulo_superior -= 0.105 * velocidad;
+    if (velocidad < 8.5) {
+        angulo_superior -= 0.105 * velocidad;
+    }
 }
 
 void Laterales::incrementarAnguloInferior(double velocidad) {
-    angulo_inferior += 0.09 * velocidad;
+    if (velocidad < 8.5) {
+        angulo_inferior += 0.09 * velocidad;
+    }
 }
 
 void Laterales::reducirAnguloInferior(double velocidad) {
-    angulo_inferior -= 0.09 * velocidad;
+    if (velocidad < 8.5) {
+        angulo_inferior -= 0.09 * velocidad;
+    }
 }
 
 void Laterales::incrementarDiscoCentral(double velocidad) {
-    altura_disco_central += 0.015 * velocidad;
-    reducirAnguloSuperior(velocidad);
-    reducirAnguloInferior(velocidad);
+    if (velocidad < 8.5) {
+        altura_disco_central += 0.015 * velocidad;
+        reducirAnguloSuperior(velocidad);
+        reducirAnguloInferior(velocidad);
+        comprobarMovimiento();
+    }
 }
 
 void Laterales::decrementarDiscoCentral(double velocidad) {
-    altura_disco_central -= 0.015 * velocidad;
-    incrementarAnguloSuperior(velocidad);
-    incrementarAnguloInferior(velocidad);
+    if (velocidad < 8.5) {
+        altura_disco_central -= 0.015 * velocidad;
+        incrementarAnguloSuperior(velocidad);
+        incrementarAnguloInferior(velocidad);
+        comprobarMovimiento();
+    }
 }
 
 void Laterales::comprobarMovimiento() {
@@ -289,7 +303,9 @@ void Watt::decrementarVelocidad() {
 
 void Watt::control() {
     if (velocidad < 1) velocidad = 1;
-    if (velocidad > 11.4) velocidad = 11.4;
+    //if (velocidad > 8.4) velocidad = 8.4;
+
+    //cout << "vel: " << velocidad << endl;
 }
 
 void Watt::giro() {
