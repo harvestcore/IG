@@ -17,6 +17,7 @@
 #include "3DObject.h"
 #include "vertex.h"
 #include "models.h"
+#include "objects.h"
 #include "types.h"
 
 vector<ViewMode> changeMode(vector<ViewMode> oldMode, ViewMode newMode, int  i);

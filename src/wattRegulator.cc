@@ -24,7 +24,7 @@ using namespace std;
 Laterales::Laterales() {
 }
 
-void Laterales::draw() {
+void Laterales::draw(ViewMode mode) {
     comprobarMovimiento();
 
     tubo.generateByRevolution('y', false);
@@ -39,8 +39,8 @@ void Laterales::draw() {
 
     glTranslatef(-5.5,12,0);
     glRotatef(90,0,0,1);
-    glScalef(0.3,8,0.3);
-    tubo.drawChess();
+    glScalef(0.35,8,0.35);
+    show(mode, CYLINDER);
     glPopMatrix();
 
     // Brazo superior der
@@ -53,8 +53,8 @@ void Laterales::draw() {
 
     glTranslatef(5.5,12,0);
     glRotatef(270,0,0,1);
-    glScalef(0.3,8,0.3);
-    tubo.drawChess();
+    glScalef(0.35,8,0.35);
+    show(mode, CYLINDER);
     glPopMatrix();
 
     // Brazo inferior izq
@@ -68,7 +68,7 @@ void Laterales::draw() {
     glTranslatef(-4,altura_disco_central,0);
     glRotatef(90,0,0,1);
     glScalef(0.2,5,0.2);
-    tubo.drawChess();
+    show(mode, CYLINDER);
     glPopMatrix();
 
     // Brazo inferior der
@@ -82,7 +82,7 @@ void Laterales::draw() {
     glTranslatef(4,altura_disco_central,0);
     glRotatef(270,0,0,1);
     glScalef(0.2,5,0.2);
-    tubo.drawChess();
+    show(mode, CYLINDER);
     glPopMatrix();
 
     // Disco central
@@ -90,7 +90,7 @@ void Laterales::draw() {
     glPushMatrix();
     glTranslatef(0,altura_disco_central,0);
     glScalef(3.5,0.8,3.5);
-    tubo.drawChess();
+    show(mode, CYLINDER);
     glPopMatrix();
 
     // Varilla central
@@ -98,7 +98,7 @@ void Laterales::draw() {
     glPushMatrix();
     glTranslatef(1,altura_disco_central-2,0);
     glScalef(0.2,4,0.2);
-    tubo.drawChess();
+    show(mode, CYLINDER);
     glPopMatrix();
 
     // Esfera izquierda
@@ -111,7 +111,7 @@ void Laterales::draw() {
 
     glTranslatef(-10,13,0);
     glScalef(0.009,0.009,0.009);
-    bola.drawChess();
+    show(mode, SPHERE);
     glPopMatrix();
 
     // Esfera derecha
@@ -124,8 +124,28 @@ void Laterales::draw() {
 
     glTranslatef(10,13,0);
     glScalef(0.009,0.009,0.009);
-    bola.drawChess();
+    show(mode, SPHERE);
     glPopMatrix();
+}
+
+void Laterales::show(ViewMode mode, TypeObject type) {
+    if (type == CYLINDER) {
+        switch (mode) {
+            case MESH: tubo.drawMesh(); break;
+            case EDGES: tubo.drawEdges(); break;
+            case SOLID: tubo.drawSolid(); break;
+            case CHESS: tubo.drawChess(); break;
+        }
+    }
+
+    if (type == SPHERE) {
+        switch (mode) {
+            case MESH: bola.drawMesh(); break;
+            case EDGES: bola.drawEdges(); break;
+            case SOLID: bola.drawSolid(); break;
+            case CHESS: bola.drawChess(); break;
+        }
+    }
 }
 
 void Laterales::incrementarAnguloSuperior(double velocidad) {
@@ -166,57 +186,75 @@ void Laterales::comprobarMovimiento() {
     if (altura_disco_central > 11.2) {
         altura_disco_central = 11.2;
         angulo_superior = -1.9075;
-        angulo_inferior = 9.365;
+        angulo_inferior = 10;
     }
 }
 
 Brazo_Disco::Brazo_Disco() {
 }
 
-void Brazo_Disco::draw() {
+void Brazo_Disco::draw(ViewMode mode) {
     brazo_disco.generateByRevolution('y', false);
 
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glTranslatef(0,7,0);
     glScalef(0.8,10,0.8);
-    brazo_disco.drawChess();
+    show(mode);
     glPopMatrix();
 
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glTranslatef(0,12,0);
     glScalef(3.5,0.8,3.5);
-    brazo_disco.drawChess();
+    show(mode);
     glPopMatrix();
+}
+
+void Brazo_Disco::show(ViewMode mode) {
+    switch (mode) {
+        case MESH: brazo_disco.drawMesh(); break;
+        case EDGES: brazo_disco.drawEdges(); break;
+        case SOLID: brazo_disco.drawSolid(); break;
+        case CHESS: brazo_disco.drawChess(); break;
+    }
 }
 
 
 Pie::Pie() {
 }
 
-void Pie::draw() {
+void Pie::draw(ViewMode mode) {
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glTranslatef(0,1,0);
     glScalef(7,2,7);
-    pie.drawChess();
+    show(mode);
     glPopMatrix();
+}
+
+void Pie::show(ViewMode mode) {
+    switch (mode) {
+        case MESH: pie.drawMesh(); break;
+        case EDGES: pie.drawEdges(); break;
+        case SOLID: pie.drawSolid(); break;
+        case CHESS: pie.drawChess(); break;
+    }
 }
 
 Watt::Watt() {
 }
 
-void Watt::draw() {
+void Watt::draw(ViewMode mode) {
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
         glTranslatef(0,-5,0);
-        pie.draw();
+        pie.draw(mode);
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
         glRotatef(angulo_giro,0,1,0);
-        brazo_disco.draw();
-        laterales.draw();
+        brazo_disco.draw(mode);
+        laterales.draw(mode);
         glPopMatrix();
     glPopMatrix();
 }

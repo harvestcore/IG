@@ -13,6 +13,7 @@
 #include <string>
 #include "vertex.h"
 #include "models.h"
+#include "objects.h"
 #include "manageView.h"
 #include "types.h"
 #include "3DObject.h"
@@ -23,9 +24,6 @@ using namespace std;
 Models modelos;
 vector<ViewMode> modos(4, NULL_);
 TypeObject objeto = _NULL;
-
-Watt watt;
-bool actualizar = false;
 
 
 // Contador de FPS
@@ -138,23 +136,19 @@ void draw_objects() {
 	}
 
 	if (sumar) {
-		//modelos.addStepALL();
 		modelos.addStep(objeto);
 		sumar = false;
 	}
 
 	if (restar) {
-		//modelos.reduceStepALL();
 		modelos.reduceStep(objeto);
 		restar = false;
 	}
 
 	drawModels(modelos, objeto, modos);
 
-	watt.draw();
-
-	if (watt.isSpinning())	{
-		watt.giro();
+	if (modelos.v_Watt.isSpinning())	{
+		modelos.v_Watt.giro();
 		glutPostRedisplay();
 	}
 
@@ -220,10 +214,10 @@ void normal_keys(unsigned char Tecla1,int x,int y) {
 		case 'T': restar = true; break;
 		case 'Y': sumar = true; break;
 
-		case 'X': watt.aumentarVelocidad(); break;
-		case 'Z': watt.decrementarVelocidad(); break;
+		case 'X': modelos.v_Watt.aumentarVelocidad(); break;
+		case 'Z': modelos.v_Watt.decrementarVelocidad(); break;
 
-		case 'A': watt.toggleSpinning(); break;
+		case 'A': modelos.v_Watt.toggleSpinning(); break;
 		case 'S': showFPS = !showFPS; break;
 	}
 
@@ -258,6 +252,8 @@ void special_keys(int Tecla1,int x,int y) {
 		case GLUT_KEY_F7: objeto = changeObject(objeto, GLASS_INVERTED); break;
 		case GLUT_KEY_F8: objeto = changeObject(objeto, CONE); break;
 		case GLUT_KEY_F9: objeto = changeObject(objeto, TUBE); break;
+		case GLUT_KEY_F10: objeto = changeObject(objeto, SPHERE); break;
+		case GLUT_KEY_F11: objeto = changeObject(objeto, WATT); break;
 	}
 	glutPostRedisplay();
 }

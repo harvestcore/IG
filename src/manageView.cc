@@ -137,5 +137,27 @@ void drawModels(Models mods, TypeObject object, vector<ViewMode> mode) {
             if (mode[3] == CHESS)
                 mods.v_Tube.drawChess();
             break;
+
+        case SPHERE:
+            if (mode[0] == MESH)
+                mods.v_Sphere.drawMesh();
+            if (mode[1] == EDGES)
+                mods.v_Sphere.drawEdges();
+            if (mode[2] == SOLID)
+                mods.v_Sphere.drawSolid();
+            if (mode[3] == CHESS)
+                mods.v_Sphere.drawChess();
+            break;
+
+        case WATT:
+            if (mode[0] == MESH)
+                mods.v_Watt.draw(MESH);
+            if (mode[1] == EDGES)
+                mods.v_Watt.draw(EDGES);
+            if (mode[2] == SOLID)
+                mods.v_Watt.draw(SOLID);
+            if (mode[3] == CHESS)
+                mods.v_Watt.draw(CHESS);
+            break;
     }
 }

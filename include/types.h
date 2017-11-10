@@ -19,14 +19,9 @@ enum TypeObject {
     GLASS_INVERTED,
     CONE,
     TUBE,
-    TEST,
+    SPHERE,
+    WATT,
     _NULL
-};
-
-enum Transformations {
-    SCALE,
-    ROTATION,
-    TRANSLATION
 };
 
 #endif

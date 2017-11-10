@@ -13,6 +13,7 @@
 #define	__ARM__H__
 
 #include "models.h"
+#include "types.h"
 #include "3DObject.h"
 
 class Laterales {
@@ -27,7 +28,8 @@ class Laterales {
 
     public:
         Laterales();
-        void draw();
+        void draw(ViewMode mode);
+        void show(ViewMode mode, TypeObject type);
 
         void incrementarAnguloSuperior(double velocidad);
         void reducirAnguloSuperior(double velocidad);
@@ -47,7 +49,8 @@ class Brazo_Disco {
 
     public:
         Brazo_Disco();
-        void draw();
+        void draw(ViewMode mode);
+        void show(ViewMode mode);
 };
 
 class Pie {
@@ -56,7 +59,8 @@ class Pie {
 
     public:
         Pie();
-        void draw();
+        void draw(ViewMode mode);
+        void show(ViewMode mode);
 };
 
 class Watt {
@@ -72,7 +76,7 @@ class Watt {
 
     public:
         Watt();
-        void draw();
+        void draw(ViewMode mode);
 
         void incrementarAngulo();
         void decrementarAngulo();

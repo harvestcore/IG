@@ -22,11 +22,14 @@ $(OBJ)/manageView.o: $(SRC)/manageView.cc $(INC)/manageView.h
 $(OBJ)/models.o: $(SRC)/models.cc $(INC)/models.h
 	$(CXX) -c -std=c++14 -o $(OBJ)/models.o -g -I$(INC) $(SRC)/models.cc
 
+$(OBJ)/objects.o: $(SRC)/objects.cc $(INC)/objects.h
+	$(CXX) -c -std=c++14 -o $(OBJ)/objects.o -g -I$(INC) $(SRC)/objects.cc
+
 $(OBJ)/wattRegulator.o: $(SRC)/wattRegulator.cc $(INC)/wattRegulator.h
 	$(CXX) -c -std=c++14 -o $(OBJ)/wattRegulator.o -g -I$(INC) $(SRC)/wattRegulator.cc
 
-$(LIB)/libformas.a: $(OBJ)/3DObject.o $(OBJ)/file_ply_stl.o $(OBJ)/manageView.o $(OBJ)/models.o $(OBJ)/wattRegulator.o
-	ar rsv $(LIB)/libformas.a $(OBJ)/3DObject.o $(OBJ)/file_ply_stl.o $(OBJ)/manageView.o $(OBJ)/models.o $(OBJ)/wattRegulator.o
+$(LIB)/libformas.a: $(OBJ)/3DObject.o $(OBJ)/file_ply_stl.o $(OBJ)/manageView.o $(OBJ)/models.o $(OBJ)/wattRegulator.o $(OBJ)/objects.o
+	ar rsv $(LIB)/libformas.a $(OBJ)/3DObject.o $(OBJ)/file_ply_stl.o $(OBJ)/manageView.o $(OBJ)/models.o $(OBJ)/wattRegulator.o $(OBJ)/objects.o
 
 $(OBJ)/main.o: $(SRC)/scene.cc
 	$(CXX) -c -std=c++14 -o $(OBJ)/main.o -g -I$(INC) $(SRC)/scene.cc

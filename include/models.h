@@ -174,35 +174,4 @@ class Sphere: public Revolution3DObject {
         Sphere();
 };
 
-
-/**
-*   Clase que encapsula todas las anteriores para así solo tener un objeto
-*   Models en el main.
-*/
-class Models {
-    private:
-        bool areModelsGenerated = false;
-    public:
-        Cube v_Cube;
-        Tetrahedron v_Tetrahedron;
-        Ply_Static v_Ply_Static;
-        Ply_Revolution v_Ply_Revolution;
-        Cylinder v_Cylinder;
-        Glass v_Glass;
-        Glass_Inverted v_Glass_Inverted;
-        Cone v_Cone;
-        Tube v_Tube;
-
-        Models();
-        void setModelsAreGenerated(bool mod);
-        bool getModelsAreGenerated();
-        void initializeModels();
-        void addStep(TypeObject object);
-        void reduceStep(TypeObject object);
-        void addStepALL();
-        void reduceStepALL();
-        void regenerate(TypeObject object);
-        void setAnguloInicioAnguloFinal(double inicio, double final);
-};
-
 #endif
