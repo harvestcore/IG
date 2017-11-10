@@ -28,8 +28,11 @@ $(OBJ)/objects.o: $(SRC)/objects.cc $(INC)/objects.h
 $(OBJ)/wattRegulator.o: $(SRC)/wattRegulator.cc $(INC)/wattRegulator.h
 	$(CXX) -c -std=c++14 -o $(OBJ)/wattRegulator.o -g -I$(INC) $(SRC)/wattRegulator.cc
 
-$(LIB)/libformas.a: $(OBJ)/3DObject.o $(OBJ)/file_ply_stl.o $(OBJ)/manageView.o $(OBJ)/models.o $(OBJ)/wattRegulator.o $(OBJ)/objects.o
-	ar rsv $(LIB)/libformas.a $(OBJ)/3DObject.o $(OBJ)/file_ply_stl.o $(OBJ)/manageView.o $(OBJ)/models.o $(OBJ)/wattRegulator.o $(OBJ)/objects.o
+$(OBJ)/button.o: $(SRC)/button.cc $(INC)/button.h
+	$(CXX) -c -std=c++14 -o $(OBJ)/button.o -g -I$(INC) $(SRC)/button.cc
+
+$(LIB)/libformas.a: $(OBJ)/3DObject.o $(OBJ)/file_ply_stl.o $(OBJ)/manageView.o $(OBJ)/models.o $(OBJ)/wattRegulator.o $(OBJ)/objects.o $(OBJ)/button.o
+	ar rsv $(LIB)/libformas.a $(OBJ)/3DObject.o $(OBJ)/file_ply_stl.o $(OBJ)/manageView.o $(OBJ)/models.o $(OBJ)/wattRegulator.o $(OBJ)/objects.o $(OBJ)/button.o
 
 $(OBJ)/main.o: $(SRC)/scene.cc
 	$(CXX) -c -std=c++14 -o $(OBJ)/main.o -g -I$(INC) $(SRC)/scene.cc

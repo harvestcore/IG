@@ -304,13 +304,11 @@ void Watt::decrementarVelocidad() {
 void Watt::control() {
     if (velocidad < 1) velocidad = 1;
     if (velocidad > 25) velocidad = 25;
-
-    //cout << "vel: " << velocidad << endl;
 }
 
 void Watt::giro() {
     control();
-    angulo_giro += 0.6 * velocidad;
+    angulo_giro += fmod((0.6 * velocidad),360);
 }
 
 void Watt::toggleSpinning() {
@@ -319,4 +317,8 @@ void Watt::toggleSpinning() {
 
 bool Watt::isSpinning() {
     return girando;
+}
+
+double Watt::getSpeed() {
+    return velocidad;
 }

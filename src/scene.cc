@@ -18,6 +18,7 @@
 #include "types.h"
 #include "3DObject.h"
 #include "wattRegulator.h"
+#include "button.h"
 
 using namespace std;
 
@@ -31,6 +32,8 @@ bool showFPS = false;
 double tiempo;
 int frames = 0, fps = 0;
 double base_time = 0;
+
+int window_1, window_2;
 
 
 _vertex3f aux1 = {0.5,0,0};
@@ -63,16 +66,36 @@ GLfloat Observer_angle_y;
 GLfloat Window_width,Window_height,Front_plane,Back_plane;
 
 // variables que determninan la posicion y tamaño de la ventana X
-int UI_window_pos_x=50,UI_window_pos_y=50,UI_window_width=500,UI_window_height=500;
+int UI_window_pos_x=50,UI_window_pos_y=50,UI_window_width=900,UI_window_height=900;
 
 //**************************************************************************
-//
+//	BOTONES
 //***************************************************************************
+void test () {
+	cout << "test" << endl;
+}
 
+Button botonaso;
+
+void initButton() {
+	botonaso.setpos(50, 50);
+	botonaso.setsize(40,40);
+	botonaso.setlabel("test");
+	botonaso.setaction(test);
+	botonaso.setactive(false);
+}
+
+void drawButtons() {
+	initButton();
+	botonaso.display();
+}
+
+//**************************************************************************
+//	ClearWindow
+//***************************************************************************
 void clear_window() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 }
-
 
 //**************************************************************************
 // Funcion para definir la transformación de proyeccion
@@ -120,12 +143,46 @@ void draw_axis() {
 	glVertex3f(0,0,AXIS_SIZE);
 	glEnd();
 }
+//**************************************************************************
+// Texto en pantalla
+//***************************************************************************
+string dts(double i){
+	stringstream out;
+	out << i;
+	return out.str();
+}
 
+void printText(int x, int y, string text) {
+    glRasterPos2f(x,y);
+
+    for (int i=0; i<text.size(); i++) {
+        glutBitmapCharacter(GLUT_BITMAP_9_BY_15, text[i]);
+    }
+}
+
+void drawHUD() {
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(0.0, UI_window_width, UI_window_height, 0.0, -1.0, 10.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glClear(GL_DEPTH_BUFFER_BIT);
+    glColor3f(1,0,0);
+
+	printText(50, 50, "FPS: " + dts(fps));
+	if (objeto == WATT) printText(50, 70, "V: " + dts(modelos.v_Watt.getSpeed()));
+
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+
+}
 
 //**************************************************************************
 // Funcion que dibuja los objetos
 //***************************************************************************
-
 void draw_objects() {
 	glPointSize(3);
 	glLineWidth(1);
@@ -154,11 +211,13 @@ void draw_objects() {
 	}
 
 	frames++;
+
+	drawHUD();
 }
 
 
 //**************************************************************************
-//
+// DRAW ESCENAS
 //***************************************************************************
 void draw_scene(void) {
 	clear_window();
@@ -173,8 +232,12 @@ void draw_scene(void) {
 		base_time = tiempo;
 		frames=0;
 	}
+}
 
-	if (showFPS) cout << "FPS: " << fps << endl;
+void draw_scene_button(void) {
+	clear_window();
+	//draw_buttons();
+	glutSwapBuffers();
 }
 
 
@@ -289,6 +352,12 @@ void initialize(void) {
 	glViewport(0,0,UI_window_width,UI_window_height);
 }
 
+void initialize2(void) {
+
+	glClearColor(1,1,1,1);
+
+}
+
 
 //***************************************************************************
 // Programa principal
@@ -320,7 +389,7 @@ int main(int argc, char **argv) {
 
 	// llamada para crear la ventana, indicando el titulo (no se visualiza hasta que se llama
 	// al bucle de eventos)
-	glutCreateWindow("Practica 3. Angel Gomez Martin");
+	window_1 = glutCreateWindow("Practica 3. Angel Gomez Martin");
 
 	// asignación de la funcion llamada "dibujar" al evento de dibujo
 	glutDisplayFunc(draw_scene);
@@ -330,9 +399,15 @@ int main(int argc, char **argv) {
 	glutKeyboardFunc(normal_keys);
 	// asignación de la funcion llamada "tecla_Especial" al evento correspondiente
 	glutSpecialFunc(special_keys);
-
 	// funcion de inicialización
 	initialize();
+
+	glutInitWindowSize(200,900);
+	glutInitWindowPosition(950,50);
+	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
+	window_2 = glutCreateWindow("Buttons");
+	glutDisplayFunc(draw_scene_button);
+	initialize2();
 
 	// inicio del bucle de eventos
 	glutMainLoop();

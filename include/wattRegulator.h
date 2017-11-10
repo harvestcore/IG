@@ -92,6 +92,7 @@ class Watt {
 
         void toggleSpinning();
         bool isSpinning();
+        double getSpeed();
 };
 
 
