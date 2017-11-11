@@ -395,9 +395,26 @@ void toggle_right() {
 	glutSetWindow(window_2);
 }
 
+	////////////////////
+
+void toggle_zoom_in() {
+	Observer_distance*=1.2;
+	glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
+}
+
+void toggle_zoom_out() {
+	Observer_distance/=1.2;
+	glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
+}
+
 Button salir, mesh, lines, solid, chess, masDiv, menosDiv, masVel, menosVel, spin;
 Button cubo, tetraedro, ply_estatico, ply_revolucion, cilindro, vaso, vaso_invertido, cono, tubo, esfera, watt;
 Button flecha_up, flecha_down, flecha_left, flecha_right;
+Button zoom_in, zoom_out;
 
 void init_buttons() {
 	salir.setpos(0.55,-0.95);
@@ -530,29 +547,43 @@ void init_buttons() {
 
 	///////////////
 
-	flecha_up.setpos(-0.1,-0.8);
+	flecha_up.setpos(-0.1,-0.75);
 	flecha_up.setsize(0.2,0.15);
 	flecha_up.setlabel("^");
 	flecha_up.setaction(toggle_up);
 	flecha_up.setactive(true);
 
-	flecha_down.setpos(-0.1,-0.95);
+	flecha_down.setpos(-0.1,-0.90);
 	flecha_down.setsize(0.2,0.15);
 	flecha_down.setlabel("v");
 	flecha_down.setaction(toggle_down);
 	flecha_down.setactive(true);
 
-	flecha_left.setpos(-0.3,-0.875);
+	flecha_left.setpos(-0.3,-0.825);
 	flecha_left.setsize(0.2,0.15);
 	flecha_left.setlabel("<");
 	flecha_left.setaction(toggle_left);
 	flecha_left.setactive(true);
 
-	flecha_right.setpos(0.1,-0.875);
+	flecha_right.setpos(0.1,-0.825);
 	flecha_right.setsize(0.2,0.15);
 	flecha_right.setlabel(">");
 	flecha_right.setaction(toggle_right);
 	flecha_right.setactive(true);
+
+	///////////////
+
+	zoom_in.setpos(0.1,-1);
+	zoom_in.setsize(0.25,0.15);
+	zoom_in.setlabel("++Z");
+	zoom_in.setaction(toggle_left);
+	zoom_in.setactive(true);
+
+	zoom_out.setpos(-0.35,-1);
+	zoom_out.setsize(0.25,0.15);
+	zoom_out.setlabel("--Z");
+	zoom_out.setaction(toggle_right);
+	zoom_out.setactive(true);
 }
 
 void draw_buttons() {
@@ -583,6 +614,9 @@ void draw_buttons() {
 	flecha_down.display();
 	flecha_left.display();
 	flecha_right.display();
+
+	zoom_in.display();
+	zoom_out.display();
 }
 
 void handle_motion(int x, int y) {
@@ -613,6 +647,9 @@ void handle_motion(int x, int y) {
 	flecha_down.handlemotion(x,y);
 	flecha_left.handlemotion(x,y);
 	flecha_right.handlemotion(x,y);
+
+	zoom_in.handlemotion(x,y);
+	zoom_out.handlemotion(x,y);
 }
 
 void handle_mouse(int button, int state, int x, int y) {
@@ -643,6 +680,9 @@ void handle_mouse(int button, int state, int x, int y) {
 	flecha_down.handlemouse(button,state,x,y);
 	flecha_left.handlemouse(button,state,x,y);
 	flecha_right.handlemouse(button,state,x,y);
+
+	zoom_in.handlemouse(button,state,x,y);
+	zoom_out.handlemouse(button,state,x,y);
 }
 
 void draw_scene_button(void) {
@@ -816,6 +856,8 @@ int main(int argc, char **argv) {
 	glutDisplayFunc(draw_scene_button);
 	glutPassiveMotionFunc(handle_motion);
 	glutMouseFunc(handle_mouse);
+	//glutKeyboardFunc(normal_keys);
+	//glutSpecialFunc(special_keys);
 	initialize2();
 
 	if (!botones_no_generados) {
