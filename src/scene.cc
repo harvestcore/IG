@@ -398,14 +398,14 @@ void toggle_right() {
 	////////////////////
 
 void toggle_zoom_in() {
-	Observer_distance*=1.2;
+	Observer_distance/=1.2;
 	glutSetWindow(window_1);
 	draw_scene();
 	glutSetWindow(window_2);
 }
 
 void toggle_zoom_out() {
-	Observer_distance/=1.2;
+	Observer_distance*=1.2;
 	glutSetWindow(window_1);
 	draw_scene();
 	glutSetWindow(window_2);
@@ -576,13 +576,13 @@ void init_buttons() {
 	zoom_in.setpos(0.1,-1);
 	zoom_in.setsize(0.25,0.15);
 	zoom_in.setlabel("++Z");
-	zoom_in.setaction(toggle_left);
+	zoom_in.setaction(toggle_zoom_in);
 	zoom_in.setactive(true);
 
 	zoom_out.setpos(-0.35,-1);
 	zoom_out.setsize(0.25,0.15);
 	zoom_out.setlabel("--Z");
-	zoom_out.setaction(toggle_right);
+	zoom_out.setaction(toggle_zoom_out);
 	zoom_out.setactive(true);
 }
 
