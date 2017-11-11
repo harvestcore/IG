@@ -25,7 +25,7 @@ using namespace std;
 Models modelos;
 vector<ViewMode> modos(4, NULL_);
 TypeObject objeto = _NULL;
-
+bool botones_no_generados = false;
 
 // Contador de FPS
 bool showFPS = false;
@@ -67,28 +67,6 @@ GLfloat Window_width,Window_height,Front_plane,Back_plane;
 
 // variables que determninan la posicion y tamaño de la ventana X
 int UI_window_pos_x=50,UI_window_pos_y=50,UI_window_width=900,UI_window_height=900;
-
-//**************************************************************************
-//	BOTONES
-//***************************************************************************
-void test () {
-	cout << "test" << endl;
-}
-
-Button botonaso;
-
-void initButton() {
-	botonaso.setpos(50, 50);
-	botonaso.setsize(40,40);
-	botonaso.setlabel("test");
-	botonaso.setaction(test);
-	botonaso.setactive(false);
-}
-
-void drawButtons() {
-	initButton();
-	botonaso.display();
-}
 
 //**************************************************************************
 //	ClearWindow
@@ -217,7 +195,7 @@ void draw_objects() {
 
 
 //**************************************************************************
-// DRAW ESCENAS
+// DRAW ESCENA
 //***************************************************************************
 void draw_scene(void) {
 	clear_window();
@@ -234,14 +212,444 @@ void draw_scene(void) {
 	}
 }
 
-void draw_scene_button(void) {
-	clear_window();
-	//draw_buttons();
-	glutSwapBuffers();
+//**************************************************************************
+//	BOTONES
+//***************************************************************************
+void test () {
+	cout << "test" << endl;
 }
 
+void exit_program() {
+	exit(0);
+}
 
+void toggle_mesh() {
+	modos = changeMode(modos, MESH, 0);
+	glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
+}
 
+void toggle_edges() {
+	modos = changeMode(modos, EDGES, 1);
+	glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
+}
+
+void toggle_solid() {
+	modos = changeMode(modos, SOLID, 2);
+	glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
+}
+
+void toggle_chess() {
+	modos = changeMode(modos, CHESS, 3);
+	glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
+}
+
+void toggle_masDiv() {
+	sumar = true;
+	glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
+}
+
+void toggle_menosDiv() {
+	restar = true;
+	glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
+}
+
+void toggle_masVel() {
+	modelos.v_Watt.aumentarVelocidad();
+	glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
+}
+
+void toggle_menosVel() {
+	modelos.v_Watt.decrementarVelocidad();
+	glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
+}
+
+void toggle_spin() {
+	modelos.v_Watt.toggleSpinning();
+	glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
+}
+
+////////////
+
+void toggle_cube() {
+	objeto = changeObject(objeto, CUBE);
+	glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
+}
+
+void toggle_tetrahedron() {
+	objeto = changeObject(objeto, TETRAHEDRON);
+	glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
+}
+
+void toggle_ply_static() {
+	objeto = changeObject(objeto, PLY_STATIC);
+	glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
+}
+
+void toggle_ply_revolution() {
+	objeto = changeObject(objeto, PLY_REVOLUTION);
+	glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
+}
+
+void toggle_cylinder() {
+	objeto = changeObject(objeto, CYLINDER);
+	glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
+}
+
+void toggle_glass() {
+	objeto = changeObject(objeto, GLASS);
+	glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
+}
+
+void toggle_glass_inverted() {
+	objeto = changeObject(objeto, GLASS_INVERTED);
+	glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
+}
+
+void toggle_cone() {
+	objeto = changeObject(objeto, CONE);
+	glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
+}
+
+void toggle_tube() {
+	objeto = changeObject(objeto, TUBE);
+	glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
+}
+
+void toggle_sphere() {
+	objeto = changeObject(objeto, SPHERE);
+	glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
+}
+
+void toggle_watt() {
+	objeto = changeObject(objeto, WATT);
+	glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
+}
+
+	/////////////////
+
+void toggle_up() {
+	Observer_angle_x--;
+	glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
+}
+
+void toggle_down() {
+	Observer_angle_x++;
+	glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
+}
+
+void toggle_left() {
+	Observer_angle_y--;
+	glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
+}
+
+void toggle_right() {
+	Observer_angle_y++;
+	glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
+}
+
+Button salir, mesh, lines, solid, chess, masDiv, menosDiv, masVel, menosVel, spin;
+Button cubo, tetraedro, ply_estatico, ply_revolucion, cilindro, vaso, vaso_invertido, cono, tubo, esfera, watt;
+Button flecha_up, flecha_down, flecha_left, flecha_right;
+
+void init_buttons() {
+	salir.setpos(0.55,-0.95);
+	salir.setsize(0.4,0.2);
+	salir.setlabel("Salir");
+	salir.setaction(exit_program);
+	salir.setactive(true);
+
+	mesh.setpos(-0.3,0.6);
+	mesh.setsize(0.4,0.2);
+	mesh.setlabel("Puntos");
+	mesh.setaction(toggle_mesh);
+	mesh.setactive(true);
+
+	lines.setpos(0.3,0.6);
+	lines.setsize(0.4,0.2);
+	lines.setlabel("Lineas");
+	lines.setaction(toggle_edges);
+	lines.setactive(true);
+
+	solid.setpos(-0.3,0.3);
+	solid.setsize(0.4,0.2);
+	solid.setlabel("Solido");
+	solid.setaction(toggle_solid);
+	solid.setactive(true);
+
+	chess.setpos(0.3,0.3);
+	chess.setsize(0.4,0.2);
+	chess.setlabel("Ajedrez");
+	chess.setaction(toggle_chess);
+	chess.setactive(true);
+
+	masDiv.setpos(-0.3,0);
+	masDiv.setsize(0.4,0.2);
+	masDiv.setlabel("++Div");
+	masDiv.setaction(toggle_masDiv);
+	masDiv.setactive(true);
+
+	menosDiv.setpos(-0.3,-0.3);
+	menosDiv.setsize(0.4,0.2);
+	menosDiv.setlabel("--Div");
+	menosDiv.setaction(toggle_menosDiv);
+	menosDiv.setactive(true);
+
+	masVel.setpos(0.3,0);
+	masVel.setsize(0.4,0.2);
+	masVel.setlabel("++Vel");
+	masVel.setaction(toggle_masVel);
+	masVel.setactive(true);
+
+	menosVel.setpos(0.3,-0.3);
+	menosVel.setsize(0.4,0.2);
+	menosVel.setlabel("--Vel");
+	menosVel.setaction(toggle_menosVel);
+	menosVel.setactive(true);
+
+	spin.setpos(0.3,-0.6);
+	spin.setsize(0.4,0.2);
+	spin.setlabel("Spin");
+	spin.setaction(toggle_spin);
+	spin.setactive(true);
+
+	//////////////////////////////
+
+	cubo.setpos(-0.95,0.80);
+	cubo.setsize(0.4,0.15);
+	cubo.setlabel("Cubo");
+	cubo.setaction(toggle_cube);
+	cubo.setactive(true);
+
+	tetraedro.setpos(-0.95,0.6);
+	tetraedro.setsize(0.4,0.15);
+	tetraedro.setlabel("Tetraedro");
+	tetraedro.setaction(toggle_tetrahedron);
+	tetraedro.setactive(true);
+
+	ply_estatico.setpos(-0.95,0.4);
+	ply_estatico.setsize(0.4,0.15);
+	ply_estatico.setlabel("Ply Est");
+	ply_estatico.setaction(toggle_ply_static);
+	ply_estatico.setactive(true);
+
+	ply_revolucion.setpos(-0.95,0.2);
+	ply_revolucion.setsize(0.4,0.15);
+	ply_revolucion.setlabel("Ply Rev");
+	ply_revolucion.setaction(toggle_ply_revolution);
+	ply_revolucion.setactive(true);
+
+	cilindro.setpos(-0.95,0);
+	cilindro.setsize(0.4,0.15);
+	cilindro.setlabel("Cilindro");
+	cilindro.setaction(toggle_cylinder);
+	cilindro.setactive(true);
+
+	vaso.setpos(-0.95,-0.2);
+	vaso.setsize(0.4,0.15);
+	vaso.setlabel("Vaso");
+	vaso.setaction(toggle_glass);
+	vaso.setactive(true);
+
+	vaso_invertido.setpos(-0.95,-0.4);
+	vaso_invertido.setsize(0.4,0.15);
+	vaso_invertido.setlabel("Vaso Inv");
+	vaso_invertido.setaction(toggle_glass_inverted);
+	vaso_invertido.setactive(true);
+
+	cono.setpos(-0.95,-0.6);
+	cono.setsize(0.4,0.15);
+	cono.setlabel("Cono");
+	cono.setaction(toggle_cone);
+	cono.setactive(true);
+
+	tubo.setpos(-0.95,-0.8);
+	tubo.setsize(0.4,0.15);
+	tubo.setlabel("Tubo");
+	tubo.setaction(toggle_tube);
+	tubo.setactive(true);
+
+	esfera.setpos(-0.95,-1);
+	esfera.setsize(0.4,0.15);
+	esfera.setlabel("Esfera");
+	esfera.setaction(toggle_sphere);
+	esfera.setactive(true);
+
+	watt.setpos(-0.5,-0.6);
+	watt.setsize(0.4,0.15);
+	watt.setlabel("Watt");
+	watt.setaction(toggle_watt);
+	watt.setactive(true);
+
+	///////////////
+
+	flecha_up.setpos(-0.1,-0.8);
+	flecha_up.setsize(0.2,0.15);
+	flecha_up.setlabel("^");
+	flecha_up.setaction(toggle_up);
+	flecha_up.setactive(true);
+
+	flecha_down.setpos(-0.1,-0.95);
+	flecha_down.setsize(0.2,0.15);
+	flecha_down.setlabel("v");
+	flecha_down.setaction(toggle_down);
+	flecha_down.setactive(true);
+
+	flecha_left.setpos(-0.3,-0.875);
+	flecha_left.setsize(0.2,0.15);
+	flecha_left.setlabel("<");
+	flecha_left.setaction(toggle_left);
+	flecha_left.setactive(true);
+
+	flecha_right.setpos(0.1,-0.875);
+	flecha_right.setsize(0.2,0.15);
+	flecha_right.setlabel(">");
+	flecha_right.setaction(toggle_right);
+	flecha_right.setactive(true);
+}
+
+void draw_buttons() {
+	salir.display();
+	mesh.display();
+	lines.display();
+	solid.display();
+	chess.display();
+	masDiv.display();
+	menosDiv.display();
+	masVel.display();
+	menosVel.display();
+	spin.display();
+
+	cubo.display();
+	tetraedro.display();
+	ply_estatico.display();
+	ply_revolucion.display();
+	cilindro.display();
+	vaso.display();
+	vaso_invertido.display();
+	cono.display();
+	tubo.display();
+	esfera.display();
+	watt.display();
+
+	flecha_up.display();
+	flecha_down.display();
+	flecha_left.display();
+	flecha_right.display();
+}
+
+void handle_motion(int x, int y) {
+	salir.handlemotion(x,y);
+	mesh.handlemotion(x,y);
+	lines.handlemotion(x,y);
+	solid.handlemotion(x,y);
+	chess.handlemotion(x,y);
+	masDiv.handlemotion(x,y);
+	menosDiv.handlemotion(x,y);
+	masVel.handlemotion(x,y);
+	menosVel.handlemotion(x,y);
+	spin.handlemotion(x,y);
+
+	cubo.handlemotion(x,y);
+	tetraedro.handlemotion(x,y);
+	ply_estatico.handlemotion(x,y);
+	ply_revolucion.handlemotion(x,y);
+	cilindro.handlemotion(x,y);
+	vaso.handlemotion(x,y);
+	vaso_invertido.handlemotion(x,y);
+	cono.handlemotion(x,y);
+	tubo.handlemotion(x,y);
+	esfera.handlemotion(x,y);
+	watt.handlemotion(x,y);
+
+	flecha_up.handlemotion(x,y);
+	flecha_down.handlemotion(x,y);
+	flecha_left.handlemotion(x,y);
+	flecha_right.handlemotion(x,y);
+}
+
+void handle_mouse(int button, int state, int x, int y) {
+	salir.handlemouse(button,state,x,y);
+	mesh.handlemouse(button,state,x,y);
+	lines.handlemouse(button,state,x,y);
+	solid.handlemouse(button,state,x,y);
+	chess.handlemouse(button,state,x,y);
+	masDiv.handlemouse(button,state,x,y);
+	menosDiv.handlemouse(button,state,x,y);
+	masVel.handlemouse(button,state,x,y);
+	menosVel.handlemouse(button,state,x,y);
+	spin.handlemouse(button,state,x,y);
+
+	cubo.handlemouse(button,state,x,y);
+	tetraedro.handlemouse(button,state,x,y);
+	ply_estatico.handlemouse(button,state,x,y);
+	ply_revolucion.handlemouse(button,state,x,y);
+	cilindro.handlemouse(button,state,x,y);
+	vaso.handlemouse(button,state,x,y);
+	vaso_invertido.handlemouse(button,state,x,y);
+	cono.handlemouse(button,state,x,y);
+	tubo.handlemouse(button,state,x,y);
+	esfera.handlemouse(button,state,x,y);
+	watt.handlemouse(button,state,x,y);
+
+	flecha_up.handlemouse(button,state,x,y);
+	flecha_down.handlemouse(button,state,x,y);
+	flecha_left.handlemouse(button,state,x,y);
+	flecha_right.handlemouse(button,state,x,y);
+}
+
+void draw_scene_button(void) {
+	clear_window();
+	draw_buttons();
+	glutSwapBuffers();
+}
 //***************************************************************************
 // Funcion llamada cuando se produce un cambio en el tamaño de la ventana
 //
@@ -282,7 +690,6 @@ void normal_keys(unsigned char Tecla1,int x,int y) {
 		case 'Z': modelos.v_Watt.decrementarVelocidad(); break;
 
 		case 'A': modelos.v_Watt.toggleSpinning(); break;
-		case 'S': showFPS = !showFPS; break;
 	}
 
 	draw_scene();
@@ -402,12 +809,19 @@ int main(int argc, char **argv) {
 	// funcion de inicialización
 	initialize();
 
-	glutInitWindowSize(200,900);
+	glutInitWindowSize(500,900);
 	glutInitWindowPosition(950,50);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	window_2 = glutCreateWindow("Buttons");
 	glutDisplayFunc(draw_scene_button);
+	glutPassiveMotionFunc(handle_motion);
+	glutMouseFunc(handle_mouse);
 	initialize2();
+
+	if (!botones_no_generados) {
+		init_buttons();
+		botones_no_generados = true;
+	}
 
 	// inicio del bucle de eventos
 	glutMainLoop();
