@@ -6,7 +6,6 @@ BIN = bin
 CXX = g++
 CPPFLAGS = -Wall -g -I$(INC) -c
 LDFLAGS =  -lGLU -lGL -lglut
-TARGET = $(BIN)/main
 
 all: $(BIN)/main
 
@@ -37,9 +36,8 @@ $(LIB)/libformas.a: $(OBJ)/3DObject.o $(OBJ)/file_ply_stl.o $(OBJ)/manageView.o 
 $(OBJ)/main.o: $(SRC)/scene.cc
 	$(CXX) -c -std=c++14 -o $(OBJ)/main.o -g -I$(INC) $(SRC)/scene.cc
 
-$(TARGET): $(OBJ)/main.o $(LIB)/libformas.a
-	$(CXX) -L$(LIB)/ -o $(TARGET) $(OBJ)/main.o -lformas $(LDFLAGS)
-
+$(BIN)/main: $(OBJ)/main.o $(LIB)/libformas.a
+	$(CXX) -L$(LIB)/ -o $(BIN)/main $(OBJ)/main.o -lformas $(LDFLAGS)
 
 #############
 
