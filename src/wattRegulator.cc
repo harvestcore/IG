@@ -22,7 +22,7 @@
 using namespace std;
 
 Laterales::Laterales() {
-    Ply_Static aux("/home/angel/Dropbox/Universidad/Tercero/modif/P2_2/ply/beethoven.ply");
+    Ply_Static aux("/mnt/c/Users/Angel/Dropbox/Universidad/Tercero/modif/P2_2/ply/beethoven.ply");
     beethoven = aux;
 }
 

@@ -27,6 +27,6 @@ void FPScounter::calculateFPS() {
 	}
 }
 
-int FPScounter::getFPS() {
+double FPScounter::getFPS() {
     return fps;
 }

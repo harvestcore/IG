@@ -220,7 +220,7 @@ void Tube::createTube() {
 }
 
 Sphere::Sphere() {
-    Ply_Static aux("/home/angel/Dropbox/Universidad/Tercero/modif/P2_2/ply/sphere.ply");
+    Ply_Static aux("/mnt/c/Users/Angel/Dropbox/Universidad/Tercero/modif/P2_2/ply/sphere.ply");
     points = aux.getVectorPoints();
     triangles = aux.getVectorTriangles();
 }

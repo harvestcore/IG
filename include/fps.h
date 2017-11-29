@@ -12,7 +12,7 @@
 
 class FPScounter {
     private:
-        double elapsed_time;
+        double elapsed_time = 0.0;
         int frames = 0;
         int fps = 0;
         int base_time = 0;
@@ -21,5 +21,5 @@ class FPScounter {
         FPScounter();
         void incrementFrames();
         void calculateFPS();
-        int getFPS();
+        double getFPS();
 };
