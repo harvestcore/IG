@@ -481,3 +481,11 @@ void sceneButtons::handle_mouse(int button, int state, int x, int y) {
 	zoom_in.handlemouse(button,state,x,y);
 	zoom_out.handlemouse(button,state,x,y);
 }
+
+bool sceneButtons::getButtonsGenerated() {
+    return buttons_generated;
+}
+
+void sceneButtons::setButtonsGenerated(bool set) {
+    buttons_generated = set;
+}

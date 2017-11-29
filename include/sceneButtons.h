@@ -58,10 +58,14 @@ class sceneButtons {
         void toggle_menosVel();
         void toggle_spin();
 
+        bool buttons_generated = false;
+
     public:
         sceneButtons();
         void generateButtons();
         void draw_buttons();
         void handle_motion(int x, int y);
         void handle_mouse(int button, int state, int x, int y);
+        bool getButtonsGenerated();
+        void setButtonsGenerated(bool set);
 };

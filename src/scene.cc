@@ -18,7 +18,8 @@
 #include "types.h"
 #include "3DObject.h"
 #include "wattRegulator.h"
-#include "button.h"
+#include "sceneButtons.h"
+#include "fps.h"
 
 using namespace std;
 
@@ -26,6 +27,8 @@ Models modelos;
 vector<ViewMode> modos(4, NULL_);
 TypeObject objeto = _NULL;
 sceneButtons botones;
+FPScounter fps;
+
 
 // Contador de FPS
 bool showFPS = false;
@@ -37,14 +40,6 @@ int window_1, window_2;
 
 bool sumar = false;
 bool restar = false;
-
-bool updown = false;
-bool rotate = false;
-
-bool mover = false;
-bool rotar = false;
-
-
 
 // tamaño de los ejes
 const int AXIS_SIZE=5000;
@@ -96,7 +91,6 @@ void change_observer() {
 //**************************************************************************
 // Funcion que dibuja los ejes utilizando la primitiva grafica de lineas
 //***************************************************************************
-
 void draw_axis() {
 	glBegin(GL_LINES);
 	// eje X, color rojo
@@ -141,7 +135,7 @@ void drawHUD() {
     glClear(GL_DEPTH_BUFFER_BIT);
     glColor3f(1,0,0);
 
-	printText(50, 50, "FPS: " + dts(fps));
+	printText(50, 50, "FPS: " + dts(fps.getFPS()));
 	if (objeto == WATT) printText(50, 70, "V: " + dts(modelos.v_Watt.getSpeed()));
 
     glMatrixMode(GL_PROJECTION);
@@ -174,13 +168,13 @@ void draw_objects() {
 
 	drawModels(modelos, objeto, modos);
 
-	if (modelos.v_Watt.isSpinning())	{
+	if (modelos.v_Watt.isSpinning()){
 		//glutIdleFunc(modelos.v_Watt.giro());
 		modelos.v_Watt.giro();
 		glutPostRedisplay();
 	}
 
-	frames++;
+	fps.incrementFrames();
 
 	drawHUD();
 }
@@ -196,12 +190,7 @@ void draw_scene(void) {
 	draw_objects();
 	glutSwapBuffers();
 
-	tiempo = glutGet(GLUT_ELAPSED_TIME);
-	if ((tiempo - base_time) > 1000.0) {
-		fps=frames*1000.0/(tiempo - base_time);
-		base_time = tiempo;
-		frames=0;
-	}
+	fps.calculateFPS();
 }
 
 //**************************************************************************
@@ -209,7 +198,12 @@ void draw_scene(void) {
 //***************************************************************************
 void draw_scene_button(void) {
 	clear_window();
-	draw_buttons();
+	if (botones.getButtonsGenerated()) {
+		botones.generateButtons();
+		botones.setButtonsGenerated();
+	}
+
+	botones.draw_buttons();
 	glutSwapBuffers();
 }
 //***************************************************************************
@@ -376,8 +370,8 @@ int main(int argc, char **argv) {
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	window_2 = glutCreateWindow("Buttons");
 	glutDisplayFunc(draw_scene_button);
-	glutPassiveMotionFunc(handle_motion);
-	glutMouseFunc(handle_mouse);
+	glutPassiveMotionFunc(botones.handle_motion);
+	glutMouseFunc(botones.handle_mouse);
 	//glutKeyboardFunc(normal_keys);
 	//glutSpecialFunc(special_keys);
 	initialize2();
