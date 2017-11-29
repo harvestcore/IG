@@ -31,10 +31,10 @@ void Models::initializeModels() {
     Tetrahedron aux_tetrahedron(2);
     v_Tetrahedron = aux_tetrahedron;
 
-    Ply_Static aux_ply_static("/home/angel/Dropbox/Universidad/Tercero/P2_2/ply/beethoven.ply");
+    Ply_Static aux_ply_static("/home/angel/Dropbox/Universidad/Tercero/modif/P2_2/ply/beethoven.ply");
     v_Ply_Static = aux_ply_static;
 
-    Ply_Revolution aux_ply_revolution("/home/angel/Dropbox/Universidad/Tercero/P2_2/ply/peon.ply");
+    Ply_Revolution aux_ply_revolution("/home/angel/Dropbox/Universidad/Tercero/modif/P2_2/ply/peon.ply");
     v_Ply_Revolution = aux_ply_revolution;
     v_Ply_Revolution.generateByRevolution('y', false);
 

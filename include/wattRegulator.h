@@ -20,6 +20,7 @@ class Laterales {
     private:
         Cylinder tubo;
         Sphere bola;
+        Ply_Static beethoven;
 
         double angulo_superior = 35;
         double angulo_inferior = 41;

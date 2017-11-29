@@ -44,15 +44,15 @@ $(BIN)/main: $(OBJ)/main.o $(LIB)/libformas.a
 clean:
 	rm -f ./$(OBJ)/*.o
 	rm -f ./$(LIB)/*.a
-	rm -f $(TARGET)
+	rm -f $(BIN)/main
 
 superclean:
 	rm -f *.o
 	rm *~
-	rm -f $(TARGET)
+	rm -f $(BIN)/main
 
 tgz:
 	rm -f *.o
 	rm *~
-	rm -f $(TARGET)
-	tar -zcvf $(TARGET).tgz *
+	rm -f $(BIN)/main
+	tar -zcvf main.tgz *
