@@ -20,6 +20,7 @@
 #include "wattRegulator.h"
 #include "button.h"
 #include "fps.h"
+#include "light.h"
 
 using namespace std;
 
@@ -27,7 +28,7 @@ Models modelos;
 vector<ViewMode> modos(4, NULL_);
 TypeObject objeto = _NULL;
 FPScounter fps;
-
+Light luz;
 
 // Contador de FPS
 bool showFPS = false;
@@ -65,7 +66,10 @@ void clear_window() {
 void change_projection() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-
+    //float alto = glutGet(GLUT_WINDOW_WIDTH);
+    //float ancho = glutGet(GLUT_WINDOW_HEIGHT);
+    //float ratio = ancho/alto;
+    //gluPerspective(60, ratio, 0.01, 100);
 	// formato(x_minimo,x_maximo, y_minimo, y_maximo,Front_plane, plano_traser)
 	//  Front_plane>0  Back_plane>PlanoDelantero)
 	glFrustum(-Window_width,Window_width,-Window_height,Window_height,Front_plane,Back_plane);
@@ -170,8 +174,10 @@ void draw_objects() {
 		glutPostRedisplay();
 	}
 
-	fps.incrementFrames();
 
+    modelos.v_Cylinder.drawFlatSmoothing();
+
+	fps.incrementFrames();
 	drawHUD();
 }
 
@@ -185,6 +191,8 @@ void draw_scene(void) {
 	draw_axis();
 	draw_objects();
 	glutSwapBuffers();
+
+    luz.activate();
 
 	fps.calculateFPS();
 }
@@ -671,10 +679,10 @@ void draw_scene_button(void) {
 // nuevo ancho
 // nuevo alto
 //***************************************************************************
-void change_window_size(int Ancho1,int Alto1) {
+void change_window_size(GLsizei width, GLsizei height) {
 	change_projection();
-	glViewport(0,0,Ancho1,Alto1);
-	glutPostRedisplay();
+	glViewport(0, 0, width,height);
+    glutPostRedisplay();
 }
 
 
@@ -686,7 +694,6 @@ void change_window_size(int Ancho1,int Alto1) {
 // posicion x del raton
 // posicion y del raton
 //***************************************************************************
-
 void normal_keys(unsigned char Tecla1,int x,int y) {
 	switch (toupper(Tecla1)) {
 		case 'Q': exit(0); break;
@@ -752,17 +759,28 @@ void initialize(void) {
 	// se inicalizan la ventana y los planos de corte
 	Window_width=5;
 	Window_height=5;
-	Front_plane=10;
-	Back_plane=1000;
+	Front_plane=5;
+	Back_plane=10000;
 
 	// se inicia la posicion del observador, en el eje z
 	Observer_distance=2*Front_plane;
 	Observer_angle_x=0;
 	Observer_angle_y=0;
 
+    luz.setID(GL_LIGHT0);
+    luz.setDirectional(false);
+    luz.setPosition(_vertex3f(10,-10,-5));
+    luz.setAmbient(_vertex4f(0.5,0.5,0.5,1));
+    luz.setDiffuse(_vertex4f(0.8,0.8,0.8,1));
+    luz.setSpecular(_vertex4f(0.9,0.9,0.9,1));
+    glEnable(GL_LIGHT0);
+
+    modelos.v_Cylinder.calculateNormalTriangles();
+    modelos.v_Cylinder.calculateNormalPoints();
+
 	// se indica cual sera el color para limpiar la ventana	(r,v,a,al)
 	// blanco=(1,1,1,1) rojo=(1,0,0,1), ...
-	glClearColor(1,1,1,1);
+	glClearColor(0,0,0,1);
 
 	// se habilita el z-bufer
 	glEnable(GL_DEPTH_TEST);
@@ -773,9 +791,7 @@ void initialize(void) {
 }
 
 void initialize2(void) {
-
 	glClearColor(1,1,1,1);
-
 }
 
 

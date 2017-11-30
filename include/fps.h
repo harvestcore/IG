@@ -8,6 +8,9 @@
 //
 //####################################################
 
+#ifndef __FPS__H__
+#define	__FPS__H__
+
 #include <GL/glut.h>
 
 class FPScounter {
@@ -23,3 +26,5 @@ class FPScounter {
         void calculateFPS();
         double getFPS();
 };
+
+#endif

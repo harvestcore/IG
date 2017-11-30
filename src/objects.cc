@@ -36,7 +36,7 @@ void Models::initializeModels() {
 
     Ply_Revolution aux_ply_revolution("/mnt/c/Users/Angel/Dropbox/Universidad/Tercero/modif/P2_2/ply/peon.ply");
     v_Ply_Revolution = aux_ply_revolution;
-    v_Ply_Revolution.generateByRevolution('y', false);
+    v_Ply_Revolution.generateByRevolution('y', true);
 
     Cylinder aux_cylinder(4, 6);
     v_Cylinder = aux_cylinder;

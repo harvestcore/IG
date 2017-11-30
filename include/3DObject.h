@@ -88,6 +88,9 @@ class Object3D: public Simple3DObject {
 		*	Almacena los triángulos que forman un objeto 3D.
 		*/
         vector<_vertex3i> triangles;
+        vector<_vertex3f> normalTriangles;
+        vector<_vertex3f> normalPoints;
+        vector<_vertex2f> map;
 
 	public:
 		/**
@@ -152,6 +155,13 @@ class Object3D: public Simple3DObject {
 		*	Dibuja el modelado ajedrez del objeto.
 		*/
         void drawChess();
+
+        void drawFlatSmoothing();
+        void drawGouraudSmoothing();
+
+        void mapping(unsigned int a, unsigned int b);
+        void calculateNormalTriangles();
+        void calculateNormalPoints();
 };
 
 /**
@@ -200,13 +210,6 @@ class Revolution3DObject: public PlyObject {
 
 	public:
 
-		/**
-		*   Funciones para rotar un punto sobre los ejes.
-		*/
-		_vertex3f rotate_X(_vertex3f point, double angle);
-		_vertex3f rotate_Y(_vertex3f point, double angle);
-		_vertex3f rotate_Z(_vertex3f point, double angle);
-
         /**
         *   Constructor de la clase.
         */
@@ -216,6 +219,13 @@ class Revolution3DObject: public PlyObject {
         *   Constructor con parámetros.
         */
         Revolution3DObject(vector<_vertex3f> newProfile, int newSteps);
+
+        /**
+		*   Funciones para rotar un punto sobre los ejes.
+		*/
+		_vertex3f rotate_X(_vertex3f point, double angle);
+		_vertex3f rotate_Y(_vertex3f point, double angle);
+		_vertex3f rotate_Z(_vertex3f point, double angle);
 
         /**
         *   Funciones set y get.
@@ -242,6 +252,11 @@ class Revolution3DObject: public PlyObject {
         *   Revoluciona el perfil tantas veces como steps indique.
         */
         void generateByRevolution(char axis, bool addCovers);
+
+        /**
+        *   Solo eje y.
+        */
+        void generateByRevolutionWithTexture();
 };
 
 #endif

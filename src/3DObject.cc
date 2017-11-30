@@ -122,7 +122,7 @@ void Object3D::drawEdges() {
 
 void Object3D::drawSolid() {
     glColor3f(0,0.5,1);
-    glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+    glPolygonMode(GL_FRONT,GL_FILL);
     glBegin(GL_TRIANGLES);
     for (unsigned int i = 0; i < triangles.size(); ++i) {
         glVertex3fv((GLfloat *) &points[triangles[i]._0]);
@@ -133,7 +133,7 @@ void Object3D::drawSolid() {
 }
 
 void Object3D::drawChess() {
-    glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+    glPolygonMode(GL_FRONT,GL_FILL);
     glBegin(GL_TRIANGLES);
     for (unsigned int i = 0; i < triangles.size(); ++i) {
         switch(i % 2) {
@@ -149,6 +149,127 @@ void Object3D::drawChess() {
         glVertex3fv((GLfloat *) &points[triangles[i]._2]);
     }
     glEnd();
+}
+
+void Object3D::drawFlatSmoothing() {
+    glColor3f(1,1,0.4);
+    glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+    glShadeModel(GL_FLAT);
+
+    glBegin(GL_TRIANGLES);
+    for(unsigned int i=0;i< triangles.size();i++){
+        glNormal3f(normalTriangles[i].x, normalTriangles[i].y, normalTriangles[i].z);
+        if(!map.empty()) {
+            glTexCoord2f(map[triangles[i]._0].s,map[triangles[i]._0].t);
+        }
+        glVertex3f(points[triangles[i]._0].x, points[triangles[i]._0].y, points[triangles[i]._0].z);
+        if(!map.empty()) {
+            glTexCoord2f(map[triangles[i]._1].s,map[triangles[i]._1].t);
+        }
+        glVertex3f(points[triangles[i]._1].x, points[triangles[i]._1].y, points[triangles[i]._1].z);
+        if(!map.empty()) {
+            glTexCoord2f(map[triangles[i]._2].s,map[triangles[i]._2].t);
+        }
+        glVertex3f(points[triangles[i]._2].x, points[triangles[i]._2].y, points[triangles[i]._2].z);
+    }
+    glEnd();
+}
+
+void Object3D::drawGouraudSmoothing() {
+    glColor3f(1,1,0.4);
+    glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+    glShadeModel(GL_SMOOTH);
+
+    glBegin(GL_TRIANGLES);
+    for(unsigned int i=0;i< triangles.size();i++){
+        if(!map.empty()) {
+            glTexCoord2f(map[triangles[i]._0].s,map[triangles[i]._0].t);
+        }
+        glNormal3f(normalPoints[triangles[i]._0].x, normalPoints[triangles[i]._0].y, normalPoints[triangles[i]._0].z);
+        glVertex3f(points[triangles[i]._0].x, points[triangles[i]._0].y, points[triangles[i]._0].z);
+        if(!map.empty()) {
+            glTexCoord2f(map[triangles[i]._1].s,map[triangles[i]._1].t);
+        }
+        glNormal3f(normalPoints[triangles[i]._1].x, normalPoints[triangles[i]._1].y, normalPoints[triangles[i]._1].z);
+        glVertex3f(points[triangles[i]._1].x, points[triangles[i]._1].y, points[triangles[i]._1].z);
+        if(!map.empty()) {
+            glTexCoord2f(map[triangles[i]._2].s,map[triangles[i]._2].t);
+        }
+        glNormal3f(normalPoints[triangles[i]._2].x, normalPoints[triangles[i]._2].y, normalPoints[triangles[i]._2].z);
+        glVertex3f(points[triangles[i]._2].x, points[triangles[i]._2].y, points[triangles[i]._2].z);
+    }
+    glEnd();
+}
+
+void Object3D::mapping(unsigned int a, unsigned int b) {
+    vector<_vertex2f> aux_points(points.size());
+    float var = 1.0 / a;
+    vector<float> dist(b);
+    float suma = 0.0;
+    dist[0] = suma;
+
+    for (unsigned int i = 1; i < b; ++i) {
+        suma += sqrt(pow(points[i].x - points[i - 1].x,2) + pow(points[i].y - points[i - 1].y,2));
+        dist[i] = suma;
+    }
+
+    for (unsigned int i = 0; i < b; ++i) {
+        dist[i] /= suma;
+    }
+
+    for (unsigned int i = 0; i < a + 1; ++i) {
+        for (unsigned int j = 0; j < b; ++j) {
+            aux_points[i * b + j].s = 1 - i * var;
+            aux_points[i * b + j].t = 1 - dist[j];
+        }
+    }
+
+    map.clear();
+    map = aux_points;
+}
+
+void Object3D::calculateNormalTriangles() {
+    normalTriangles.resize(triangles.size());
+
+    for (unsigned long i = 0; i < triangles.size(); ++i) {
+        _vertex3f p = points[triangles[i]._1] - points[triangles[i]._0];
+        _vertex3f q = points[triangles[i]._2] - points[triangles[i]._0];
+        _vertex3f n = p.cross_product(q);
+
+        float m = sqrt(n.x*n.x + n.y*n.y + n.z*n.z);
+        normalTriangles[i] = _vertex3f(n.x/m,n.y/m,n.z/m);
+    }
+}
+
+void Object3D::calculateNormalPoints() {
+    normalPoints.resize(points.size());
+
+    unsigned int v0, v1, v2, cnt;
+
+    for (unsigned int i = 0; i < points.size(); ++i){
+        cnt = 0;
+        normalPoints[i].x=0;
+        normalPoints[i].y=0;
+        normalPoints[i].z=0;
+
+        for (unsigned int j = 0; j < triangles.size() && cnt < 6; ++j){
+            v0 = triangles[j]._0;
+            v1 = triangles[j]._1;
+            v2 = triangles[j]._2;
+
+            if((v0 == i || v1 == i || v2 == i) && !(v0==0 && v1==0 && v2==0)){
+                normalPoints[i].x += normalTriangles[j].x;
+                normalPoints[i].y += normalTriangles[j].y;
+                normalPoints[i].z += normalTriangles[j].z;
+                cnt++;
+            }
+        }
+        normalPoints[i].x /= cnt;
+        normalPoints[i].y /= cnt;
+        normalPoints[i].z /= cnt;
+
+        normalPoints[i].normalize();
+    }
 }
 
 PlyObject::PlyObject() {}
@@ -170,6 +291,33 @@ Revolution3DObject::Revolution3DObject() {
 Revolution3DObject::Revolution3DObject(vector<_vertex3f> newProfile, int newSteps) {
     steps = newSteps;
     profile = newProfile;
+}
+
+_vertex3f Revolution3DObject::rotate_X(_vertex3f point, double angle) {
+    _vertex3f aux;
+    aux.x = point.x;
+    aux.y = cos(angle) * point.y - sin(angle) * point.z;
+    aux.z = sin(angle) * point.y + cos(angle) * point.z;
+
+    return aux;
+}
+
+_vertex3f Revolution3DObject::rotate_Y(_vertex3f point, double angle) {
+    _vertex3f aux;
+    aux.x = cos(angle) * point.x + sin(angle) * point.z;
+    aux.y = point.y;
+    aux.z = -sin(angle) * point.x + cos(angle) * point.z;
+
+    return aux;
+}
+
+_vertex3f Revolution3DObject::rotate_Z(_vertex3f point, double angle) {
+    _vertex3f aux;
+    aux.x = cos(angle) * point.x - sin(angle) * point.y;
+    aux.y = sin(angle) * point.x + cos(angle) * point.y;
+    aux.z = point.z;
+
+    return aux;
 }
 
 void Revolution3DObject::setProfile(vector<_vertex3f> newProfile) {
@@ -536,29 +684,50 @@ void Revolution3DObject::generateByRevolution(char axis, bool addCovers) {
     triangles = auxTriangles;
 }
 
-_vertex3f Revolution3DObject::rotate_X(_vertex3f point, double angle) {
-    _vertex3f aux;
-    aux.x = point.x;
-    aux.y = cos(angle) * point.y - sin(angle) * point.z;
-    aux.z = sin(angle) * point.y + cos(angle) * point.z;
 
-    return aux;
-}
+void Revolution3DObject::generateByRevolutionWithTexture() {
+    float rotationAngle = 2 * PI / steps;
+    unsigned int counter = points.size();
+    unsigned int num_points = counter * (steps + 1);
+    vector<_vertex3f> aux_points(num_points);
 
-_vertex3f Revolution3DObject::rotate_Y(_vertex3f point, double angle) {
-    _vertex3f aux;
-    aux.x = cos(angle) * point.x + sin(angle) * point.z;
-    aux.y = point.y;
-    aux.z = -sin(angle) * point.x + cos(angle) * point.z;
+    for (unsigned int i = 0; i < points.size(); ++i) {
+        aux_points[i] = points[i];
+    }
 
-    return aux;
-}
 
-_vertex3f Revolution3DObject::rotate_Z(_vertex3f point, double angle) {
-    _vertex3f aux;
-    aux.x = cos(angle) * point.x - sin(angle) * point.y;
-    aux.y = sin(angle) * point.x + cos(angle) * point.y;
-    aux.z = point.z;
+    for (unsigned int i = 1; i < steps + 1; ++i) {
+        for (unsigned int j = 0; j < counter; ++j) {
+            aux_points[i * counter + j] = rotate_Y(points[j], rotationAngle);
+        }
+    }
 
-    return aux;
+    points.clear();
+    points = aux_points;
+
+    unsigned int index;
+    unsigned int vi = 0;
+    unsigned int num_triangles = 2 * steps * (counter-1);
+    vector<_vertex3i> aux_triangles(num_triangles);
+
+    for (unsigned int i = 0; i< (counter - 1); ++i) {
+        for (unsigned int j = 0; j < steps; ++j) {
+            index = counter * j + i;
+
+            aux_triangles[vi]._0 = (index + 1) % num_points;
+            aux_triangles[vi]._1 = (index + counter) % num_points;
+            aux_triangles[vi]._2 = index % num_points;
+
+            aux_triangles[vi + 1]._0 = (index + 1) % num_points;
+            aux_triangles[vi + 1]._1 = (index + counter + 1) % num_points;
+            aux_triangles[vi + 1]._2 = (index + counter) % num_points;
+            vi += 2;
+        }
+    }
+
+    triangles.clear();
+    triangles = aux_triangles;
+
+    //***** 3. COORDS. TEXTURA *********************************************
+    mapping(steps , counter);
 }

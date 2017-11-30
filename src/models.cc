@@ -64,10 +64,10 @@ double RevolutionModel::getHeight() const {
 }
 
 void RevolutionModel::Status() {
-    cout << "steps: " << steps << endl;
-    cout << "height: " << height << endl;
-    cout << "topRadius: " << topRadius << endl;
-    cout << "bottomRadius: " << bottomRadius << endl;
+    cout << "Steps: " << steps << endl;
+    cout << "Height: " << height << endl;
+    cout << "TopRadius: " << topRadius << endl;
+    cout << "BottomRadius: " << bottomRadius << endl;
 }
 
 Cube::Cube() {
