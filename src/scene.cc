@@ -22,13 +22,22 @@
 #include "fps.h"
 #include "light.h"
 
+
 using namespace std;
 
 Models modelos;
 vector<ViewMode> modos(4, NULL_);
 TypeObject objeto = _NULL;
 FPScounter fps;
-Light luz;
+
+Light luz, luz1;
+
+Cylinder test(3,5);
+//Tetrahedron test(2);
+bool toggle_luz = false;
+bool toggle_luz1 = false;
+
+PlyObject beto("/mnt/c/Users/Angel/Dropbox/Universidad/Tercero/modif/P2_2/ply/beethoven.ply");
 
 // Contador de FPS
 bool showFPS = false;
@@ -39,7 +48,7 @@ bool sumar = false;
 bool restar = false;
 
 // tamaño de los ejes
-const int AXIS_SIZE=5000;
+const int AXIS_SIZE=10000;
 
 // variables que definen la posicion de la camara en coordenadas polares
 GLfloat Observer_distance;
@@ -175,9 +184,25 @@ void draw_objects() {
 	}
 
 
-    modelos.v_Cylinder.drawFlatSmoothing();
+    if (toggle_luz) {
+        luz.enable();
+    } else {
+        luz.disable();
+    }
 
-	fps.incrementFrames();
+    if (toggle_luz1) {
+        luz1.enable();
+    } else {
+        luz1.disable();
+    }
+
+    //beto.drawFlatSmoothing();
+    beto.drawGouraudSmoothing();
+
+    //test.drawFlatSmoothing();
+    //test.drawGouraudSmoothing();
+
+    fps.incrementFrames();
 	drawHUD();
 }
 
@@ -191,8 +216,6 @@ void draw_scene(void) {
 	draw_axis();
 	draw_objects();
 	glutSwapBuffers();
-
-    luz.activate();
 
 	fps.calculateFPS();
 }
@@ -672,6 +695,7 @@ void draw_scene_button(void) {
 	draw_buttons();
 	glutSwapBuffers();
 }
+
 //***************************************************************************
 // Funcion llamada cuando se produce un cambio en el tamaño de la ventana
 //
@@ -710,6 +734,9 @@ void normal_keys(unsigned char Tecla1,int x,int y) {
 		case 'Z': modelos.v_Watt.decrementarVelocidad(); break;
 
 		case 'A': modelos.v_Watt.toggleSpinning(); break;
+
+        case 'G': toggle_luz = !toggle_luz; break;
+        case 'H': toggle_luz1 = !toggle_luz1; break;
 	}
 
 	draw_scene();
@@ -749,8 +776,6 @@ void special_keys(int Tecla1,int x,int y) {
 	glutPostRedisplay();
 }
 
-
-
 //***************************************************************************
 // Funcion de incializacion
 //***************************************************************************
@@ -769,18 +794,28 @@ void initialize(void) {
 
     luz.setID(GL_LIGHT0);
     luz.setDirectional(false);
-    luz.setPosition(_vertex3f(10,-10,-5));
-    luz.setAmbient(_vertex4f(0.5,0.5,0.5,1));
+    luz.setPosition(_vertex4f(0,0,15,1));
+    luz.setAmbient(_vertex4f(0.2,0.2,0.2,1));
     luz.setDiffuse(_vertex4f(0.8,0.8,0.8,1));
-    luz.setSpecular(_vertex4f(0.9,0.9,0.9,1));
-    glEnable(GL_LIGHT0);
+    luz.setSpecular(_vertex4f(1,1,1,1));
 
-    modelos.v_Cylinder.calculateNormalTriangles();
-    modelos.v_Cylinder.calculateNormalPoints();
+    luz1.setID(GL_LIGHT1);
+    luz1.setDirectional(false);
+    luz1.setPosition(_vertex4f(0,0,-15,1));
+    luz1.setAmbient(_vertex4f(0.5,0.5,0.5,1));
+    luz1.setDiffuse(_vertex4f(0.5,0.5,0.5,1));
+    luz1.setSpecular(_vertex4f(1,1,1,1));
+
+    test.generateByRevolution('y', false);
+    test.calculateNormalTriangles();
+    test.calculateNormalPoints();
+
+    beto.calculateNormalTriangles();
+    beto.calculateNormalPoints();
 
 	// se indica cual sera el color para limpiar la ventana	(r,v,a,al)
 	// blanco=(1,1,1,1) rojo=(1,0,0,1), ...
-	glClearColor(0,0,0,1);
+	glClearColor(1,1,1,1);
 
 	// se habilita el z-bufer
 	glEnable(GL_DEPTH_TEST);

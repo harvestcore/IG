@@ -36,7 +36,7 @@ $(OBJ)/fps.o: $(SRC)/fps.cc $(INC)/fps.h
 $(OBJ)/light.o: $(SRC)/light.cc $(INC)/light.h
 	$(CXX) -c -std=c++14 -o $(OBJ)/light.o -g -I$(INC) $(SRC)/light.cc
 
-$(LIB)/libformas.a: $(OBJ)/3DObject.o $(OBJ)/file_ply_stl.o $(OBJ)/manageView.o $(OBJ)/models.o $(OBJ)/wattRegulator.o $(OBJ)/objects.o $(OBJ)/button.o $(OBJ)/fps.o  $(OBJ)/light.o
+$(LIB)/libformas.a: $(OBJ)/3DObject.o $(OBJ)/file_ply_stl.o $(OBJ)/manageView.o $(OBJ)/models.o $(OBJ)/wattRegulator.o $(OBJ)/objects.o $(OBJ)/button.o $(OBJ)/fps.o $(OBJ)/light.o
 	ar rsv $(LIB)/libformas.a $(OBJ)/3DObject.o $(OBJ)/file_ply_stl.o $(OBJ)/manageView.o $(OBJ)/models.o $(OBJ)/wattRegulator.o $(OBJ)/objects.o $(OBJ)/button.o $(OBJ)/fps.o $(OBJ)/light.o
 
 $(OBJ)/main.o: $(SRC)/scene.cc

@@ -14,6 +14,7 @@
 
 #include <GL/glut.h>
 #include <vector>
+#include <utility>
 #include "vertex.h"
 #include "file_ply_stl.h"
 
@@ -84,9 +85,6 @@ class Simple3DObject {
 */
 class Object3D: public Simple3DObject {
 	protected:
-		/**
-		*	Almacena los triángulos que forman un objeto 3D.
-		*/
         vector<_vertex3i> triangles;
         vector<_vertex3f> normalTriangles;
         vector<_vertex3f> normalPoints;

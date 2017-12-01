@@ -152,9 +152,10 @@ void Object3D::drawChess() {
 }
 
 void Object3D::drawFlatSmoothing() {
-    glColor3f(1,1,0.4);
-    glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+    glColor3f(0.68,1,0.4);
+    glPolygonMode(GL_FRONT, GL_FILL);
     glShadeModel(GL_FLAT);
+    glEnable(GL_LIGHTING);
 
     glBegin(GL_TRIANGLES);
     for(unsigned int i=0;i< triangles.size();i++){
@@ -176,9 +177,10 @@ void Object3D::drawFlatSmoothing() {
 }
 
 void Object3D::drawGouraudSmoothing() {
-    glColor3f(1,1,0.4);
-    glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+    glColor3f(0.68,1,0.4);
+    glPolygonMode(GL_FRONT, GL_FILL);
     glShadeModel(GL_SMOOTH);
+    glEnable(GL_LIGHTING);
 
     glBegin(GL_TRIANGLES);
     for(unsigned int i=0;i< triangles.size();i++){
@@ -200,6 +202,7 @@ void Object3D::drawGouraudSmoothing() {
     }
     glEnd();
 }
+
 
 void Object3D::mapping(unsigned int a, unsigned int b) {
     vector<_vertex2f> aux_points(points.size());
@@ -229,47 +232,52 @@ void Object3D::mapping(unsigned int a, unsigned int b) {
 }
 
 void Object3D::calculateNormalTriangles() {
-    normalTriangles.resize(triangles.size());
+    vector<_vertex3f> v_aux(triangles.size());
 
-    for (unsigned long i = 0; i < triangles.size(); ++i) {
-        _vertex3f p = points[triangles[i]._1] - points[triangles[i]._0];
-        _vertex3f q = points[triangles[i]._2] - points[triangles[i]._0];
-        _vertex3f n = p.cross_product(q);
+    _vertex3f P, Q, N;
 
-        float m = sqrt(n.x*n.x + n.y*n.y + n.z*n.z);
-        normalTriangles[i] = _vertex3f(n.x/m,n.y/m,n.z/m);
+    for(unsigned int i=0; i<v_aux.size(); i++) {
+        P = points[triangles[i]._1] - points[triangles[i]._0];
+
+        Q = points[triangles[i]._2] - points[triangles[i]._0];
+
+        N.x = P.y*Q.z - P.z*Q.y;
+        N.y = P.z*Q.x - P.x*Q.z;
+        N.z = P.x*Q.y - P.y*Q.x;
+
+        N.normalize();
+        v_aux[i] = N;
     }
+    normalTriangles = v_aux;
 }
 
 void Object3D::calculateNormalPoints() {
-    normalPoints.resize(points.size());
+    vector<_vertex3f> v_aux(points.size());
 
-    unsigned int v0, v1, v2, cnt;
+    vector<int> num_triangulos(points.size(),0);
+    unsigned int id0, id1, id2;
 
-    for (unsigned int i = 0; i < points.size(); ++i){
-        cnt = 0;
-        normalPoints[i].x=0;
-        normalPoints[i].y=0;
-        normalPoints[i].z=0;
+    for(unsigned int i=0; i<triangles.size(); i++) {
+        id0 = triangles[i]._0;
+        id1 = triangles[i]._1;
+        id2 = triangles[i]._2;
 
-        for (unsigned int j = 0; j < triangles.size() && cnt < 6; ++j){
-            v0 = triangles[j]._0;
-            v1 = triangles[j]._1;
-            v2 = triangles[j]._2;
+        v_aux[id0] += normalTriangles[i];
+        num_triangulos[id0]++;
 
-            if((v0 == i || v1 == i || v2 == i) && !(v0==0 && v1==0 && v2==0)){
-                normalPoints[i].x += normalTriangles[j].x;
-                normalPoints[i].y += normalTriangles[j].y;
-                normalPoints[i].z += normalTriangles[j].z;
-                cnt++;
-            }
-        }
-        normalPoints[i].x /= cnt;
-        normalPoints[i].y /= cnt;
-        normalPoints[i].z /= cnt;
+        v_aux[id1] += normalTriangles[i];
+        num_triangulos[id1]++;
 
-        normalPoints[i].normalize();
+        v_aux[id2] += normalTriangles[i];
+        num_triangulos[id2]++;
     }
+
+    for(unsigned int i = 0; i < v_aux.size(); ++i) {
+        v_aux[i] /= num_triangulos[i];
+        v_aux[i].normalize();
+    }
+
+    normalPoints = v_aux;
 }
 
 PlyObject::PlyObject() {}
