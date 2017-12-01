@@ -9,12 +9,18 @@
 //
 //####################################################
 
-#ifndef __ARM__H__
-#define	__ARM__H__
+#ifndef __WATT__H__
+#define	__WATT__H__
 
+#include <thread>
+#include <chrono>
+#include <GL/glut.h>
+#include <vector>
+#include <math.h>
 #include "models.h"
 #include "types.h"
 #include "3DObject.h"
+#include "vertex.h"
 
 class Laterales {
     private:

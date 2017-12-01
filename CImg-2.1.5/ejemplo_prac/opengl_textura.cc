@@ -65,7 +65,7 @@ void OnDraw(void){
 
    // eye position -> (0.0, 10, 20)
    // target -> (0,0,0)
-   // define positive Y axis  -> (0.0, 1.0, 0.0)		
+   // define positive Y axis  -> (0.0, 1.0, 0.0)
    gluLookAt(5.0, 10, 20,
 	     0.0, 0, 0.0,
 	     0.0, 1.0, 0.0);
@@ -99,16 +99,15 @@ void prepara_textura (void)
    logo.load("./logo.jpg");
 
    // empaquetamos bien los datos
-   for (long y = 0; y < logo.height(); y ++)
-      for (long x = 0; x < logo.width(); x ++)
-      {
-	 unsigned char *r = logo.data(x, y, 0, 0);
-	 unsigned char *g = logo.data(x, y, 0, 1);
-	 unsigned char *b = logo.data(x, y, 0, 2);
-	 data.push_back(*r);
-	 data.push_back(*g);
-	 data.push_back(*b);
-      }
+    for (long y = 0; y < logo.height(); y ++)
+        for (long x = 0; x < logo.width(); x ++) {
+            unsigned char *r = logo.data(x, y, 0, 0);
+            unsigned char *g = logo.data(x, y, 0, 1);
+            unsigned char *b = logo.data(x, y, 0, 2);
+            data.push_back(*r);
+            data.push_back(*g);
+            data.push_back(*b);
+        }
 
    glGenTextures(1, &textura_id);
    glBindTexture(GL_TEXTURE_2D, textura_id);
@@ -148,4 +147,3 @@ void libera_textura (void)
 {
    glDeleteTextures(1, &textura_id);
 }
-

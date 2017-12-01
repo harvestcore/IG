@@ -15,8 +15,10 @@
 #include <GL/glut.h>
 #include <vector>
 #include <utility>
+#include <math.h>
 #include "vertex.h"
 #include "file_ply_stl.h"
+#include "material.h"
 
 #define PI 3.1415927
 
@@ -89,6 +91,7 @@ class Object3D: public Simple3DObject {
         vector<_vertex3f> normalTriangles;
         vector<_vertex3f> normalPoints;
         vector<_vertex2f> map;
+        Material *material;
 
 	public:
 		/**

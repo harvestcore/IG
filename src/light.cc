@@ -62,7 +62,6 @@ void Light::enable() {
     glLightfv(ID, GL_SPECULAR, (GLfloat *) &specular);
     glLightfv(ID, GL_DIFFUSE, (GLfloat *) &diffuse);
 
-
     glEnable(GL_LIGHTING);
     glEnable(ID);
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);

@@ -8,7 +8,6 @@
 //
 //####################################################
 
-#include <GL/glut.h>
 #include "fps.h"
 
 FPScounter::FPScounter(){

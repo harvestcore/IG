@@ -13,6 +13,7 @@
 #define	__OBJECTS__H__
 
 #include <GL/glut.h>
+#include <vector>
 #include "3DObject.h"
 #include "vertex.h"
 #include "types.h"

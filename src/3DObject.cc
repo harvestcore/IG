@@ -9,11 +9,7 @@
 //
 //####################################################
 
-#include <GL/glut.h>
-#include <vector>
-#include <math.h>
 #include "3DObject.h"
-#include "vertex.h"
 
 using namespace std;
 
@@ -63,6 +59,7 @@ void Simple3DObject::drawMesh() {
 Object3D::Object3D() {
     triangles.clear();
     points.clear();
+    material = null;
 }
 
 Object3D::Object3D(vector<_vertex3i> newTriangles, vector<_vertex3f> newMesh) {
@@ -122,7 +119,7 @@ void Object3D::drawEdges() {
 
 void Object3D::drawSolid() {
     glColor3f(0,0.5,1);
-    glPolygonMode(GL_FRONT,GL_FILL);
+    glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
     glBegin(GL_TRIANGLES);
     for (unsigned int i = 0; i < triangles.size(); ++i) {
         glVertex3fv((GLfloat *) &points[triangles[i]._0]);
@@ -133,7 +130,7 @@ void Object3D::drawSolid() {
 }
 
 void Object3D::drawChess() {
-    glPolygonMode(GL_FRONT,GL_FILL);
+    glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
     glBegin(GL_TRIANGLES);
     for (unsigned int i = 0; i < triangles.size(); ++i) {
         switch(i % 2) {

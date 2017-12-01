@@ -183,7 +183,6 @@ void draw_objects() {
 		glutPostRedisplay();
 	}
 
-
     if (toggle_luz) {
         luz.enable();
     } else {
@@ -193,11 +192,11 @@ void draw_objects() {
     if (toggle_luz1) {
         luz1.enable();
     } else {
-        luz1.disable();
+        luz1.enable();
     }
 
-    //beto.drawFlatSmoothing();
-    beto.drawGouraudSmoothing();
+    beto.drawFlatSmoothing();
+    //beto.drawGouraudSmoothing();
 
     //test.drawFlatSmoothing();
     //test.drawGouraudSmoothing();
@@ -801,9 +800,9 @@ void initialize(void) {
 
     luz1.setID(GL_LIGHT1);
     luz1.setDirectional(false);
-    luz1.setPosition(_vertex4f(0,0,-15,1));
-    luz1.setAmbient(_vertex4f(0.5,0.5,0.5,1));
-    luz1.setDiffuse(_vertex4f(0.5,0.5,0.5,1));
+    luz1.setPosition(_vertex4f(1,1,1,0));
+    luz1.setAmbient(_vertex4f(0.2,0.2,0.2,1));
+    luz1.setDiffuse(_vertex4f(0.8,0.8,0.8,1));
     luz1.setSpecular(_vertex4f(1,1,1,1));
 
     test.generateByRevolution('y', false);

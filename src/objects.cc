@@ -9,9 +9,7 @@
 //
 //####################################################
 
-#include <vector>
 #include "objects.h"
-#include "vertex.h"
 
 Models::Models() {
 }

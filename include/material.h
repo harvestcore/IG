@@ -5,38 +5,32 @@
 //  3º A - Informática Gráfica 2017-18
 //  GII - ETSIIT
 //
-//  file: light.h
+//  file: material.cc
 //
 //####################################################
 
-#ifndef __LIGHT__H__
-#define	__LIGHT__H__
+#ifndef __MATERIAL__H__
+#define	__MATERIAL__H__
 
 #include <GL/glut.h>
 #include "vertex.h"
+#include "texture.h"
 
-class Light {
+class Material {
     private:
-        GLenum ID;
-
-        _vertex4f position;
         _vertex4f ambient;
         _vertex4f specular;
         _vertex4f diffuse;
-
-        GLfloat alfa, beta;
-
-        bool directional;
+        GLfloat brightness;
+        Texture *texture;
 
     public:
-        Light();
-        void setID(GLenum ID);
-        void setPosition(_vertex4f position);
+        Material();
         void setAmbient(_vertex4f ambient);
         void setSpecular(_vertex4f specular);
         void setDiffuse(_vertex4f diffuse);
-        void setDirection(GLfloat alfa, GLfloat beta);
-        void setDirectional(bool dir);
+        void setBrightness(GLfloat brightness);
+        bool gotTexture();
         void enable();
         void disable();
 };

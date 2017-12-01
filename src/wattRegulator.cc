@@ -9,15 +9,7 @@
 //
 //####################################################
 
-#include <GL/glut.h>
-#include <vector>
-#include <math.h>
-#include "3DObject.h"
-#include "vertex.h"
-#include "models.h"
 #include "wattRegulator.h"
-#include <thread>
-#include <chrono>
 
 using namespace std;
 
