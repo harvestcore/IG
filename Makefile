@@ -5,7 +5,7 @@ SRC = src
 BIN = bin
 CXX = g++
 CPPFLAGS = -Wall -g -I$(INC) -c
-LDFLAGS =  -lGLU -lGL -lglut
+LDFLAGS =  -lGLU -lGL -lglut -L/lib64 -lpthread
 
 all: $(BIN)/main
 
@@ -34,16 +34,25 @@ $(OBJ)/fps.o: $(SRC)/fps.cc $(INC)/fps.h
 	$(CXX) -c -std=c++14 -o $(OBJ)/fps.o -g -I$(INC) $(SRC)/fps.cc
 
 $(OBJ)/light.o: $(SRC)/light.cc $(INC)/light.h
-	$(CXX) -c -std=c++14 -o $(OBJ)/light.o -g -I$(INC) $(SRC)/light.cc
+	$(CXX) -c -std=c++14 -o $(OBJ)/light.o -g -I$(INC) -lX11 $(SRC)/light.cc
 
-$(LIB)/libformas.a: $(OBJ)/3DObject.o $(OBJ)/file_ply_stl.o $(OBJ)/manageView.o $(OBJ)/models.o $(OBJ)/wattRegulator.o $(OBJ)/objects.o $(OBJ)/button.o $(OBJ)/fps.o $(OBJ)/light.o
-	ar rsv $(LIB)/libformas.a $(OBJ)/3DObject.o $(OBJ)/file_ply_stl.o $(OBJ)/manageView.o $(OBJ)/models.o $(OBJ)/wattRegulator.o $(OBJ)/objects.o $(OBJ)/button.o $(OBJ)/fps.o $(OBJ)/light.o
+$(OBJ)/material.o: $(SRC)/material.cc $(INC)/material.h
+	$(CXX) -c -std=c++14 -o $(OBJ)/material.o -g -I$(INC) -lX11 $(SRC)/material.cc
+
+$(OBJ)/texture.o: $(SRC)/texture.cc $(INC)/texture.h
+	$(CXX) -c -std=c++14 -o $(OBJ)/texture.o -g -I$(INC) -lX11 $(SRC)/texture.cc
+
+$(OBJ)/plank.o: $(SRC)/plank.cc $(INC)/plank.h
+	$(CXX) -c -std=c++14 -o $(OBJ)/plank.o -g -I$(INC) $(SRC)/plank.cc
+
+$(LIB)/libformas.a: $(OBJ)/3DObject.o $(OBJ)/file_ply_stl.o $(OBJ)/manageView.o $(OBJ)/models.o $(OBJ)/wattRegulator.o $(OBJ)/objects.o $(OBJ)/button.o $(OBJ)/fps.o $(OBJ)/light.o $(OBJ)/material.o $(OBJ)/texture.o $(OBJ)/plank.o
+	ar rsv $(LIB)/libformas.a $(OBJ)/3DObject.o $(OBJ)/file_ply_stl.o $(OBJ)/manageView.o $(OBJ)/models.o $(OBJ)/wattRegulator.o $(OBJ)/objects.o $(OBJ)/button.o $(OBJ)/fps.o $(OBJ)/light.o $(OBJ)/material.o $(OBJ)/texture.o $(OBJ)/plank.o
 
 $(OBJ)/main.o: $(SRC)/scene.cc
 	$(CXX) -c -std=c++14 -o $(OBJ)/main.o -g -I$(INC) $(SRC)/scene.cc
 
 $(BIN)/main: $(OBJ)/main.o $(LIB)/libformas.a
-	$(CXX) -L$(LIB)/ -o $(BIN)/main $(OBJ)/main.o -lformas $(LDFLAGS)
+	$(CXX) -L$(LIB)/ -o $(BIN)/main $(OBJ)/main.o -lformas -lX11 $(LDFLAGS)
 
 #############
 

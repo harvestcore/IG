@@ -19,6 +19,7 @@
 #include "vertex.h"
 #include "file_ply_stl.h"
 #include "material.h"
+#include "types.h"
 
 #define PI 3.1415927
 
@@ -91,9 +92,10 @@ class Object3D: public Simple3DObject {
         vector<_vertex3f> normalTriangles;
         vector<_vertex3f> normalPoints;
         vector<_vertex2f> map;
-        Material *material;
 
 	public:
+        Material *material;
+
 		/**
 		*	Constructor por defecto de la clase. Hace un clear del vector de triángulos.
 		*/
@@ -163,6 +165,10 @@ class Object3D: public Simple3DObject {
         void mapping(unsigned int a, unsigned int b);
         void calculateNormalTriangles();
         void calculateNormalPoints();
+        void initMaterial();
+        bool gotMaterial();
+        void changeMaterial(Materials mat);
+
 };
 
 /**
@@ -258,6 +264,25 @@ class Revolution3DObject: public PlyObject {
         *   Solo eje y.
         */
         void generateByRevolutionWithTexture();
+
+        void regenerate();
+};
+
+class ALLFIGURE: public Revolution3DObject {
+    private:
+    public:
+        ALLFIGURE();
+        void createCube();
+        void createTetrahedron();
+        void createPly_Static(const string &filename);
+        void createPly_Revolution(const string &filename);
+        void createCylinder();
+        void createGlass();
+        void createGlass_Inverted();
+        void createCone();
+        void createTube();
+        void createSphere();
+
 };
 
 #endif

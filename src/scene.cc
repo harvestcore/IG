@@ -21,27 +21,37 @@
 #include "button.h"
 #include "fps.h"
 #include "light.h"
-
+#include "plank.h"
 
 using namespace std;
 
 Models modelos;
-vector<ViewMode> modos(4, NULL_);
+vector<ViewMode> modos = {NULL_,NULL_,NULL_,NULL_,NULL_,NULL_,NULL_};
 TypeObject objeto = _NULL;
-FPScounter fps;
 
-Light luz, luz1;
+vector<Materials> mat = {EMERALD,JADE,OBSIDIAN,PEARL,RUBY,TURQUOISE,BRASS,BRONCE,CHROME,COPPER,GOLD,SILVER,BLACK_PLASTIC,CYAN_PLASTIC,GREEN_PLASTIC,RED_PLASTIC,WHITE_PLASTIC,YELLOW_PLASTIC};
+int mat_index = 0;
 
-Cylinder test(3,5);
-//Tetrahedron test(2);
-bool toggle_luz = false;
-bool toggle_luz1 = false;
+Texture foto("/mnt/c/Users/Angel/Dropbox/Universidad/Tercero/modif/P2_2/texturas/xd.jpg");
+Plank tablero(25,25,25);
+bool mostrarTablero = false;
 
-PlyObject beto("/mnt/c/Users/Angel/Dropbox/Universidad/Tercero/modif/P2_2/ply/beethoven.ply");
+ALLFIGURE cubo_, tetraedro_, beethoven_, peon_, cilindro_, vaso_, vaso2_, cono_, tubo_, esfera_;
+bool drawflat = false;
+bool drawsmooth = false;
+
+Light luz, luz_inf;
+bool luz_ = false;
+bool luz1_ = false;
+float alfa = 1, beta = 1;
+
+Plank p(30.0, 30.0, 2.0);
 
 // Contador de FPS
+FPScounter fps;
 bool showFPS = false;
 
+// Ventanas
 int window_1, window_2;
 
 bool sumar = false;
@@ -60,6 +70,130 @@ GLfloat Window_width,Window_height,Front_plane,Back_plane;
 
 // variables que determninan la posicion y tamaño de la ventana X
 int UI_window_pos_x=50,UI_window_pos_y=50,UI_window_width=900,UI_window_height=900;
+
+//**************************************************************************
+//	INICIALIZAR LUCES
+//***************************************************************************
+void initialize_ligths() {
+    luz.setID(GL_LIGHT0);
+    luz.setDirectional(true);
+    luz.setAlpha(2.5);
+    luz.setBeta(2.5);
+    luz.setPosition(_vertex4f(0,0,10,1));
+    luz.setAmbient(_vertex4f(0.2,0.2,0.2,1));
+    luz.setDiffuse(_vertex4f(0.8,0.8,0.8,1));
+    luz.setSpecular(_vertex4f(1,1,1,1));
+
+    luz_inf.setID(GL_LIGHT1);
+    luz_inf.setDirectional(false);
+    luz_inf.setPosition(_vertex4f(0,20,0,0));
+    luz_inf.setAmbient(_vertex4f(0.2,0.2,0.2,1));
+    luz_inf.setDiffuse(_vertex4f(0.8,0.8,0.8,1));
+    luz_inf.setSpecular(_vertex4f(1,1,1,1));
+}
+
+//**************************************************************************
+//	INICIALIZAR OBJETOS
+//***************************************************************************
+void initialize_objects() {
+
+    cubo_.createCube();
+    cubo_.calculateNormalTriangles();
+    cubo_.calculateNormalPoints();
+    cubo_.changeMaterial(EMERALD);
+
+    tetraedro_.createTetrahedron();
+    tetraedro_.calculateNormalTriangles();
+    tetraedro_.calculateNormalPoints();
+    tetraedro_.changeMaterial(EMERALD);
+
+    beethoven_.readPly("/mnt/c/Users/Angel/Dropbox/Universidad/Tercero/modif/P2_2/ply/beethoven.ply");
+    beethoven_.calculateNormalTriangles();
+    beethoven_.calculateNormalPoints();
+    beethoven_.changeMaterial(EMERALD);
+
+    peon_.readPly("/mnt/c/Users/Angel/Dropbox/Universidad/Tercero/modif/P2_2/ply/peon.ply");
+    peon_.setProfile(peon_.getVectorPoints());
+    peon_.generateByRevolution('y', true);
+    peon_.calculateNormalTriangles();
+    peon_.calculateNormalPoints();
+    peon_.changeMaterial(EMERALD);
+
+    cilindro_.createCylinder();
+    cilindro_.generateByRevolution('y', false);
+    cilindro_.calculateNormalTriangles();
+    cilindro_.calculateNormalPoints();
+    cilindro_.changeMaterial(EMERALD);
+
+    vaso_.createGlass();
+    vaso_.generateByRevolution('y', false);
+    vaso_.calculateNormalTriangles();
+    vaso_.calculateNormalPoints();
+    vaso_.changeMaterial(EMERALD);
+
+    vaso2_.createGlass_Inverted();
+    vaso2_.generateByRevolution('y', false);
+    vaso2_.calculateNormalTriangles();
+    vaso2_.calculateNormalPoints();
+    vaso2_.changeMaterial(EMERALD);
+
+    cono_.createCone();
+    cono_.generateByRevolution('y', false);
+    cono_.calculateNormalTriangles();
+    cono_.calculateNormalPoints();
+    cono_.changeMaterial(EMERALD);
+
+    esfera_.createSphere();
+    esfera_.calculateNormalTriangles();
+    esfera_.calculateNormalPoints();
+    esfera_.changeMaterial(EMERALD);
+
+
+/*
+    modelos.initializeModels();
+    modelos.setModelsAreGenerated(true);
+    modelos.v_Ply_Static.calculateNormalTriangles();
+    modelos.v_Ply_Static.calculateNormalPoints();
+    modelos.v_Ply_Static.changeMaterial(RUBY);
+
+    modelos.v_Sphere.calculateNormalTriangles();
+    modelos.v_Sphere.calculateNormalPoints();
+    modelos.v_Sphere.changeMaterial(RUBY);
+
+    modelos.v_Cube.calculateNormalTriangles();
+    modelos.v_Cube.calculateNormalPoints();
+    modelos.v_Cube.changeMaterial(RUBY);
+
+    modelos.v_Tetrahedron.calculateNormalTriangles();
+    modelos.v_Tetrahedron.calculateNormalPoints();
+    modelos.v_Tetrahedron.changeMaterial(RUBY);
+
+    modelos.v_Ply_Revolution.calculateNormalTriangles();
+    modelos.v_Ply_Revolution.calculateNormalPoints();
+    modelos.v_Ply_Revolution.changeMaterial(RUBY);
+
+    modelos.v_Cylinder.calculateNormalTriangles();
+    modelos.v_Cylinder.calculateNormalPoints();
+    modelos.v_Cylinder.changeMaterial(RUBY);
+
+    modelos.v_Glass.calculateNormalTriangles();
+    modelos.v_Glass.calculateNormalPoints();
+    modelos.v_Glass.changeMaterial(RUBY);
+
+    modelos.v_Glass_Inverted.calculateNormalTriangles();
+    modelos.v_Glass_Inverted.calculateNormalPoints();
+    modelos.v_Glass_Inverted.changeMaterial(RUBY);
+
+    modelos.v_Cone.calculateNormalTriangles();
+    modelos.v_Cone.calculateNormalPoints();
+    modelos.v_Cone.changeMaterial(RUBY);
+
+    modelos.v_Tube.calculateNormalTriangles();
+    modelos.v_Tube.calculateNormalPoints();
+    modelos.v_Tube.changeMaterial(RUBY);
+*/
+}
+
 
 //**************************************************************************
 //	ClearWindow
@@ -119,6 +253,61 @@ void draw_axis() {
 //**************************************************************************
 // Texto en pantalla
 //***************************************************************************
+string objectToString(TypeObject obj) {
+    switch (obj) {
+        case CUBE:
+        return "Cubo";
+        case TETRAHEDRON:
+        return "Tetraedro";
+        case PLY_STATIC:
+        return "Beethoven";
+        case PLY_REVOLUTION:
+        return "Peon";
+        case CYLINDER:
+        return "Cilindro";
+        case GLASS:
+        return "Vaso";
+        case GLASS_INVERTED:
+        return "Vaso Inv";
+        case CONE:
+        return "Cono";
+        case TUBE:
+        return "Tubo";
+        case SPHERE:
+        return "Esfera";
+        case WATT:
+        return "Watt";
+        case _NULL:
+        return "Off";
+    }
+}
+
+string modoToString(ViewMode mode) {
+    switch (mode) {
+        case MESH:
+        return "Points";
+        case EDGES:
+        return "Edges";
+        case SOLID:
+        return "Solid";
+        case CHESS:
+        return "Chess";
+        case FLAT:
+        return "Flat";
+        case SMOOTH:
+        return "Gouraud";
+        case NULL_:
+        return "Off";
+    }
+}
+
+string booltostring(bool bts) {
+    if (bts)
+        return "On";
+    else
+        return "Off";
+}
+
 string dts(double i){
 	stringstream out;
 	out << i;
@@ -144,8 +333,16 @@ void drawHUD() {
     glClear(GL_DEPTH_BUFFER_BIT);
     glColor3f(1,0,0);
 
-	printText(50, 50, "FPS: " + dts(fps.getFPS()));
-	if (objeto == WATT) printText(50, 70, "V: " + dts(modelos.v_Watt.getSpeed()));
+    string data;
+
+	if (objeto == WATT) printText(30, 30, "V: " + dts(modelos.v_Watt.getSpeed()));
+    printText(30, 50, "FPS: " + dts(fps.getFPS()));
+    printText(30, 70, "Objeto: " + objectToString(objeto));
+    printText(30, 90, "Flat: " + booltostring(drawflat));
+    printText(30, 110, "Smooth: " + booltostring(drawsmooth));
+    printText(30, 130, "Luz: " + booltostring(luz_));
+    printText(30, 150, "Luz inf: " + booltostring(luz1_));
+    printText(30, 170, "Spin: " + booltostring(modelos.v_Watt.isSpinning()));
 
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
@@ -160,10 +357,10 @@ void draw_objects() {
 	glPointSize(3);
 	glLineWidth(1);
 
-	if (!modelos.getModelsAreGenerated()) {
-		modelos.initializeModels();
-		modelos.setModelsAreGenerated(true);
-	}
+    if (!modelos.getModelsAreGenerated()) {
+        modelos.initializeModels();
+        modelos.setModelsAreGenerated(true);
+    }
 
 	if (sumar) {
 		modelos.addStep(objeto);
@@ -175,31 +372,129 @@ void draw_objects() {
 		restar = false;
 	}
 
-	drawModels(modelos, objeto, modos);
-
 	if (modelos.v_Watt.isSpinning()){
-		//glutIdleFunc(modelos.v_Watt.giro());
 		modelos.v_Watt.giro();
 		glutPostRedisplay();
 	}
 
-    if (toggle_luz) {
+    if (luz_) {
         luz.enable();
     } else {
         luz.disable();
     }
 
-    if (toggle_luz1) {
-        luz1.enable();
+    if (luz1_) {
+        luz_inf.enable();
     } else {
-        luz1.enable();
+        luz_inf.disable();
     }
 
-    beto.drawFlatSmoothing();
-    //beto.drawGouraudSmoothing();
+    drawModels(modelos, objeto, modos);
 
-    //test.drawFlatSmoothing();
-    //test.drawGouraudSmoothing();
+    if (mostrarTablero) {
+        tablero.generatePlank();
+        foto.drawTexture(tablero.getCoordenadas());
+    }
+
+    if (drawflat) {
+        switch (objeto) {
+            case CUBE:
+                cubo_.drawFlatSmoothing();
+                break;
+
+            case TETRAHEDRON:
+                tetraedro_.drawFlatSmoothing();
+                break;
+
+            case PLY_STATIC:
+                beethoven_.drawFlatSmoothing();
+                break;
+
+            case PLY_REVOLUTION:
+                peon_.drawFlatSmoothing();
+                break;
+
+            case CYLINDER:
+                cilindro_.drawFlatSmoothing();
+                break;
+
+            case GLASS:
+                vaso_.drawFlatSmoothing();
+                break;
+
+            case GLASS_INVERTED:
+                vaso2_.drawFlatSmoothing();
+                break;
+
+            case CONE:
+                cono_.drawFlatSmoothing();
+                break;
+
+            case TUBE:
+                tubo_.drawFlatSmoothing();
+                break;
+
+            case SPHERE:
+                glMatrixMode(GL_MODELVIEW);
+                glPushMatrix();
+                glScalef(0.01,0.01,0.01);
+                esfera_.drawFlatSmoothing();
+                glPopMatrix();
+                break;
+        }
+    }
+
+    if (drawsmooth) {
+        switch (objeto) {
+            case CUBE:
+                cubo_.drawGouraudSmoothing();
+                break;
+
+            case TETRAHEDRON:
+                tetraedro_.drawGouraudSmoothing();
+                break;
+
+            case PLY_STATIC:
+                beethoven_.drawGouraudSmoothing();
+                break;
+
+            case PLY_REVOLUTION:
+                peon_.drawGouraudSmoothing();
+                break;
+
+            case CYLINDER:
+                cilindro_.drawGouraudSmoothing();
+                break;
+
+            case GLASS:
+                vaso_.drawGouraudSmoothing();
+                break;
+
+            case GLASS_INVERTED:
+                vaso2_.drawGouraudSmoothing();
+                break;
+
+            case CONE:
+                cono_.drawGouraudSmoothing();
+                break;
+
+            case TUBE:
+                tubo_.drawGouraudSmoothing();
+                break;
+
+            case SPHERE:
+                glMatrixMode(GL_MODELVIEW);
+                glPushMatrix();
+                glScalef(0.01,0.01,0.01);
+                esfera_.drawGouraudSmoothing();
+                glPopMatrix();
+                break;
+        }
+    }
+
+
+    luz.setAlpha(alfa);
+    luz.setBeta(beta);
 
     fps.incrementFrames();
 	drawHUD();
@@ -228,6 +523,10 @@ Button cubo, tetraedro, ply_estatico, ply_revolucion, cilindro, vaso, vaso_inver
 Button flecha_up, flecha_down, flecha_left, flecha_right;
 Button zoom_in, zoom_out;
 Button salir;
+
+Button luz1, luz2;
+Button flat, smooth;
+Button tab, masCubo, menosCubo, masAncho, menosAncho, masAlto, menosAlto;
 
 void exit_program() {
 	exit(0);
@@ -421,6 +720,84 @@ void toggle_zoom_out() {
 	glutSetWindow(window_2);
 }
 
+void toggle_luz() {
+    luz_ = !luz_;
+    glutSetWindow(window_1);
+    draw_scene();
+    glutSetWindow(window_2);
+}
+
+void toggle_luz1() {
+    luz1_ = !luz1_;
+    glutSetWindow(window_1);
+    draw_scene();
+    glutSetWindow(window_2);
+}
+
+void toggle_flat() {
+    drawflat = !drawflat;
+    glutSetWindow(window_1);
+    draw_scene();
+    glutSetWindow(window_2);
+}
+
+void toggle_smooth() {
+    drawsmooth = !drawsmooth;
+    glutSetWindow(window_1);
+    draw_scene();
+    glutSetWindow(window_2);
+}
+
+void toggle_tablero() {
+    mostrarTablero = !mostrarTablero;
+    glutSetWindow(window_1);
+    draw_scene();
+    glutSetWindow(window_2);
+}
+
+void toggle_masCubo() {
+    tablero.incrementSide();
+    glutSetWindow(window_1);
+    draw_scene();
+    glutSetWindow(window_2);
+}
+
+void toggle_menosCubo() {
+    if (tablero.getCubes() > 0)
+        tablero.decrementSide();
+    glutSetWindow(window_1);
+    draw_scene();
+    glutSetWindow(window_2);
+}
+
+void toggle_masAncho() {
+    tablero.incrementWidth();
+    glutSetWindow(window_1);
+    draw_scene();
+    glutSetWindow(window_2);
+}
+
+void toggle_menosAncho() {
+    tablero.decrementWidth();
+    glutSetWindow(window_1);
+    draw_scene();
+    glutSetWindow(window_2);
+}
+
+void toggle_masAlto() {
+    tablero.incrementHeight();
+    glutSetWindow(window_1);
+    draw_scene();
+    glutSetWindow(window_2);
+}
+
+void toggle_menosAlto() {
+    tablero.decrementHeight();
+    glutSetWindow(window_1);
+    draw_scene();
+    glutSetWindow(window_2);
+}
+
 void draw_buttons() {
 	salir.display();
 	mesh.display();
@@ -452,6 +829,19 @@ void draw_buttons() {
 
 	zoom_in.display();
 	zoom_out.display();
+
+    luz1.display();
+    luz2.display();
+    flat.display();
+    smooth.display();
+
+    tab.display();
+    masCubo.display();
+    menosCubo.display();
+    masAncho.display();
+    menosAncho.display();
+    masAlto.display();
+    menosAlto.display();
 }
 
 void handle_motion(int x, int y) {
@@ -485,6 +875,19 @@ void handle_motion(int x, int y) {
 
 	zoom_in.handlemotion(x,y);
 	zoom_out.handlemotion(x,y);
+
+    luz1.handlemotion(x,y);
+    luz2.handlemotion(x,y);
+    flat.handlemotion(x,y);
+    smooth.handlemotion(x,y);
+
+    tab.handlemotion(x,y);
+    masCubo.handlemotion(x,y);
+    menosCubo.handlemotion(x,y);
+    masAncho.handlemotion(x,y);
+    menosAncho.handlemotion(x,y);
+    masAlto.handlemotion(x,y);
+    menosAlto.handlemotion(x,y);
 }
 
 void handle_mouse(int button, int state, int x, int y) {
@@ -518,6 +921,19 @@ void handle_mouse(int button, int state, int x, int y) {
 
 	zoom_in.handlemouse(button,state,x,y);
 	zoom_out.handlemouse(button,state,x,y);
+
+    luz1.handlemouse(button,state,x,y);
+    luz2.handlemouse(button,state,x,y);
+    flat.handlemouse(button,state,x,y);
+    smooth.handlemouse(button,state,x,y);
+
+    tab.handlemouse(button,state,x,y);
+    masCubo.handlemouse(button,state,x,y);
+    menosCubo.handlemouse(button,state,x,y);
+    masAncho.handlemouse(button,state,x,y);
+    menosAncho.handlemouse(button,state,x,y);
+    masAlto.handlemouse(button,state,x,y);
+    menosAlto.handlemouse(button,state,x,y);
 }
 
 void generate_buttons() {
@@ -527,56 +943,56 @@ void generate_buttons() {
     salir.setaction(exit_program);
     salir.setactive(true);
 
-    mesh.setpos(-0.3,0.6);
-    mesh.setsize(0.4,0.2);
+    mesh.setpos(-0.5,0.8);
+    mesh.setsize(0.4,0.15);
     mesh.setlabel("Puntos");
     mesh.setaction(toggle_mesh);
     mesh.setactive(true);
 
-    lines.setpos(0.3,0.6);
-    lines.setsize(0.4,0.2);
+    lines.setpos(-0.5,0.65);
+    lines.setsize(0.4,0.15);
     lines.setlabel("Lineas");
     lines.setaction(toggle_edges);
     lines.setactive(true);
 
-    solid.setpos(-0.3,0.3);
-    solid.setsize(0.4,0.2);
+    solid.setpos(-0.5,0.5);
+    solid.setsize(0.4,0.15);
     solid.setlabel("Solido");
     solid.setaction(toggle_solid);
     solid.setactive(true);
 
-    chess.setpos(0.3,0.3);
-    chess.setsize(0.4,0.2);
+    chess.setpos(-0.5,0.35);
+    chess.setsize(0.4,0.15);
     chess.setlabel("Ajedrez");
     chess.setaction(toggle_chess);
     chess.setactive(true);
 
-    masDiv.setpos(-0.3,0);
-    masDiv.setsize(0.4,0.2);
+    masDiv.setpos(-0.5,0.2);
+    masDiv.setsize(0.4,0.15);
     masDiv.setlabel("++Div");
     masDiv.setaction(toggle_masDiv);
     masDiv.setactive(true);
 
-    menosDiv.setpos(-0.3,-0.3);
-    menosDiv.setsize(0.4,0.2);
+    menosDiv.setpos(-0.5,0.05);
+    menosDiv.setsize(0.4,0.15);
     menosDiv.setlabel("--Div");
     menosDiv.setaction(toggle_menosDiv);
     menosDiv.setactive(true);
 
-    masVel.setpos(0.3,0);
-    masVel.setsize(0.4,0.2);
+    masVel.setpos(-0.5,-0.1);
+    masVel.setsize(0.4,0.15);
     masVel.setlabel("++Vel");
     masVel.setaction(toggle_masVel);
     masVel.setactive(true);
 
-    menosVel.setpos(0.3,-0.3);
-    menosVel.setsize(0.4,0.2);
+    menosVel.setpos(-0.5,-0.25);
+    menosVel.setsize(0.4,0.15);
     menosVel.setlabel("--Vel");
     menosVel.setaction(toggle_menosVel);
     menosVel.setactive(true);
 
-    spin.setpos(0.3,-0.6);
-    spin.setsize(0.4,0.2);
+    spin.setpos(-0.5,-0.4);
+    spin.setsize(0.4,0.15);
     spin.setlabel("Spin");
     spin.setaction(toggle_spin);
     spin.setactive(true);
@@ -623,65 +1039,133 @@ void generate_buttons() {
     cubo.setaction(toggle_cube);
     cubo.setactive(true);
 
-    tetraedro.setpos(-0.95,0.6);
+    tetraedro.setpos(-0.95,0.65);
     tetraedro.setsize(0.4,0.15);
     tetraedro.setlabel("Tetraedro");
     tetraedro.setaction(toggle_tetrahedron);
     tetraedro.setactive(true);
 
-    ply_estatico.setpos(-0.95,0.4);
+    ply_estatico.setpos(-0.95,0.5);
     ply_estatico.setsize(0.4,0.15);
     ply_estatico.setlabel("Ply Est");
     ply_estatico.setaction(toggle_ply_static);
     ply_estatico.setactive(true);
 
-    ply_revolucion.setpos(-0.95,0.2);
+    ply_revolucion.setpos(-0.95,0.35);
     ply_revolucion.setsize(0.4,0.15);
     ply_revolucion.setlabel("Ply Rev");
     ply_revolucion.setaction(toggle_ply_revolution);
     ply_revolucion.setactive(true);
 
-    cilindro.setpos(-0.95,0);
+    cilindro.setpos(-0.95,0.2);
     cilindro.setsize(0.4,0.15);
     cilindro.setlabel("Cilindro");
     cilindro.setaction(toggle_cylinder);
     cilindro.setactive(true);
 
-    vaso.setpos(-0.95,-0.2);
+    vaso.setpos(-0.95,0.05);
     vaso.setsize(0.4,0.15);
     vaso.setlabel("Vaso");
     vaso.setaction(toggle_glass);
     vaso.setactive(true);
 
-    vaso_invertido.setpos(-0.95,-0.4);
+    vaso_invertido.setpos(-0.95,-0.1);
     vaso_invertido.setsize(0.4,0.15);
     vaso_invertido.setlabel("Vaso Inv");
     vaso_invertido.setaction(toggle_glass_inverted);
     vaso_invertido.setactive(true);
 
-    cono.setpos(-0.95,-0.6);
+    cono.setpos(-0.95,-0.25);
     cono.setsize(0.4,0.15);
     cono.setlabel("Cono");
     cono.setaction(toggle_cone);
     cono.setactive(true);
 
-    tubo.setpos(-0.95,-0.8);
+    tubo.setpos(-0.95,-0.4);
     tubo.setsize(0.4,0.15);
     tubo.setlabel("Tubo");
     tubo.setaction(toggle_tube);
     tubo.setactive(true);
 
-    esfera.setpos(-0.95,-1);
+    esfera.setpos(-0.95,-0.55);
     esfera.setsize(0.4,0.15);
     esfera.setlabel("Esfera");
     esfera.setaction(toggle_sphere);
     esfera.setactive(true);
 
-    watt.setpos(-0.5,-0.6);
+    watt.setpos(-0.95,-0.7);
     watt.setsize(0.4,0.15);
     watt.setlabel("Watt");
     watt.setaction(toggle_watt);
     watt.setactive(true);
+
+    /////////////////////////
+
+    luz1.setpos(-0.05,0.8);
+    luz1.setsize(0.4,0.15);
+    luz1.setlabel("Luz");
+    luz1.setaction(toggle_luz);
+    luz1.setactive(true);
+
+    luz2.setpos(-0.05,0.65);
+    luz2.setsize(0.4,0.15);
+    luz2.setlabel("Luz Inf");
+    luz2.setaction(toggle_luz1);
+    luz2.setactive(true);
+
+    flat.setpos(-0.05,0.5);
+    flat.setsize(0.4,0.15);
+    flat.setlabel("Flat");
+    flat.setaction(toggle_flat);
+    flat.setactive(true);
+
+    smooth.setpos(-0.05,0.35);
+    smooth.setsize(0.4,0.15);
+    smooth.setlabel("Smooth");
+    smooth.setaction(toggle_smooth);
+    smooth.setactive(true);
+
+    tab.setpos(0.4,0.8);
+    tab.setsize(0.4,0.15);
+    tab.setlabel("Tablero");
+    tab.setaction(toggle_tablero);
+    tab.setactive(true);
+
+    masCubo.setpos(0.4,0.65);
+    masCubo.setsize(0.4,0.15);
+    masCubo.setlabel("++Cube");
+    masCubo.setaction(toggle_masCubo);
+    masCubo.setactive(true);
+
+    menosCubo.setpos(0.4,0.5);
+    menosCubo.setsize(0.4,0.15);
+    menosCubo.setlabel("--Cube");
+    menosCubo.setaction(toggle_menosCubo);
+    menosCubo.setactive(true);
+
+    masAncho.setpos(0.4,0.35);
+    masAncho.setsize(0.4,0.15);
+    masAncho.setlabel("++W");
+    masAncho.setaction(toggle_masAncho);
+    masAncho.setactive(true);
+
+    menosAncho.setpos(0.4,0.2);
+    menosAncho.setsize(0.4,0.15);
+    menosAncho.setlabel("--W");
+    menosAncho.setaction(toggle_menosAncho);
+    menosAncho.setactive(true);
+
+    masAlto.setpos(0.4,0.05);
+    masAlto.setsize(0.4,0.15);
+    masAlto.setlabel("++H");
+    masAlto.setaction(toggle_masAlto);
+    masAlto.setactive(true);
+
+    menosAlto.setpos(0.4,-0.1);
+    menosAlto.setsize(0.4,0.15);
+    menosAlto.setlabel("--H");
+    menosAlto.setaction(toggle_menosAlto);
+    menosAlto.setactive(true);
 }
 
 void draw_scene_button(void) {
@@ -725,17 +1209,41 @@ void normal_keys(unsigned char Tecla1,int x,int y) {
 		case 'L': modos = changeMode(modos, EDGES, 1); break;
 		case 'F': modos = changeMode(modos, SOLID, 2); break;
 		case 'C': modos = changeMode(modos, CHESS, 3); break;
+        case '2': drawflat = !drawflat; drawsmooth = false; modos = changeMode(modos, NULL_, 6); break;
+        case '3': drawsmooth = !drawsmooth; drawflat = false; modos = changeMode(modos, NULL_, 6); break;
 
-		case 'T': restar = true; break;
-		case 'Y': sumar = true; break;
+		//case 'T': restar = true; break;
+		//case 'Y': sumar = true; break;
 
 		case 'X': modelos.v_Watt.aumentarVelocidad(); break;
 		case 'Z': modelos.v_Watt.decrementarVelocidad(); break;
 
 		case 'A': modelos.v_Watt.toggleSpinning(); break;
 
-        case 'G': toggle_luz = !toggle_luz; break;
-        case 'H': toggle_luz1 = !toggle_luz1; break;
+        case 'G': luz_ = !luz_; break;
+        case 'H': luz1_ = !luz1_; break;
+
+        case 'B': tablero.incrementSide(); break;
+        case 'N': tablero.decrementSide(); break;
+        case 'J': tablero.incrementWidth(); break;
+        case 'K': tablero.decrementWidth(); break;
+        case 'S': tablero.incrementHeight(); break;
+        case 'D': tablero.decrementHeight(); break;
+
+        case '1': mostrarTablero = !mostrarTablero; break;
+
+        case 'U':
+            mat_index--;
+            break;
+
+        case 'I':
+            mat_index++;
+            break;
+
+        case 'W': alfa -= 1; break;
+        case 'E': alfa += 1; break;
+        case 'R': beta -= 1; break;
+        case 'T': beta += 1; break;
 	}
 
 	draw_scene();
@@ -778,7 +1286,6 @@ void special_keys(int Tecla1,int x,int y) {
 //***************************************************************************
 // Funcion de incializacion
 //***************************************************************************
-
 void initialize(void) {
 	// se inicalizan la ventana y los planos de corte
 	Window_width=5;
@@ -791,26 +1298,8 @@ void initialize(void) {
 	Observer_angle_x=0;
 	Observer_angle_y=0;
 
-    luz.setID(GL_LIGHT0);
-    luz.setDirectional(false);
-    luz.setPosition(_vertex4f(0,0,15,1));
-    luz.setAmbient(_vertex4f(0.2,0.2,0.2,1));
-    luz.setDiffuse(_vertex4f(0.8,0.8,0.8,1));
-    luz.setSpecular(_vertex4f(1,1,1,1));
-
-    luz1.setID(GL_LIGHT1);
-    luz1.setDirectional(false);
-    luz1.setPosition(_vertex4f(1,1,1,0));
-    luz1.setAmbient(_vertex4f(0.2,0.2,0.2,1));
-    luz1.setDiffuse(_vertex4f(0.8,0.8,0.8,1));
-    luz1.setSpecular(_vertex4f(1,1,1,1));
-
-    test.generateByRevolution('y', false);
-    test.calculateNormalTriangles();
-    test.calculateNormalPoints();
-
-    beto.calculateNormalTriangles();
-    beto.calculateNormalPoints();
+    initialize_ligths();
+    initialize_objects();
 
 	// se indica cual sera el color para limpiar la ventana	(r,v,a,al)
 	// blanco=(1,1,1,1) rojo=(1,0,0,1), ...
@@ -859,7 +1348,7 @@ int main(int argc, char **argv) {
 
 	// llamada para crear la ventana, indicando el titulo (no se visualiza hasta que se llama
 	// al bucle de eventos)
-	window_1 = glutCreateWindow("Practica 3. Angel Gomez Martin");
+	window_1 = glutCreateWindow("Practica 4. Angel Gomez Martin");
 
 	// asignación de la funcion llamada "dibujar" al evento de dibujo
 	glutDisplayFunc(draw_scene);

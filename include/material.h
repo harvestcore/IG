@@ -16,6 +16,8 @@
 #include "vertex.h"
 #include "texture.h"
 
+using namespace std;
+
 class Material {
     private:
         _vertex4f ambient;
@@ -30,7 +32,15 @@ class Material {
         void setSpecular(_vertex4f specular);
         void setDiffuse(_vertex4f diffuse);
         void setBrightness(GLfloat brightness);
+        _vertex4f getAmbient();
+        _vertex4f getSpecular();
+        _vertex4f getDiffuse();
+        GLfloat getBrightness();
         bool gotTexture();
+        void loadTexture(const char *file);
+        Texture getTexture();
+        void enableTexture();
+        void disableTexture();
         void enable();
         void disable();
 };

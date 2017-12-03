@@ -14,6 +14,7 @@
 
 #include <GL/glut.h>
 #include <vector>
+#include <iostream>
 #include "3DObject.h"
 #include "vertex.h"
 #include "models.h"

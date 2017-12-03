@@ -23,6 +23,22 @@ vector<ViewMode> changeMode(vector<ViewMode> oldMode, ViewMode newMode, int  i) 
     if (newMode == CHESS)
         oldMode[2] = NULL_;
 
+    if (newMode == FLAT)
+        oldMode[5] = NULL_;
+
+    if (newMode == SMOOTH)
+        oldMode[4] = NULL_;
+
+    if (i == 6) {
+        oldMode[0] = NULL_;
+        oldMode[1] = NULL_;
+        oldMode[2] = NULL_;
+        oldMode[3] = NULL_;
+        oldMode[4] = NULL_;
+        oldMode[5] = NULL_;
+        oldMode[6] = NULL_;
+    }
+
     return oldMode;
 }
 
@@ -139,6 +155,9 @@ void drawModels(Models mods, TypeObject object, vector<ViewMode> mode) {
             break;
 
         case SPHERE:
+            glMatrixMode(GL_MODELVIEW);
+            glPushMatrix();
+            glScalef(0.01,0.01,0.01);
             if (mode[0] == MESH)
                 mods.v_Sphere.drawMesh();
             if (mode[1] == EDGES)
@@ -148,6 +167,7 @@ void drawModels(Models mods, TypeObject object, vector<ViewMode> mode) {
             if (mode[3] == CHESS)
                 mods.v_Sphere.drawChess();
             break;
+            glPopMatrix();
 
         case WATT:
             if (mode[0] == MESH)

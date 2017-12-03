@@ -15,26 +15,28 @@
 #include <GL/glut.h>
 #include <vector>
 #include "CImg.h"
+#include "types.h"
 
+using namespace std;
 using namespace cimg_library;
 
 class Texture {
     private:
         GLuint ID;
+        //GLenum ID;
         CImg<unsigned char> image;
         vector<unsigned char> data;
-
-        unsigned int tamx;
-        unsigned int tamy;
-        unsigned char * texels;
-        unsigned int id;
-        bool automatico;
+        unsigned int height;
+        unsigned int width;
 
     public:
+        Texture();
         Texture(const char *file);
         void loadTexture(const char *file);
-        void enable();
-        void disable();
+        unsigned int getHeight();
+        unsigned int getWidth();
+        void drawTexture(CoordenadasIMG img);
+        void removeTexture();
 };
 
 #endif

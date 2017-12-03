@@ -63,13 +63,6 @@ double RevolutionModel::getHeight() const {
     return (double) height;
 }
 
-void RevolutionModel::Status() {
-    cout << "Steps: " << steps << endl;
-    cout << "Height: " << height << endl;
-    cout << "TopRadius: " << topRadius << endl;
-    cout << "BottomRadius: " << bottomRadius << endl;
-}
-
 Cube::Cube() {
   setSide(1);
   createCube();
@@ -82,13 +75,13 @@ Cube::Cube(double newSide) {
 
 void Cube::createCube() {
     points = {{-side,-side,side},{side,-side,side},
-              {-side,side,side},{side,side,side},
+              {side,side,side},{-side,side,side},
               {-side,-side,-side},{side,-side,-side},
-              {-side,side,-side},{side,side,-side}};
+              {side,side,-side},{-side,side,-side}};
 
-    triangles = {{0,1,2},{1,2,3},{1,3,5},{5,3,7},
-                 {5,7,4},{4,7,6},{4,6,0},{0,6,2},
-                 {4,0,1},{4,1,5},{2,6,3},{3,6,7}};
+     triangles = {{0,1,2},{2,3,0},{1,5,6},{6,2,1},
+                  {7,6,5},{5,4,7},{4,0,3},{3,7,4},
+                  {4,5,1},{1,0,4},{3,2,6},{6,7,3}};
 }
 
 Tetrahedron::Tetrahedron() {

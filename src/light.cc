@@ -12,6 +12,10 @@
 #include "light.h"
 
 Light::Light() {
+    sphere.createSphere();
+    sphere.calculateNormalTriangles();
+    sphere.calculateNormalTriangles();
+    sphere.changeMaterial(GOLD);
 }
 
 void Light::setID(GLenum ID) {
@@ -34,8 +38,11 @@ void Light::setDiffuse(_vertex4f diffuse) {
     this->diffuse = diffuse;
 }
 
-void Light::setDirection(GLfloat alfa, GLfloat beta) {
-    this->alfa = alfa;
+void Light::setAlpha(GLfloat alpha) {
+    this->alpha = alpha;
+}
+
+void Light::setBeta(GLfloat beta) {
     this->beta = beta;
 }
 
@@ -52,10 +59,17 @@ void Light::setDirectional(bool dir) {
 void Light::enable() {
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
+
     if(directional) {
-        glRotatef(alfa,0,1,0);
+        glRotatef(alpha,0,1,0);
         glRotatef(beta,1,0,0);
     }
+
+    glPushMatrix();
+    glTranslatef(position.x, position.y, position.z);
+    glScalef(0.001,0.001,0.001);
+    sphere.drawFlatSmoothing();
+    glPopMatrix();
 
     glLightfv(ID, GL_POSITION, (GLfloat *) &position);
     glLightfv(ID, GL_AMBIENT, (GLfloat *) &ambient);
@@ -65,6 +79,7 @@ void Light::enable() {
     glEnable(GL_LIGHTING);
     glEnable(ID);
     glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
+
     glPopMatrix();
 }
 

@@ -64,8 +64,6 @@ class RevolutionModel : public Revolution3DObject{
         double getTopRadius() const;
         double getBottomRadius() const;
         double getHeight() const;
-
-        void Status();
 };
 
 /**

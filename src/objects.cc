@@ -55,16 +55,6 @@ void Models::initializeModels() {
     Tube aux_tube(4, 6);
     v_Tube = aux_tube;
     v_Tube.generateByRevolution('y', false);
-
-    vector<_vertex3f> points = {{-0.5,-0.5,0.5},{0.5,-0.5,0.5},
-              {-0.5,0.5,0.5},{0.5,0.5,0.5},
-              {-0.5,-0.5,-0.5},{0.5,-0.5,-0.5},
-              {-0.5,0.5,-0.5},{0.5,0.5,-0.5}};
-
-    vector<_vertex3i> triangles = {{0,1,2},{1,2,3},{1,3,5},{5,3,7},
-                 {5,7,4},{4,7,6},{4,6,0},{0,6,2},
-                 {4,0,1},{4,1,5},{2,6,3},{3,6,7}};
-
 }
 
 void Models::addStep(TypeObject object) {

@@ -11,36 +11,64 @@
 
 #include "texture.h"
 
-void Texture::loadTexture(const char *file) {
-    image.load(file);
-
-    for (long y = 0; y < image.height(); y ++) {
-        for (long x = 0; x < image.width(); x ++) {
-            unsigned char *r = image.data(x, y, 0, 0);
-            unsigned char *g = image.data(x, y, 0, 1);
-            unsigned char *b = image.data(x, y, 0, 2);
-            data.push_back(*r);
-            data.push_back(*g);
-            data.push_back(*b);
-        }
-    }
+Texture::Texture() {
 }
 
-void Texture::enable() {
-    glGenTextures(1, &ID);
-    glBindTexture(GL_TEXTURE_2D, textura_id);
+Texture::Texture(const char *file) {
+    loadTexture(file);
+}
 
+void Texture::loadTexture(const char *file) {
+     image.load(file);
+     height = image.height();
+     width = image.width();
+
+     for (long i = 0; i < image.height(); ++i)
+        for (long j = 0; j < image.width(); ++j) {
+           unsigned char *r = image.data(j, i, 0, 0);
+           unsigned char *g = image.data(j, i, 0, 1);
+           unsigned char *b = image.data(j, i, 0, 2);
+           data.push_back(*r);
+           data.push_back(*g);
+           data.push_back(*b);
+        }
+
+     glGenTextures(1, &ID);
+
+}
+
+unsigned int Texture::getHeight() {
+    return height;
+}
+
+unsigned int Texture::getWidth() {
+    return width;
+}
+
+void Texture::drawTexture(CoordenadasIMG img) {
+    glEnable(GL_TEXTURE_2D);
     glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, ID);
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-    // TRASFIERE LOS DATOS A GPU
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, logo.width(), logo.height(),
-         0, GL_RGB, GL_UNSIGNED_BYTE, &data[0]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.width(), image.height(), 0, GL_RGB, GL_UNSIGNED_BYTE, &data[0]);
+
+    glColor3f(1, 1, 1);
+    glBegin(GL_QUADS);
+        glTexCoord2f(0, 1);         glVertex3f(img.X_10, img.Y_10, img.thicc + 0.015);
+        glTexCoord2f(1, 1);         glVertex3f(img.X_00, img.Y_00, img.thicc + 0.015);
+        glTexCoord2f(1, 0);         glVertex3f(img.X_01, img.Y_01, img.thicc + 0.015);
+        glTexCoord2f(0, 0);         glVertex3f(img.X_11, img.Y_11, img.thicc + 0.015);
+    glEnd();
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
 }
 
-void Texture::disable() {
+void Texture::removeTexture() {
     glDeleteTextures(1, &ID);
 }

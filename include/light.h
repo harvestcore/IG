@@ -14,6 +14,7 @@
 
 #include <GL/glut.h>
 #include "vertex.h"
+#include "3DObject.h"
 
 class Light {
     private:
@@ -23,10 +24,9 @@ class Light {
         _vertex4f ambient;
         _vertex4f specular;
         _vertex4f diffuse;
-
-        GLfloat alfa, beta;
-
+        GLfloat alpha, beta;
         bool directional;
+        ALLFIGURE sphere;
 
     public:
         Light();
@@ -35,8 +35,9 @@ class Light {
         void setAmbient(_vertex4f ambient);
         void setSpecular(_vertex4f specular);
         void setDiffuse(_vertex4f diffuse);
-        void setDirection(GLfloat alfa, GLfloat beta);
         void setDirectional(bool dir);
+        void setAlpha(GLfloat alpha);
+        void setBeta(GLfloat beta);
         void enable();
         void disable();
 };
