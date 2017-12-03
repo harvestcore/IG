@@ -92,6 +92,7 @@ class Object3D: public Simple3DObject {
         vector<_vertex3f> normalTriangles;
         vector<_vertex3f> normalPoints;
         vector<_vertex2f> map;
+        int materialID = 1;
 
 	public:
         Material *material;
@@ -159,16 +160,21 @@ class Object3D: public Simple3DObject {
 		*/
         void drawChess();
 
+        void initMaterial();
+        bool gotMaterial();
+        void changeMaterial(Materials mat);
+        void setMaterial(int ID);
+        void updateMaterial();
+        int getMaterialID();
+        void incrementMaterialID();
+        void decrementMaterialID();
+
         void drawFlatSmoothing();
         void drawGouraudSmoothing();
 
         void mapping(unsigned int a, unsigned int b);
         void calculateNormalTriangles();
         void calculateNormalPoints();
-        void initMaterial();
-        bool gotMaterial();
-        void changeMaterial(Materials mat);
-
 };
 
 /**

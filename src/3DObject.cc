@@ -147,161 +147,26 @@ void Object3D::drawChess() {
     glEnd();
 }
 
-void Object3D::drawFlatSmoothing() {
-    glPolygonMode(GL_FRONT, GL_FILL);
-    glShadeModel(GL_FLAT);
-    glEnable(GL_LIGHTING);
-
-    if (gotMaterial()) {
-        _vertex4f amb = material->getAmbient();
-        _vertex4f spec = material->getSpecular();
-        _vertex4f dif = material->getDiffuse();
-        GLfloat br = material->getBrightness();
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, (GLfloat *) &amb);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, (GLfloat *) &spec);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, (GLfloat *) &dif);
-        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, br);
-    }
-
-    glBegin(GL_TRIANGLES);
-    for(unsigned int i=0;i< triangles.size();i++){
-        glNormal3f(normalTriangles[i].x, normalTriangles[i].y, normalTriangles[i].z);
-        if(!map.empty()) {
-            glTexCoord2f(map[triangles[i]._0].s,map[triangles[i]._0].t);
-        }
-        glVertex3f(points[triangles[i]._0].x, points[triangles[i]._0].y, points[triangles[i]._0].z);
-        if(!map.empty()) {
-            glTexCoord2f(map[triangles[i]._1].s,map[triangles[i]._1].t);
-        }
-        glVertex3f(points[triangles[i]._1].x, points[triangles[i]._1].y, points[triangles[i]._1].z);
-        if(!map.empty()) {
-            glTexCoord2f(map[triangles[i]._2].s,map[triangles[i]._2].t);
-        }
-        glVertex3f(points[triangles[i]._2].x, points[triangles[i]._2].y, points[triangles[i]._2].z);
-    }
-    glEnd();
-}
-
-void Object3D::drawGouraudSmoothing() {
-    glPolygonMode(GL_FRONT, GL_FILL);
-    glShadeModel(GL_SMOOTH);
-    glEnable(GL_LIGHTING);
-
-    if (gotMaterial()) {
-        _vertex4f amb = material->getAmbient();
-        _vertex4f spec = material->getSpecular();
-        _vertex4f dif = material->getDiffuse();
-        GLfloat br = material->getBrightness();
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, (GLfloat *) &amb);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, (GLfloat *) &spec);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, (GLfloat *) &dif);
-        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, br);
-    }
-
-    glBegin(GL_TRIANGLES);
-    for(unsigned int i=0;i< triangles.size();i++){
-        if(!map.empty()) {
-            glTexCoord2f(map[triangles[i]._0].s,map[triangles[i]._0].t);
-        }
-        glNormal3f(normalPoints[triangles[i]._0].x, normalPoints[triangles[i]._0].y, normalPoints[triangles[i]._0].z);
-        glVertex3f(points[triangles[i]._0].x, points[triangles[i]._0].y, points[triangles[i]._0].z);
-        if(!map.empty()) {
-            glTexCoord2f(map[triangles[i]._1].s,map[triangles[i]._1].t);
-        }
-        glNormal3f(normalPoints[triangles[i]._1].x, normalPoints[triangles[i]._1].y, normalPoints[triangles[i]._1].z);
-        glVertex3f(points[triangles[i]._1].x, points[triangles[i]._1].y, points[triangles[i]._1].z);
-        if(!map.empty()) {
-            glTexCoord2f(map[triangles[i]._2].s,map[triangles[i]._2].t);
-        }
-        glNormal3f(normalPoints[triangles[i]._2].x, normalPoints[triangles[i]._2].y, normalPoints[triangles[i]._2].z);
-        glVertex3f(points[triangles[i]._2].x, points[triangles[i]._2].y, points[triangles[i]._2].z);
-    }
-    glEnd();
-}
-
-
-void Object3D::mapping(unsigned int a, unsigned int b) {
-    vector<_vertex2f> aux_points(points.size());
-    float var = 1.0 / a;
-    vector<float> dist(b);
-    float suma = 0.0;
-    dist[0] = suma;
-
-    for (unsigned int i = 1; i < b; ++i) {
-        suma += sqrt(pow(points[i].x - points[i - 1].x,2) + pow(points[i].y - points[i - 1].y,2));
-        dist[i] = suma;
-    }
-
-    for (unsigned int i = 0; i < b; ++i) {
-        dist[i] /= suma;
-    }
-
-    for (unsigned int i = 0; i < a + 1; ++i) {
-        for (unsigned int j = 0; j < b; ++j) {
-            aux_points[i * b + j].s = 1 - i * var;
-            aux_points[i * b + j].t = 1 - dist[j];
-        }
-    }
-
-    map.clear();
-    map = aux_points;
-}
-
-void Object3D::calculateNormalTriangles() {
-    vector<_vertex3f> v_aux(triangles.size());
-
-    _vertex3f P, Q, N;
-
-    for(unsigned int i=0; i<v_aux.size(); i++) {
-        P = points[triangles[i]._1] - points[triangles[i]._0];
-
-        Q = points[triangles[i]._2] - points[triangles[i]._0];
-
-        N.x = P.y*Q.z - P.z*Q.y;
-        N.y = P.z*Q.x - P.x*Q.z;
-        N.z = P.x*Q.y - P.y*Q.x;
-
-        N.normalize();
-        v_aux[i] = N;
-    }
-    normalTriangles = v_aux;
-}
-
-void Object3D::calculateNormalPoints() {
-    vector<_vertex3f> v_aux(points.size());
-
-    vector<int> num_triangulos(points.size(),0);
-    unsigned int id0, id1, id2;
-
-    for(unsigned int i=0; i<triangles.size(); i++) {
-        id0 = triangles[i]._0;
-        id1 = triangles[i]._1;
-        id2 = triangles[i]._2;
-
-        v_aux[id0] += normalTriangles[i];
-        num_triangulos[id0]++;
-
-        v_aux[id1] += normalTriangles[i];
-        num_triangulos[id1]++;
-
-        v_aux[id2] += normalTriangles[i];
-        num_triangulos[id2]++;
-    }
-
-    for(unsigned int i = 0; i < v_aux.size(); ++i) {
-        v_aux[i] /= num_triangulos[i];
-        v_aux[i].normalize();
-    }
-
-    normalPoints = v_aux;
-}
-
 void Object3D::initMaterial() {
     material = new Material();
 }
 
 bool Object3D::gotMaterial() {
     return material != nullptr;
+}
+
+void Object3D::incrementMaterialID() {
+    materialID += 1;
+    if (materialID > 18) {
+        materialID = 18;
+    }
+}
+
+void Object3D::decrementMaterialID() {
+    materialID -= 1;
+    if (materialID < 1) {
+        materialID = 1;
+    }
 }
 
 void Object3D::changeMaterial(Materials mat) {
@@ -336,18 +201,18 @@ void Object3D::changeMaterial(Materials mat) {
         case PEARL:
             delete material;
             initMaterial();
-            material->setAmbient(_vertex4f(0.0215, 0.1745, 0.0215, 1.0));
-            material->setDiffuse(_vertex4f(0.07568, 0.61424, 0.07568, 1.0));
-            material->setSpecular(_vertex4f(0.633, 0.727811, 0.633, 1.0));
+            material->setAmbient(_vertex4f(	0.25,	0.20725,	0.20725, 1.0));
+            material->setDiffuse(_vertex4f(1,	0.829,	0.829, 1.0));
+            material->setSpecular(_vertex4f(0.296648,	0.296648,	0.296648, 1.0));
             material->setBrightness(0.088 * 128);
             break;
 
         case RUBY:
             delete material;
             initMaterial();
-            material->setAmbient(_vertex4f(0.25,	0.20725,	0.20725, 1.0));
-            material->setDiffuse(_vertex4f(1.0,	0.829,	0.829, 1.0));
-            material->setSpecular(_vertex4f(0.296648,	0.296648,	0.296648, 1.0));
+            material->setAmbient(_vertex4f(0.1745,	0.01175,	0.01175, 1.0));
+            material->setDiffuse(_vertex4f(0.61424,	0.04136,	0.04136, 1.0));
+            material->setSpecular(_vertex4f(0.727811,	0.626959,	0.626959, 1.0));
             material->setBrightness(0.6 * 128);
             break;
 
@@ -472,6 +337,256 @@ void Object3D::changeMaterial(Materials mat) {
             delete material;
             break;
     }
+}
+
+void Object3D::setMaterial(int ID) {
+    switch (ID) {
+        case 1:
+            changeMaterial(EMERALD);
+            materialID = 1;
+            break;
+
+        case 2:
+            changeMaterial(JADE);
+            materialID = 2;
+            break;
+
+        case 3:
+            changeMaterial(OBSIDIAN);
+            materialID = 3;
+            break;
+
+        case 4:
+            changeMaterial(PEARL);
+            materialID = 4;
+            break;
+
+        case 5:
+            changeMaterial(RUBY);
+            materialID = 5;
+            break;
+
+        case 6:
+            changeMaterial(TURQUOISE);
+            materialID = 6;
+            break;
+
+        case 7:
+            changeMaterial(BRASS);
+            materialID = 7;
+            break;
+
+        case 8:
+            changeMaterial(BRONCE);
+            materialID = 8;
+            break;
+
+        case 9:
+            changeMaterial(CHROME);
+            materialID = 9;
+            break;
+
+        case 10:
+            changeMaterial(COPPER);
+            materialID = 10;
+            break;
+
+        case 11:
+            changeMaterial(GOLD);
+            materialID = 11;
+            break;
+
+        case 12:
+            changeMaterial(SILVER);
+            materialID = 12;
+            break;
+
+        case 13:
+            changeMaterial(BLACK_PLASTIC);
+            materialID = 13;
+            break;
+
+        case 14:
+            changeMaterial(CYAN_PLASTIC);
+            materialID = 14;
+            break;
+
+        case 15:
+            changeMaterial(GREEN_PLASTIC);
+            materialID = 15;
+            break;
+
+        case 16:
+            changeMaterial(RED_PLASTIC);
+            materialID = 16;
+            break;
+
+        case 17:
+            changeMaterial(WHITE_PLASTIC);
+            materialID = 17;
+            break;
+
+        case 18:
+            changeMaterial(YELLOW_PLASTIC);
+            materialID = 18;
+            break;
+    }
+}
+
+void Object3D::updateMaterial() {
+    setMaterial(materialID);
+}
+
+int Object3D::getMaterialID() {
+    return materialID;
+}
+
+void Object3D::drawFlatSmoothing() {
+    glPolygonMode(GL_FRONT, GL_FILL);
+    glShadeModel(GL_FLAT);
+    glEnable(GL_LIGHTING);
+
+    if (gotMaterial()) {
+        _vertex4f amb = material->getAmbient();
+        _vertex4f spec = material->getSpecular();
+        _vertex4f dif = material->getDiffuse();
+        GLfloat br = material->getBrightness();
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, (GLfloat *) &amb);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, (GLfloat *) &spec);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, (GLfloat *) &dif);
+        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, br);
+    }
+
+    glBegin(GL_TRIANGLES);
+    for(unsigned int i=0;i< triangles.size();i++){
+        glNormal3f(normalTriangles[i].x, normalTriangles[i].y, normalTriangles[i].z);
+        if(!map.empty()) {
+            glTexCoord2f(map[triangles[i]._0].s,map[triangles[i]._0].t);
+        }
+        glVertex3f(points[triangles[i]._0].x, points[triangles[i]._0].y, points[triangles[i]._0].z);
+        if(!map.empty()) {
+            glTexCoord2f(map[triangles[i]._1].s,map[triangles[i]._1].t);
+        }
+        glVertex3f(points[triangles[i]._1].x, points[triangles[i]._1].y, points[triangles[i]._1].z);
+        if(!map.empty()) {
+            glTexCoord2f(map[triangles[i]._2].s,map[triangles[i]._2].t);
+        }
+        glVertex3f(points[triangles[i]._2].x, points[triangles[i]._2].y, points[triangles[i]._2].z);
+    }
+    glEnd();
+}
+
+void Object3D::drawGouraudSmoothing() {
+    glPolygonMode(GL_FRONT, GL_FILL);
+    glShadeModel(GL_SMOOTH);
+    glEnable(GL_LIGHTING);
+
+    if (gotMaterial()) {
+        _vertex4f amb = material->getAmbient();
+        _vertex4f spec = material->getSpecular();
+        _vertex4f dif = material->getDiffuse();
+        GLfloat br = material->getBrightness();
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, (GLfloat *) &amb);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, (GLfloat *) &spec);
+        glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, (GLfloat *) &dif);
+        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, br);
+    }
+
+    glBegin(GL_TRIANGLES);
+    for(unsigned int i=0;i< triangles.size();i++){
+        if(!map.empty()) {
+            glTexCoord2f(map[triangles[i]._0].s,map[triangles[i]._0].t);
+        }
+        glNormal3f(normalPoints[triangles[i]._0].x, normalPoints[triangles[i]._0].y, normalPoints[triangles[i]._0].z);
+        glVertex3f(points[triangles[i]._0].x, points[triangles[i]._0].y, points[triangles[i]._0].z);
+        if(!map.empty()) {
+            glTexCoord2f(map[triangles[i]._1].s,map[triangles[i]._1].t);
+        }
+        glNormal3f(normalPoints[triangles[i]._1].x, normalPoints[triangles[i]._1].y, normalPoints[triangles[i]._1].z);
+        glVertex3f(points[triangles[i]._1].x, points[triangles[i]._1].y, points[triangles[i]._1].z);
+        if(!map.empty()) {
+            glTexCoord2f(map[triangles[i]._2].s,map[triangles[i]._2].t);
+        }
+        glNormal3f(normalPoints[triangles[i]._2].x, normalPoints[triangles[i]._2].y, normalPoints[triangles[i]._2].z);
+        glVertex3f(points[triangles[i]._2].x, points[triangles[i]._2].y, points[triangles[i]._2].z);
+    }
+    glEnd();
+}
+
+void Object3D::mapping(unsigned int a, unsigned int b) {
+    vector<_vertex2f> aux_points(points.size());
+    float var = 1.0 / a;
+    vector<float> dist(b);
+    float suma = 0.0;
+    dist[0] = suma;
+
+    for (unsigned int i = 1; i < b; ++i) {
+        suma += sqrt(pow(points[i].x - points[i - 1].x,2) + pow(points[i].y - points[i - 1].y,2));
+        dist[i] = suma;
+    }
+
+    for (unsigned int i = 0; i < b; ++i) {
+        dist[i] /= suma;
+    }
+
+    for (unsigned int i = 0; i < a + 1; ++i) {
+        for (unsigned int j = 0; j < b; ++j) {
+            aux_points[i * b + j].s = 1 - i * var;
+            aux_points[i * b + j].t = 1 - dist[j];
+        }
+    }
+
+    map.clear();
+    map = aux_points;
+}
+
+void Object3D::calculateNormalTriangles() {
+    vector<_vertex3f> v_aux(triangles.size());
+
+    _vertex3f P, Q, N;
+
+    for(unsigned int i=0; i<v_aux.size(); i++) {
+        P = points[triangles[i]._1] - points[triangles[i]._0];
+
+        Q = points[triangles[i]._2] - points[triangles[i]._0];
+
+        N.x = P.y*Q.z - P.z*Q.y;
+        N.y = P.z*Q.x - P.x*Q.z;
+        N.z = P.x*Q.y - P.y*Q.x;
+
+        N.normalize();
+        v_aux[i] = N;
+    }
+    normalTriangles = v_aux;
+}
+
+void Object3D::calculateNormalPoints() {
+    vector<_vertex3f> v_aux(points.size());
+
+    vector<int> num_triangulos(points.size(),0);
+    unsigned int id0, id1, id2;
+
+    for(unsigned int i=0; i<triangles.size(); i++) {
+        id0 = triangles[i]._0;
+        id1 = triangles[i]._1;
+        id2 = triangles[i]._2;
+
+        v_aux[id0] += normalTriangles[i];
+        num_triangulos[id0]++;
+
+        v_aux[id1] += normalTriangles[i];
+        num_triangulos[id1]++;
+
+        v_aux[id2] += normalTriangles[i];
+        num_triangulos[id2]++;
+    }
+
+    for(unsigned int i = 0; i < v_aux.size(); ++i) {
+        v_aux[i] /= num_triangulos[i];
+        v_aux[i].normalize();
+    }
+
+    normalPoints = v_aux;
 }
 
 PlyObject::PlyObject() {}
