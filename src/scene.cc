@@ -29,6 +29,9 @@ Models modelos;
 vector<ViewMode> modos = {NULL_,NULL_,NULL_,NULL_,NULL_,NULL_,NULL_};
 TypeObject objeto = _NULL;
 
+Watt watt_regulator;
+bool drawWatt = false;
+
 vector<Materials> mat = {EMERALD,JADE,OBSIDIAN,PEARL,RUBY,TURQUOISE,BRASS,BRONCE,CHROME,COPPER,GOLD,SILVER,BLACK_PLASTIC,CYAN_PLASTIC,GREEN_PLASTIC,RED_PLASTIC,WHITE_PLASTIC,YELLOW_PLASTIC};
 int mat_index = 0;
 
@@ -62,7 +65,7 @@ bool sumar = false;
 bool restar = false;
 
 // tamaño de los ejes
-const int AXIS_SIZE=10000;
+const int AXIS_SIZE=15000;
 
 // variables que definen la posicion de la camara en coordenadas polares
 GLfloat Observer_distance;
@@ -83,14 +86,14 @@ void initialize_ligths() {
     luz.setDirectional(true);
     luz.setAlpha(2.5);
     luz.setBeta(2.5);
-    luz.setPosition(_vertex4f(0,0,10,1));
+    luz.setPosition(_vertex4f(0,0,40,1));
     luz.setAmbient(_vertex4f(0.2,0.2,0.2,1));
     luz.setDiffuse(_vertex4f(0.8,0.8,0.8,1));
     luz.setSpecular(_vertex4f(0.8,0.8,0.8,1));
 
     luz_inf.setID(GL_LIGHT1);
     luz_inf.setDirectional(false);
-    luz_inf.setPosition(_vertex4f(0,20,0,0));
+    luz_inf.setPosition(_vertex4f(0,50,0,0));
     luz_inf.setAmbient(_vertex4f(0.2,0.2,0.2,1));
     luz_inf.setDiffuse(_vertex4f(0.8,0.8,0.8,1));
     luz_inf.setSpecular(_vertex4f(1,1,1,1));
@@ -173,13 +176,11 @@ void clear_window() {
 void change_projection() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-    //float alto = glutGet(GLUT_WINDOW_WIDTH);
-    //float ancho = glutGet(GLUT_WINDOW_HEIGHT);
-    //float ratio = ancho/alto;
     //gluPerspective(60, ratio, 0.01, 100);
 	// formato(x_minimo,x_maximo, y_minimo, y_maximo,Front_plane, plano_traser)
 	//  Front_plane>0  Back_plane>PlanoDelantero)
-	glFrustum(-Window_width,Window_width,-Window_height,Window_height,Front_plane,Back_plane);
+    float aspect = GLfloat(glutGet(GLUT_WINDOW_WIDTH)) / GLfloat(glutGet(GLUT_WINDOW_HEIGHT));
+    glFrustum(-Window_width*aspect, Window_width*aspect, -Window_height, Window_height, Front_plane, Back_plane);
 }
 
 //**************************************************************************
@@ -214,6 +215,7 @@ void draw_axis() {
 	glVertex3f(0,0,AXIS_SIZE);
 	glEnd();
 }
+
 //**************************************************************************
 // Texto en pantalla
 //***************************************************************************
@@ -333,7 +335,7 @@ void printText(int x, int y, string text) {
     glRasterPos2f(x,y);
 
     for (int i=0; i<text.size(); i++) {
-        glutBitmapCharacter(GLUT_BITMAP_9_BY_15, text[i]);
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, text[i]);
     }
 }
 
@@ -350,7 +352,9 @@ void drawHUD() {
 
     string data;
 
-	if (objeto == WATT) printText(30, 30, "V: " + dts(modelos.v_Watt.getSpeed()));
+	if (objeto == WATT)
+        printText(30, 30, "Vel: " + dts(modelos.v_Watt.getSpeed()));
+
     printText(30, 50, "FPS: " + dts(fps.getFPS()));
     printText(30, 70, "Objeto: " + objectToString(objeto));
     printText(30, 90, "Flat: " + booltostring(drawflat));
@@ -638,7 +642,6 @@ void draw_objects() {
 
     luz.setAlpha(alfa);
     luz.setBeta(beta);
-
     fps.incrementFrames();
 	drawHUD();
 }
@@ -653,7 +656,6 @@ void draw_scene(void) {
 	draw_axis();
 	draw_objects();
 	glutSwapBuffers();
-
 	fps.calculateFPS();
 }
 
@@ -1456,6 +1458,7 @@ void special_keys(int Tecla1,int x,int y) {
 		case GLUT_KEY_PAGE_UP:Observer_distance*=1.2;break;
 		case GLUT_KEY_PAGE_DOWN:Observer_distance/=1.2;break;
 
+    /*
 		case GLUT_KEY_F1: objeto = changeObject(objeto, CUBE); break;
 		case GLUT_KEY_F2: objeto = changeObject(objeto, TETRAHEDRON); break;
 		case GLUT_KEY_F3: objeto = changeObject(objeto, PLY_STATIC); break;
@@ -1467,6 +1470,7 @@ void special_keys(int Tecla1,int x,int y) {
 		case GLUT_KEY_F9: objeto = changeObject(objeto, TUBE); break;
 		case GLUT_KEY_F10: objeto = changeObject(objeto, SPHERE); break;
 		case GLUT_KEY_F11: objeto = changeObject(objeto, WATT); break;
+    */
 	}
 	glutPostRedisplay();
 }

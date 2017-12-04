@@ -168,7 +168,7 @@ void drawModels(Models mods, TypeObject object, vector<ViewMode> mode) {
                 mods.v_Sphere.drawChess();
             break;
             glPopMatrix();
-
+        /*
         case WATT:
             if (mode[0] == MESH)
                 mods.v_Watt.draw(MESH);
@@ -179,5 +179,6 @@ void drawModels(Models mods, TypeObject object, vector<ViewMode> mode) {
             if (mode[3] == CHESS)
                 mods.v_Watt.draw(CHESS);
             break;
+        */
     }
 }

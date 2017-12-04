@@ -14,14 +14,19 @@
 using namespace std;
 
 Laterales::Laterales() {
-    Ply_Static aux("/mnt/c/Users/Angel/Dropbox/Universidad/Tercero/modif/P2_2/ply/beethoven.ply");
-    beethoven = aux;
 }
 
 void Laterales::draw(ViewMode mode) {
     comprobarMovimiento();
 
+    bola.calculateNormalTriangles();
+    bola.calculateNormalPoints();
+    bola.changeMaterial(TURQUOISE);
+
     tubo.generateByRevolution('y', false);
+    tubo.calculateNormalTriangles();
+    tubo.calculateNormalPoints();
+    tubo.changeMaterial(COPPER);
 
     // Brazo superior izq
     glMatrixMode(GL_MODELVIEW);
@@ -120,32 +125,6 @@ void Laterales::draw(ViewMode mode) {
     glScalef(0.009,0.009,0.009);
     show(mode, SPHERE);
     glPopMatrix();
-
-    // Beethoven izquierda
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-
-    glTranslatef(-1.5,12,0);
-    glRotatef(angulo_superior,0,0,1);
-    glTranslatef(1.5,-13,0);
-
-    glTranslatef(-10,15.8,0);
-    glScalef(0.3,0.3,0.3);
-    show(mode, PLY_STATIC);
-    glPopMatrix();
-
-    // Beethoven derecha
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-
-    glTranslatef(1.5,12,0);
-    glRotatef(360-angulo_superior,0,0,1);
-    glTranslatef(-1.5,-13,0);
-
-    glTranslatef(10,15.8,0);
-    glScalef(0.3,0.3,0.3);
-    show(mode, PLY_STATIC);
-    glPopMatrix();
 }
 
 void Laterales::show(ViewMode mode, TypeObject type) {
@@ -155,6 +134,8 @@ void Laterales::show(ViewMode mode, TypeObject type) {
             case EDGES: tubo.drawEdges(); break;
             case SOLID: tubo.drawSolid(); break;
             case CHESS: tubo.drawChess(); break;
+            case FLAT: tubo.drawFlatSmoothing(); break;
+            case SMOOTH: tubo.drawGouraudSmoothing(); break;
         }
     }
 
@@ -164,15 +145,8 @@ void Laterales::show(ViewMode mode, TypeObject type) {
             case EDGES: bola.drawEdges(); break;
             case SOLID: bola.drawSolid(); break;
             case CHESS: bola.drawChess(); break;
-        }
-    }
-
-    if (type == PLY_STATIC) {
-        switch (mode) {
-            case MESH: beethoven.drawMesh(); break;
-            case EDGES: beethoven.drawEdges(); break;
-            case SOLID: beethoven.drawSolid(); break;
-            case CHESS: beethoven.drawChess(); break;
+            case FLAT: bola.drawFlatSmoothing(); break;
+            case SMOOTH: bola.drawGouraudSmoothing(); break;
         }
     }
 }
@@ -249,6 +223,10 @@ Brazo_Disco::Brazo_Disco() {
 void Brazo_Disco::draw(ViewMode mode) {
     brazo_disco.generateByRevolution('y', false);
 
+    brazo_disco.calculateNormalTriangles();
+    brazo_disco.calculateNormalPoints();
+    brazo_disco.changeMaterial(COPPER);
+
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glTranslatef(0,7,0);
@@ -270,6 +248,8 @@ void Brazo_Disco::show(ViewMode mode) {
         case EDGES: brazo_disco.drawEdges(); break;
         case SOLID: brazo_disco.drawSolid(); break;
         case CHESS: brazo_disco.drawChess(); break;
+        case FLAT: brazo_disco.drawFlatSmoothing(); break;
+        case SMOOTH: brazo_disco.drawGouraudSmoothing(); break;
     }
 }
 
@@ -278,6 +258,10 @@ Pie::Pie() {
 }
 
 void Pie::draw(ViewMode mode) {
+    pie.calculateNormalTriangles();
+    pie.calculateNormalPoints();
+    pie.changeMaterial(BRASS);
+
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glTranslatef(0,1,0);
@@ -292,6 +276,8 @@ void Pie::show(ViewMode mode) {
         case EDGES: pie.drawEdges(); break;
         case SOLID: pie.drawSolid(); break;
         case CHESS: pie.drawChess(); break;
+        case FLAT: pie.drawFlatSmoothing(); break;
+        case SMOOTH: pie.drawGouraudSmoothing(); break;
     }
 }
 
