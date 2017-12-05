@@ -28,15 +28,16 @@ using namespace std;
 Models modelos;
 vector<ViewMode> modos = {NULL_,NULL_,NULL_,NULL_,NULL_,NULL_,NULL_};
 TypeObject objeto = _NULL;
+ViewMode actual_tab = NULL_;
 
 Watt watt_regulator;
 bool drawWatt = false;
 
 Revolution3DObject esfera_;
-ALLFIGURE TESTMUNDO;
+//ALLFIGURE TESTMUNDO;
 
-Revolution3DObject esfera_textura;
-Texture mundo("/home/angel/Dropbox/Universidad/Tercero/modif/P2_2/texturas/dia.jpg");
+//Revolution3DObject esfera_textura;
+//Texture mundo("/home/angel/Dropbox/Universidad/Tercero/modif/P2_2/texturas/dia.jpg");
 
 vector<Materials> mat = {EMERALD,JADE,OBSIDIAN,PEARL,RUBY,TURQUOISE,BRASS,BRONCE,CHROME,COPPER,GOLD,SILVER,BLACK_PLASTIC,CYAN_PLASTIC,GREEN_PLASTIC,RED_PLASTIC,WHITE_PLASTIC,YELLOW_PLASTIC};
 int mat_index = 0;
@@ -167,6 +168,7 @@ void initialize_objects() {
     esfera_.calculateNormalPoints();
     esfera_.setMaterial(10);
 
+    /*
     esfera_textura.generateSphereProfile(2.0);
     esfera_textura.generateByRevolution('y', false);
     esfera_textura.generateByRevolutionWithTexture();
@@ -178,6 +180,7 @@ void initialize_objects() {
     TESTMUNDO.generateByRevolutionWithTexture();
     TESTMUNDO.calculateNormalTriangles();
     TESTMUNDO.calculateNormalPoints();
+    */
 }
 
 
@@ -294,6 +297,25 @@ int objectTomaterialID(TypeObject obj) {
     }
 }
 
+string modotoString(ViewMode mode) {
+    switch (mode) {
+        case MESH:
+        return "Puntos";
+        case EDGES:
+        return "Lineas";
+        case SOLID:
+        return "Solido";
+        case CHESS:
+        return "Ajedrez";
+        case FLAT:
+        return "Flat";
+        case SMOOTH:
+        return "Smooth";
+        case NULL_:
+        return "Off";
+    }
+}
+
 string booltostring(bool bts) {
     if (bts)
         return "On";
@@ -386,6 +408,7 @@ void drawHUD() {
         printText(20, 190, "Material: Off");
 
     printText(20, 210, "Tablero: " + booltostring(mostrarTablero));
+    printText(20, 230, "Modo: " + modotoString(actual_tab));
 
     if (help_) {
         printText(20, 820, "Mover luz: (WASD)");
@@ -408,7 +431,7 @@ void draw_objects() {
 	glLineWidth(1);
 
 
-    mundo.drawTextureRevolution(TESTMUNDO.getMap(), TESTMUNDO.getVectorPoints());
+    //mundo.drawTextureRevolution(esfera_textura.getMap(), esfera_textura.getVectorPoints());
 
 
     if (!modelos.getModelsAreGenerated()) {
@@ -460,9 +483,46 @@ void draw_objects() {
             watt_regulator.draw(SMOOTH);
     }
 
+
     if (mostrarTablero) {
-        tablero.generatePlank();
-        foto.drawTexture(tablero.getCoordenadas());
+        switch (actual_tab) {
+            /*
+            case MESH:
+                tablero.generatePlank(MESH);
+                foto.drawTexture(tablero.getCoordenadas());
+                glutPostRedisplay();
+                break;
+
+            case EDGES:
+                tablero.generatePlank(EDGES);
+                foto.drawTexture(tablero.getCoordenadas());
+                glutPostRedisplay();
+                break;
+            */
+            case SOLID:
+                tablero.generatePlank(SOLID);
+                foto.drawTexture(tablero.getCoordenadas());
+                glutPostRedisplay();
+                break;
+
+            case CHESS:
+                tablero.generatePlank(CHESS);
+                foto.drawTexture(tablero.getCoordenadas());
+                glutPostRedisplay();
+                break;
+/*
+            case FLAT:
+                tablero.generatePlank(FLAT);
+                foto.drawTexture(tablero.getCoordenadas());
+                glutPostRedisplay();
+                break;
+
+            case SMOOTH:
+                tablero.generatePlank(SMOOTH);
+                foto.drawTexture(tablero.getCoordenadas());
+                break;
+*/
+        }
     }
 
     if (drawflat) {
@@ -719,6 +779,7 @@ void toggle_help() {
 }
 
 void toggle_mesh() {
+    actual_tab = changeTab(actual_tab, MESH);
 	modos = changeMode(modos, MESH, 0);
 	glutSetWindow(window_1);
 	draw_scene();
@@ -726,6 +787,7 @@ void toggle_mesh() {
 }
 
 void toggle_edges() {
+    actual_tab = changeTab(actual_tab, EDGES);
 	modos = changeMode(modos, EDGES, 1);
 	glutSetWindow(window_1);
 	draw_scene();
@@ -733,6 +795,7 @@ void toggle_edges() {
 }
 
 void toggle_solid() {
+    actual_tab = changeTab(actual_tab, SOLID);
 	modos = changeMode(modos, SOLID, 2);
 	glutSetWindow(window_1);
 	draw_scene();
@@ -740,6 +803,7 @@ void toggle_solid() {
 }
 
 void toggle_chess() {
+    actual_tab = changeTab(actual_tab, CHESS);
 	modos = changeMode(modos, CHESS, 3);
 	glutSetWindow(window_1);
 	draw_scene();
@@ -788,6 +852,8 @@ void toggle_spin() {
 
 void toggle_cube() {
     mostrarTablero = false;
+    drawflat = false;
+    drawsmooth = false;
     drawWatt = false;
 	objeto = changeObject(objeto, CUBE);
 	glutSetWindow(window_1);
@@ -797,6 +863,8 @@ void toggle_cube() {
 
 void toggle_tetrahedron() {
     mostrarTablero = false;
+    drawflat = false;
+    drawsmooth = false;
     drawWatt = false;
 	objeto = changeObject(objeto, TETRAHEDRON);
 	glutSetWindow(window_1);
@@ -806,6 +874,8 @@ void toggle_tetrahedron() {
 
 void toggle_ply_static() {
     mostrarTablero = false;
+    drawflat = false;
+    drawsmooth = false;
     drawWatt = false;
 	objeto = changeObject(objeto, PLY_STATIC);
 	glutSetWindow(window_1);
@@ -815,6 +885,8 @@ void toggle_ply_static() {
 
 void toggle_ply_revolution() {
     mostrarTablero = false;
+    drawflat = false;
+    drawsmooth = false;
     drawWatt = false;
 	objeto = changeObject(objeto, PLY_REVOLUTION);
 	glutSetWindow(window_1);
@@ -824,6 +896,8 @@ void toggle_ply_revolution() {
 
 void toggle_cylinder() {
     mostrarTablero = false;
+    drawflat = false;
+    drawsmooth = false;
     drawWatt = false;
 	objeto = changeObject(objeto, CYLINDER);
 	glutSetWindow(window_1);
@@ -833,6 +907,8 @@ void toggle_cylinder() {
 
 void toggle_glass() {
     mostrarTablero = false;
+    drawflat = false;
+    drawsmooth = false;
     drawWatt = false;
 	objeto = changeObject(objeto, GLASS);
 	glutSetWindow(window_1);
@@ -842,6 +918,8 @@ void toggle_glass() {
 
 void toggle_glass_inverted() {
     mostrarTablero = false;
+    drawflat = false;
+    drawsmooth = false;
     drawWatt = false;
 	objeto = changeObject(objeto, GLASS_INVERTED);
 	glutSetWindow(window_1);
@@ -851,6 +929,8 @@ void toggle_glass_inverted() {
 
 void toggle_cone() {
     mostrarTablero = false;
+    drawflat = false;
+    drawsmooth = false;
     drawWatt = false;
 	objeto = changeObject(objeto, CONE);
 	glutSetWindow(window_1);
@@ -860,6 +940,8 @@ void toggle_cone() {
 
 void toggle_tube() {
     mostrarTablero = false;
+    drawflat = false;
+    drawsmooth = false;
     drawWatt = false;
 	objeto = changeObject(objeto, TUBE);
 	glutSetWindow(window_1);
@@ -869,6 +951,8 @@ void toggle_tube() {
 
 void toggle_sphere() {
     mostrarTablero = false;
+    drawflat = false;
+    drawsmooth = false;
     drawWatt = false;
 	objeto = changeObject(objeto, SPHERE);
 	glutSetWindow(window_1);
@@ -878,6 +962,8 @@ void toggle_sphere() {
 
 void toggle_watt() {
     mostrarTablero = false;
+    drawflat = false;
+    drawsmooth = false;
 	drawWatt = !drawWatt;
     objeto = changeObject(objeto, WATT);
 	glutSetWindow(window_1);
@@ -946,6 +1032,7 @@ void toggle_luz1() {
 }
 
 void toggle_flat() {
+    actual_tab = changeTab(actual_tab, FLAT);
     drawflat = !drawflat;
     drawsmooth = false;
     modos = changeMode(modos, NULL_, 6);
@@ -955,6 +1042,7 @@ void toggle_flat() {
 }
 
 void toggle_smooth() {
+    actual_tab = changeTab(actual_tab, SMOOTH);
     drawsmooth = !drawsmooth;
     drawflat = false;
     modos = changeMode(modos, NULL_, 6);

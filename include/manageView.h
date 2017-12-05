@@ -22,6 +22,7 @@
 #include "types.h"
 
 vector<ViewMode> changeMode(vector<ViewMode> oldMode, ViewMode newMode, int  i);
+ViewMode changeTab(ViewMode actual, ViewMode nuevo);
 TypeObject changeObject(TypeObject oldObject, TypeObject newObject);
 void drawModels(Models mods, TypeObject object, vector<ViewMode> mode);
 

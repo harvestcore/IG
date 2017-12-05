@@ -1023,7 +1023,6 @@ void Revolution3DObject::generateByRevolutionWithTexture() {
     triangles.clear();
     triangles = aux_triangles;
 
-    //***** 3. COORDS. TEXTURA *********************************************
     mapping(steps , counter);
 }
 

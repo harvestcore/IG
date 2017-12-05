@@ -42,6 +42,17 @@ vector<ViewMode> changeMode(vector<ViewMode> oldMode, ViewMode newMode, int  i) 
     return oldMode;
 }
 
+ViewMode changeTab(ViewMode actual, ViewMode nuevo) {
+    if (actual == NULL_)
+        actual = nuevo;
+    else if (actual == nuevo)
+        actual = NULL_;
+    else if (actual != nuevo)
+        actual = nuevo;
+
+    return actual;
+}
+
 TypeObject changeObject(TypeObject oldObject, TypeObject newObject) {
     if (oldObject == _NULL)
         oldObject = newObject;

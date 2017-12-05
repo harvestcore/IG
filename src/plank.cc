@@ -15,6 +15,10 @@ Plank::Plank() {
     height = 10;
     width = 10;
     cubes = 1;
+
+    cube.calculateNormalTriangles();
+    cube.calculateNormalPoints();
+    cube.setMaterial(1);
 }
 
 Plank::Plank(double height, double width, double cubes) {
@@ -59,22 +63,45 @@ void Plank::decrementSide() {
     cubes -= 1;
 }
 
-void Plank::generatePlank() {
+void Plank::drawCube(ViewMode mode) {
+    switch (mode) {
+        case MESH:
+            cube.drawMesh();
+            break;
+        case EDGES:
+            cube.drawEdges();
+            break;
+        case SOLID:
+            cube.drawSolid();
+            break;
+        case CHESS:
+            cube.drawChess();
+            break;
+        case FLAT:
+            cube.drawFlatSmoothing();
+            break;
+        case SMOOTH:
+            cube.drawGouraudSmoothing();
+            break;
+    }
+}
+
+void Plank::generatePlank(ViewMode mode) {
     double ancho = width / cubes;
     double alto = height / cubes;
+    anchoCubo = ancho;
+    altoCubo = alto;
 
     double auxAncho = 0;
     double auxAlto = 0;
 
     int ind = 2;
-    cube = new Cube();
-
 
     if (cubes == 1) {
         glMatrixMode(GL_MODELVIEW);
         glPushMatrix();
         glScalef(width,height,0.5);
-        cube->drawChess();
+        drawCube(mode);
         glPopMatrix();
     } else {
         for (int i = 0; i < cubes; ++i) {
@@ -84,7 +111,7 @@ void Plank::generatePlank() {
                 glTranslatef(-((cubes-1)*width)/(2*cubes),-((cubes-1)*height)/(2*cubes),0);
                 glTranslatef(auxAncho,auxAlto,0);
                 glScalef(ancho,alto,0.5);
-                cube->drawChess();
+                drawCube(mode);
                 glPopMatrix();
                 auxAncho += ancho;
             }
@@ -102,4 +129,36 @@ void Plank::generatePlank() {
     img.X_11 = width/2;
     img.Y_11 = height/2;
     img.thicc = 0.5/2;
+}
+
+void incrementTop() {
+
+}
+
+void decrementTop() {
+
+}
+
+void incrementBottom() {
+
+}
+
+void decrementBottom() {
+
+}
+
+void incrementLeft() {
+
+}
+
+void decrementLeft() {
+
+}
+
+void incrementRight() {
+
+}
+
+void decrementRight() {
+
 }

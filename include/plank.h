@@ -18,11 +18,14 @@
 
 class Plank {
     private:
-        Cube* cube;
+        Cube cube;
         double height;
         double width;
         double cubes;
         CoordenadasIMG img;
+        double anchoCubo;
+        double altoCubo;
+        bool calculado = false;
 
     public:
         Plank();
@@ -36,7 +39,16 @@ class Plank {
         void decrementWidth();
         void incrementSide();
         void decrementSide();
-        void generatePlank();
+        void drawCube(ViewMode mode);
+        void generatePlank(ViewMode mode);
+        void incrementTop();
+        void decrementTop();
+        void incrementBottom();
+        void decrementBottom();
+        void incrementLeft();
+        void decrementLeft();
+        void incrementRight();
+        void decrementRight();
 };
 
 #endif
