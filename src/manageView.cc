@@ -155,9 +155,6 @@ void drawModels(Models mods, TypeObject object, vector<ViewMode> mode) {
             break;
 
         case SPHERE:
-            glMatrixMode(GL_MODELVIEW);
-            glPushMatrix();
-            glScalef(0.01,0.01,0.01);
             if (mode[0] == MESH)
                 mods.v_Sphere.drawMesh();
             if (mode[1] == EDGES)
@@ -167,8 +164,8 @@ void drawModels(Models mods, TypeObject object, vector<ViewMode> mode) {
             if (mode[3] == CHESS)
                 mods.v_Sphere.drawChess();
             break;
-            glPopMatrix();
-        /*
+
+/*
         case WATT:
             if (mode[0] == MESH)
                 mods.v_Watt.draw(MESH);
@@ -179,6 +176,6 @@ void drawModels(Models mods, TypeObject object, vector<ViewMode> mode) {
             if (mode[3] == CHESS)
                 mods.v_Watt.draw(CHESS);
             break;
-        */
+*/
     }
 }

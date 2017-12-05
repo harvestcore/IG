@@ -39,7 +39,7 @@ class Models {
         Glass_Inverted v_Glass_Inverted;
         Cone v_Cone;
         Tube v_Tube;
-        Sphere v_Sphere;
+        Revolution3DObject v_Sphere;
         Watt v_Watt;
 
         Models();

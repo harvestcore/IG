@@ -173,8 +173,12 @@ class Object3D: public Simple3DObject {
         void drawGouraudSmoothing();
 
         void mapping(unsigned int a, unsigned int b);
+		vector<_vertex2f> getMap();
+
         void calculateNormalTriangles();
         void calculateNormalPoints();
+		void invertNormalTriangles();
+        void invertNormalPoints();
 };
 
 /**
@@ -251,6 +255,8 @@ class Revolution3DObject: public PlyObject {
         void setAnguloInicio(double newAngulo_inicio);
         void setAnguloFinal(double newAngulo_final);
 
+        void generateSphereProfile(double radius);
+
         /**
         *   Aumenta las diviones del objeto.
         */
@@ -282,11 +288,11 @@ class ALLFIGURE: public Revolution3DObject {
         void createTetrahedron();
         void createPly_Static(const string &filename);
         void createPly_Revolution(const string &filename);
-        void createCylinder();
-        void createGlass();
-        void createGlass_Inverted();
-        void createCone();
-        void createTube();
+        void createCylinder(float newRadius, float newHeight);
+        void createGlass(float newTopRadius, float newBottomRadius, float newHeight);
+        void createGlass_Inverted(float newTopRadius, float newBottomRadius, float newHeight);
+        void createCone(float newRadius, float newHeight);
+        void createTube(float newRadius, float newHeight);
         void createSphere();
 
 };

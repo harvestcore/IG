@@ -32,14 +32,20 @@ TypeObject objeto = _NULL;
 Watt watt_regulator;
 bool drawWatt = false;
 
+Revolution3DObject esfera_;
+ALLFIGURE TESTMUNDO;
+
+Revolution3DObject esfera_textura;
+Texture mundo("/home/angel/Dropbox/Universidad/Tercero/modif/P2_2/texturas/dia.jpg");
+
 vector<Materials> mat = {EMERALD,JADE,OBSIDIAN,PEARL,RUBY,TURQUOISE,BRASS,BRONCE,CHROME,COPPER,GOLD,SILVER,BLACK_PLASTIC,CYAN_PLASTIC,GREEN_PLASTIC,RED_PLASTIC,WHITE_PLASTIC,YELLOW_PLASTIC};
 int mat_index = 0;
 
-Texture foto("/mnt/c/Users/Angel/Dropbox/Universidad/Tercero/modif/P2_2/texturas/xd.jpg");
+Texture foto("/home/angel/Dropbox/Universidad/Tercero/modif/P2_2/texturas/xd.jpg");
 Plank tablero(25,25,25);
 bool mostrarTablero = false;
 
-ALLFIGURE cubo_, tetraedro_, beethoven_, peon_, cilindro_, vaso_, vaso2_, cono_, tubo_, esfera_;
+ALLFIGURE cubo_, tetraedro_, beethoven_, peon_, cilindro_, vaso_, vaso2_, cono_, tubo_;
 
 bool drawflat = false;
 bool drawsmooth = false;
@@ -113,52 +119,65 @@ void initialize_objects() {
     tetraedro_.calculateNormalPoints();
     tetraedro_.setMaterial(2);
 
-    beethoven_.readPly("/mnt/c/Users/Angel/Dropbox/Universidad/Tercero/modif/P2_2/ply/beethoven.ply");
+    beethoven_.readPly("/home/angel/Dropbox/Universidad/Tercero/modif/P2_2/ply/beethoven.ply");
     beethoven_.calculateNormalTriangles();
     beethoven_.calculateNormalPoints();
     beethoven_.setMaterial(3);
 
-    peon_.readPly("/mnt/c/Users/Angel/Dropbox/Universidad/Tercero/modif/P2_2/ply/peon.ply");
+    peon_.readPly("/home/angel/Dropbox/Universidad/Tercero/modif/P2_2/ply/peon.ply");
     peon_.setProfile(peon_.getVectorPoints());
     peon_.generateByRevolution('y', true);
     peon_.calculateNormalTriangles();
     peon_.calculateNormalPoints();
     peon_.setMaterial(4);
 
-    cilindro_.createCylinder();
+    cilindro_.createCylinder(4.0, 6.0);
     cilindro_.generateByRevolution('y', false);
     cilindro_.calculateNormalTriangles();
     cilindro_.calculateNormalPoints();
     cilindro_.setMaterial(5);
 
-    vaso_.createGlass();
+    vaso_.createGlass(5.0, 3.0, 6.0);
     vaso_.generateByRevolution('y', false);
     vaso_.calculateNormalTriangles();
     vaso_.calculateNormalPoints();
     vaso_.setMaterial(6);
 
-    vaso2_.createGlass_Inverted();
+    vaso2_.createGlass_Inverted(5.0, 3.0, 6.0);
     vaso2_.generateByRevolution('y', false);
     vaso2_.calculateNormalTriangles();
     vaso2_.calculateNormalPoints();
     vaso2_.setMaterial(7);
 
-    cono_.createCone();
+    cono_.createCone(4.0, 6.0);
     cono_.generateByRevolution('y', false);
     cono_.calculateNormalTriangles();
     cono_.calculateNormalPoints();
     cono_.setMaterial(8);
 
-    tubo_.createTube();
+    tubo_.createTube(4.0, 6.0);
     tubo_.generateByRevolution('y', false);
     tubo_.calculateNormalTriangles();
     tubo_.calculateNormalPoints();
     tubo_.setMaterial(9);
 
-    esfera_.readPly("/mnt/c/Users/Angel/Dropbox/Universidad/Tercero/modif/P2_2/ply/sphere.ply");
+    esfera_.generateSphereProfile(2.0);
+    esfera_.generateByRevolution('y', false);
     esfera_.calculateNormalTriangles();
     esfera_.calculateNormalPoints();
     esfera_.setMaterial(10);
+
+    esfera_textura.generateSphereProfile(2.0);
+    esfera_textura.generateByRevolution('y', false);
+    esfera_textura.generateByRevolutionWithTexture();
+    esfera_textura.calculateNormalTriangles();
+    esfera_textura.calculateNormalPoints();
+
+    TESTMUNDO.createCylinder(4.0, 6.0);
+    TESTMUNDO.generateByRevolution('y', false);
+    TESTMUNDO.generateByRevolutionWithTexture();
+    TESTMUNDO.calculateNormalTriangles();
+    TESTMUNDO.calculateNormalPoints();
 }
 
 
@@ -348,30 +367,31 @@ void drawHUD() {
     glLoadIdentity();
 
     glClear(GL_DEPTH_BUFFER_BIT);
-    glColor3f(1,0,0);
-
-    string data;
+    glColor3f(0,0,0);
 
 	if (objeto == WATT)
-        printText(30, 30, "Vel: " + dts(modelos.v_Watt.getSpeed()));
+        printText(20, 30, "Vel: " + dts(modelos.v_Watt.getSpeed()));
 
-    printText(30, 50, "FPS: " + dts(fps.getFPS()));
-    printText(30, 70, "Objeto: " + objectToString(objeto));
-    printText(30, 90, "Flat: " + booltostring(drawflat));
-    printText(30, 110, "Smooth: " + booltostring(drawsmooth));
-    printText(30, 130, "Luz: " + booltostring(luz_));
-    printText(30, 150, "Luz inf: " + booltostring(luz1_));
-    printText(30, 170, "Spin: " + booltostring(modelos.v_Watt.isSpinning()));
+    printText(20, 50, "FPS: " + dts(fps.getFPS()));
+    printText(20, 70, "Objeto: " + objectToString(objeto));
+    printText(20, 90, "Flat: " + booltostring(drawflat));
+    printText(20, 110, "Smooth: " + booltostring(drawsmooth));
+    printText(20, 130, "Luz: " + booltostring(luz_));
+    printText(20, 150, "Luz inf: " + booltostring(luz1_));
+    printText(20, 170, "Spin: " + booltostring(modelos.v_Watt.isSpinning()));
 
     if (drawflat || drawsmooth)
-        printText(30, 190, "Material: " + materialIDtostring(objectTomaterialID(objeto)));
+        printText(20, 190, "Material: " + materialIDtostring(objectTomaterialID(objeto)));
     else
-        printText(30, 190, "Material: Off");
+        printText(20, 190, "Material: Off");
+
+    printText(20, 210, "Tablero: " + booltostring(mostrarTablero));
 
     if (help_) {
-        printText(30, 830, "Mover luz: (WASD)");
-        printText(30, 850, "Mover camara: (Arrows)");
-        printText(30, 870, "Zoom: (AV/RE Pag)");
+        printText(20, 820, "Mover luz: (WASD)");
+        printText(20, 840, "Mover camara: (Arrows)");
+        printText(20, 860, "Zoom+ : (AVPag)");
+        printText(20, 880, "Zoom- : (REPag)");
     }
 
     glMatrixMode(GL_PROJECTION);
@@ -386,6 +406,10 @@ void drawHUD() {
 void draw_objects() {
 	glPointSize(3);
 	glLineWidth(1);
+
+
+    mundo.drawTextureRevolution(TESTMUNDO.getMap(), TESTMUNDO.getVectorPoints());
+
 
     if (!modelos.getModelsAreGenerated()) {
         modelos.initializeModels();
@@ -402,8 +426,8 @@ void draw_objects() {
 		restar = false;
 	}
 
-	if (modelos.v_Watt.isSpinning()){
-		modelos.v_Watt.giro();
+	if (watt_regulator.isSpinning()){
+		watt_regulator.giro();
 		glutPostRedisplay();
 	}
 
@@ -420,6 +444,21 @@ void draw_objects() {
     }
 
     drawModels(modelos, objeto, modos);
+
+    if (drawWatt) {
+        if (modos[0] == MESH)
+            watt_regulator.draw(MESH);
+        if (modos[1] == EDGES)
+            watt_regulator.draw(EDGES);
+        if (modos[2] == SOLID)
+            watt_regulator.draw(SOLID);
+        if (modos[3] == CHESS)
+            watt_regulator.draw(CHESS);
+        if (drawflat)
+            watt_regulator.draw(FLAT);
+        if (drawsmooth)
+            watt_regulator.draw(SMOOTH);
+    }
 
     if (mostrarTablero) {
         tablero.generatePlank();
@@ -469,11 +508,7 @@ void draw_objects() {
                 break;
 
             case SPHERE:
-                glMatrixMode(GL_MODELVIEW);
-                glPushMatrix();
-                glScalef(0.8,0.8,0.8);
                 esfera_.drawFlatSmoothing();
-                glPopMatrix();
                 break;
         }
     }
@@ -521,11 +556,7 @@ void draw_objects() {
                 break;
 
             case SPHERE:
-                glMatrixMode(GL_MODELVIEW);
-                glPushMatrix();
-                glScalef(0.8,0.8,0.8);
                 esfera_.drawGouraudSmoothing();
-                glPopMatrix();
                 break;
         }
     }
@@ -730,21 +761,24 @@ void toggle_menosDiv() {
 }
 
 void toggle_masVel() {
-	modelos.v_Watt.aumentarVelocidad();
+    watt_regulator.aumentarVelocidad();
+	//modelos.v_Watt.aumentarVelocidad();
 	glutSetWindow(window_1);
 	draw_scene();
 	glutSetWindow(window_2);
 }
 
 void toggle_menosVel() {
-	modelos.v_Watt.decrementarVelocidad();
+    watt_regulator.decrementarVelocidad();
+	//modelos.v_Watt.decrementarVelocidad();
 	glutSetWindow(window_1);
 	draw_scene();
 	glutSetWindow(window_2);
 }
 
 void toggle_spin() {
-	modelos.v_Watt.toggleSpinning();
+    watt_regulator.toggleSpinning();
+	//modelos.v_Watt.toggleSpinning();
 	glutSetWindow(window_1);
 	draw_scene();
 	glutSetWindow(window_2);
@@ -753,6 +787,8 @@ void toggle_spin() {
 ////////////
 
 void toggle_cube() {
+    mostrarTablero = false;
+    drawWatt = false;
 	objeto = changeObject(objeto, CUBE);
 	glutSetWindow(window_1);
 	draw_scene();
@@ -760,6 +796,8 @@ void toggle_cube() {
 }
 
 void toggle_tetrahedron() {
+    mostrarTablero = false;
+    drawWatt = false;
 	objeto = changeObject(objeto, TETRAHEDRON);
 	glutSetWindow(window_1);
 	draw_scene();
@@ -767,6 +805,8 @@ void toggle_tetrahedron() {
 }
 
 void toggle_ply_static() {
+    mostrarTablero = false;
+    drawWatt = false;
 	objeto = changeObject(objeto, PLY_STATIC);
 	glutSetWindow(window_1);
 	draw_scene();
@@ -774,6 +814,8 @@ void toggle_ply_static() {
 }
 
 void toggle_ply_revolution() {
+    mostrarTablero = false;
+    drawWatt = false;
 	objeto = changeObject(objeto, PLY_REVOLUTION);
 	glutSetWindow(window_1);
 	draw_scene();
@@ -781,6 +823,8 @@ void toggle_ply_revolution() {
 }
 
 void toggle_cylinder() {
+    mostrarTablero = false;
+    drawWatt = false;
 	objeto = changeObject(objeto, CYLINDER);
 	glutSetWindow(window_1);
 	draw_scene();
@@ -788,6 +832,8 @@ void toggle_cylinder() {
 }
 
 void toggle_glass() {
+    mostrarTablero = false;
+    drawWatt = false;
 	objeto = changeObject(objeto, GLASS);
 	glutSetWindow(window_1);
 	draw_scene();
@@ -795,6 +841,8 @@ void toggle_glass() {
 }
 
 void toggle_glass_inverted() {
+    mostrarTablero = false;
+    drawWatt = false;
 	objeto = changeObject(objeto, GLASS_INVERTED);
 	glutSetWindow(window_1);
 	draw_scene();
@@ -802,6 +850,8 @@ void toggle_glass_inverted() {
 }
 
 void toggle_cone() {
+    mostrarTablero = false;
+    drawWatt = false;
 	objeto = changeObject(objeto, CONE);
 	glutSetWindow(window_1);
 	draw_scene();
@@ -809,6 +859,8 @@ void toggle_cone() {
 }
 
 void toggle_tube() {
+    mostrarTablero = false;
+    drawWatt = false;
 	objeto = changeObject(objeto, TUBE);
 	glutSetWindow(window_1);
 	draw_scene();
@@ -816,6 +868,8 @@ void toggle_tube() {
 }
 
 void toggle_sphere() {
+    mostrarTablero = false;
+    drawWatt = false;
 	objeto = changeObject(objeto, SPHERE);
 	glutSetWindow(window_1);
 	draw_scene();
@@ -823,7 +877,9 @@ void toggle_sphere() {
 }
 
 void toggle_watt() {
-	objeto = changeObject(objeto, WATT);
+    mostrarTablero = false;
+	drawWatt = !drawWatt;
+    objeto = changeObject(objeto, WATT);
 	glutSetWindow(window_1);
 	draw_scene();
 	glutSetWindow(window_2);
@@ -892,6 +948,7 @@ void toggle_luz1() {
 void toggle_flat() {
     drawflat = !drawflat;
     drawsmooth = false;
+    modos = changeMode(modos, NULL_, 6);
     glutSetWindow(window_1);
     draw_scene();
     glutSetWindow(window_2);
@@ -900,6 +957,7 @@ void toggle_flat() {
 void toggle_smooth() {
     drawsmooth = !drawsmooth;
     drawflat = false;
+    modos = changeMode(modos, NULL_, 6);
     glutSetWindow(window_1);
     draw_scene();
     glutSetWindow(window_2);
@@ -907,6 +965,9 @@ void toggle_smooth() {
 
 void toggle_tablero() {
     mostrarTablero = !mostrarTablero;
+    drawWatt = false;
+    modos = changeMode(modos, NULL_, 6);
+    objeto = changeObject(objeto, _NULL);
     glutSetWindow(window_1);
     draw_scene();
     glutSetWindow(window_2);

@@ -540,6 +540,10 @@ void Object3D::mapping(unsigned int a, unsigned int b) {
     map = aux_points;
 }
 
+vector<_vertex2f> Object3D::getMap() {
+    return map;
+}
+
 void Object3D::calculateNormalTriangles() {
     vector<_vertex3f> v_aux(triangles.size());
 
@@ -587,6 +591,16 @@ void Object3D::calculateNormalPoints() {
     }
 
     normalPoints = v_aux;
+}
+
+void Object3D::invertNormalTriangles() {
+    for (int i = 0; i < normalTriangles.size(); ++i)
+        normalTriangles[i] = normalTriangles[i] * (-1);
+}
+
+void Object3D::invertNormalPoints() {
+    for (int i = 0; i < normalPoints.size(); ++i)
+        normalPoints[i] = normalPoints[i] * (-1);
 }
 
 PlyObject::PlyObject() {}
@@ -659,6 +673,26 @@ void Revolution3DObject::setAnguloInicio(double newAngulo_inicio) {
 
 void Revolution3DObject::setAnguloFinal(double newAngulo_final) {
     angulo_final = newAngulo_final;
+}
+
+void Revolution3DObject::generateSphereProfile(double radius) {
+    vector<_vertex3f> np;
+    _vertex3f aux;
+
+    aux.x = 0.0;
+    aux.y = -radius;
+    aux.z = 0.0;
+
+    np.push_back(aux);
+    double rotationAngle = PI / (steps - 1);
+
+    for (int i = 0; i < steps-1; ++i) {
+        aux = rotate_Z(aux, rotationAngle);
+        np.push_back(aux);
+    }
+
+    profile.clear();
+    profile = np;
 }
 
 void Revolution3DObject::moreSteps() {
@@ -804,111 +838,86 @@ void Revolution3DObject::generateByRevolution(char axis, bool addCovers) {
     *       !tapa superior  &&  tapa inferior
     *       !tapa superior  &&  !tapa inferior
     */
-    switch (bottomCover) {
-        case true:
-            switch (topCover) {
+    if (bottomCover) {
+        if (topCover) {
+            for(unsigned int i = 0; i < profile.size() - 2; ++i)
+                auxPoints[i] = profile[i+1];
 
-                /**
-                *   tapa superior   &&  tapa inferior
-                */
-                case true:
-                    for(unsigned int i = 0; i < profile.size() - 2; ++i)
-                        auxPoints[i] = profile[i+1];
-
-                    for(int i = 1; i < steps; ++i)
-                        for(unsigned int j = 0; j < profile.size() - 1; ++j)
-                            switch (axis) {
-                                case 'x':
-                                    auxPoints[i * counter + j] = rotate_X(profile[j + 1], rotationAngle * i);
-                                    break;
-                                case 'y':
-                                    auxPoints[i * counter + j] = rotate_Y(profile[j + 1], rotationAngle * i);
-                                    break;
-                                case 'z':
-                                    auxPoints[i * counter + j] = rotate_Z(profile[j + 1], rotationAngle * i);
-                                    break;
-                            }
-
-                    auxPoints[dots - 2] = profile[0];
-                    auxPoints[dots - 1] = profile[profile.size() - 1];
-                    break;
-
-                /**
-                *   !tapa superior   &&  tapa inferior
-                */
-                case false:
-                    for(unsigned int i = 0; i<profile.size() - 1; ++i)
-                        auxPoints[i] = profile[i + 1];
-
-                    for(int i = 1; i < steps; ++i)
-                        for(unsigned int j = 0; j < profile.size(); ++j)
-                            switch (axis) {
-                                case 'x':
-                                    auxPoints[i * counter + j] = rotate_X(profile[j + 1], rotationAngle * i);
-                                    break;
-                                case 'y':
-                                    auxPoints[i * counter + j] = rotate_Y(profile[j + 1], rotationAngle * i);
-                                    break;
-                                case 'z':
-                                    auxPoints[i * counter + j] = rotate_Z(profile[j + 1], rotationAngle * i);
-                                    break;
-                            }
-
-                    auxPoints[dots - 1] = profile[0];
-                    break;
-            }
-            break;
-
-        case false:
-            switch (topCover) {
-
-                /**
-                *   tapa superior   &&  !tapa inferior
-                */
-                case true:
-                    for(unsigned int i = 0; i < profile.size() - 1; ++i)
-                        auxPoints[i] = profile[i];
-
-                    for(int i = 1; i < steps; ++i) {
-                        for(unsigned int j = 0; j < profile.size() - 1; ++j)
-                            switch (axis) {
-                                case 'x':
-                                    auxPoints[i * counter + j] = rotate_X(profile[j], rotationAngle * i);
-                                    break;
-                                case 'y':
-                                    auxPoints[i * counter + j] = rotate_Y(profile[j], rotationAngle * i);
-                                    break;
-                                case 'z':
-                                    auxPoints[i * counter + j] = rotate_Z(profile[j], rotationAngle * i);
-                                    break;
-                            }
-
-                        auxPoints[dots - 1] = profile[profile.size() - 1];
+            for(int i = 1; i < steps; ++i)
+                for(unsigned int j = 0; j < profile.size() - 1; ++j)
+                    switch (axis) {
+                        case 'x':
+                            auxPoints[i * counter + j] = rotate_X(profile[j + 1], rotationAngle * i);
+                            break;
+                        case 'y':
+                            auxPoints[i * counter + j] = rotate_Y(profile[j + 1], rotationAngle * i);
+                            break;
+                        case 'z':
+                            auxPoints[i * counter + j] = rotate_Z(profile[j + 1], rotationAngle * i);
+                            break;
                     }
-                    break;
 
-                /**
-                *   !tapa superior   &&  !tapa inferior
-                */
-                case false:
-                    for(unsigned int i = 0; i < profile.size(); ++i)
-                        auxPoints[i] = profile[i];
+            auxPoints[dots - 2] = profile[0];
+            auxPoints[dots - 1] = profile[profile.size() - 1];
+        } else {
+                for(unsigned int i = 0; i<profile.size() - 1; ++i)
+                    auxPoints[i] = profile[i + 1];
 
-                    for(int i = 1; i < steps; ++i)
-                        for(unsigned int j = 0; j < counter; ++j)
-                            switch (axis) {
-                                case 'x':
-                                    auxPoints[i * counter + j] = rotate_X(profile[j], rotationAngle * i);
-                                    break;
-                                case 'y':
-                                    auxPoints[i * counter + j] = rotate_Y(profile[j], rotationAngle * i);
-                                    break;
-                                case 'z':
-                                    auxPoints[i * counter + j] = rotate_Z(profile[j], rotationAngle * i);
-                                    break;
-                            }
-                    break;
-            }
+                for(int i = 1; i < steps; ++i)
+                    for(unsigned int j = 0; j < profile.size(); ++j)
+                        switch (axis) {
+                            case 'x':
+                                auxPoints[i * counter + j] = rotate_X(profile[j + 1], rotationAngle * i);
+                                break;
+                            case 'y':
+                                auxPoints[i * counter + j] = rotate_Y(profile[j + 1], rotationAngle * i);
+                                break;
+                            case 'z':
+                                auxPoints[i * counter + j] = rotate_Z(profile[j + 1], rotationAngle * i);
+                                break;
+                        }
+
+                auxPoints[dots - 1] = profile[0];
+        }
+    } else {
+        if (topCover) {
+                for(unsigned int i = 0; i < profile.size() - 1; ++i)
+                    auxPoints[i] = profile[i];
+
+                for(int i = 1; i < steps; ++i) {
+                    for(unsigned int j = 0; j < profile.size() - 1; ++j)
+                        switch (axis) {
+                            case 'x':
+                                auxPoints[i * counter + j] = rotate_X(profile[j], rotationAngle * i);
+                                break;
+                            case 'y':
+                                auxPoints[i * counter + j] = rotate_Y(profile[j], rotationAngle * i);
+                                break;
+                            case 'z':
+                                auxPoints[i * counter + j] = rotate_Z(profile[j], rotationAngle * i);
+                                break;
+                        }
+
+                    auxPoints[dots - 1] = profile[profile.size() - 1];
+                }
+        } else {
+            for(unsigned int i = 0; i < profile.size(); ++i)
+                auxPoints[i] = profile[i];
+
+            for(int i = 1; i < steps; ++i)
+                for(unsigned int j = 0; j < counter; ++j)
+                    switch (axis) {
+                        case 'x':
+                            auxPoints[i * counter + j] = rotate_X(profile[j], rotationAngle * i);
+                            break;
+                        case 'y':
+                            auxPoints[i * counter + j] = rotate_Y(profile[j], rotationAngle * i);
+                            break;
+                        case 'z':
+                            auxPoints[i * counter + j] = rotate_Z(profile[j], rotationAngle * i);
+                            break;
+                    }
+        }
     }
 
     points.clear();
@@ -1061,46 +1070,47 @@ void ALLFIGURE::createPly_Revolution(const string &filename) {
     generateByRevolution('y', false);
 }
 
-void ALLFIGURE::createCylinder() {
+void ALLFIGURE::createCylinder(float newRadius, float newHeight) {
     points.clear();
     triangles.clear();
     profile.clear();
-    profile = {{0,-1,0},{1,-1,0},{1,1,0},{0,1,0}};
+    profile = {{0,-newHeight,0},{newRadius,-newHeight,0},{newRadius,newHeight,0},{0,newHeight,0}};
     generateByRevolution('y', false);
 }
 
-void ALLFIGURE::createGlass() {
+void ALLFIGURE::createGlass(float newTopRadius, float newBottomRadius, float newHeight) {
     points.clear();
     triangles.clear();
     profile.clear();
-    profile = {{0,-1,0},{0.5,-1,0},{1,1,0}};
+    profile = {{0,-newHeight,0},{newBottomRadius,-newHeight,0},{newTopRadius,newHeight,0}};
     generateByRevolution('y', false);
 }
 
-void ALLFIGURE::createGlass_Inverted() {
+void ALLFIGURE::createGlass_Inverted(float newTopRadius, float newBottomRadius, float newHeight) {
     points.clear();
     triangles.clear();
     profile.clear();
-    profile = {{0.5,-1,0},{1,1,0},{0,1,0}};
+    profile = {{newTopRadius,-newHeight,0},{newBottomRadius,newHeight,0},{0,newHeight,0}};
     generateByRevolution('y', false);
 }
 
-void ALLFIGURE::createCone() {
+void ALLFIGURE::createCone(float newRadius, float newHeight) {
     points.clear();
     triangles.clear();
     profile.clear();
-    profile = {{0,-1,0},{0.5,-1,0},{0,1,0}};
+    profile = {{0,-newHeight,0},{newRadius,-newHeight,0},{0,newHeight,0}};
     generateByRevolution('y', false);
 }
 
-void ALLFIGURE::createTube() {
+void ALLFIGURE::createTube(float newRadius, float newHeight) {
     points.clear();
     triangles.clear();
     profile.clear();
-    profile = {{0.5,-1,0},{0.5,1,0}};
+    profile = {{newRadius,-newHeight,0},{newRadius,newHeight,0}};
     generateByRevolution('y', false);
 }
 
 void ALLFIGURE::createSphere() {
-    readPly("/mnt/c/Users/Angel/Dropbox/Universidad/Tercero/modif/P2_2/ply/sphere.ply");
+    generateSphereProfile(2.0);
+    generateByRevolution('y', false);
 }

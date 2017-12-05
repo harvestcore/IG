@@ -23,16 +23,16 @@ bool Models::getModelsAreGenerated() {
 }
 
 void Models::initializeModels() {
-    Cube aux_cube(2);
+    Cube aux_cube(1);
     v_Cube = aux_cube;
 
-    Tetrahedron aux_tetrahedron(2);
+    Tetrahedron aux_tetrahedron(1);
     v_Tetrahedron = aux_tetrahedron;
 
-    Ply_Static aux_ply_static("/mnt/c/Users/Angel/Dropbox/Universidad/Tercero/modif/P2_2/ply/beethoven.ply");
+    Ply_Static aux_ply_static("/home/angel/Dropbox/Universidad/Tercero/modif/P2_2/ply/beethoven.ply");
     v_Ply_Static = aux_ply_static;
 
-    Ply_Revolution aux_ply_revolution("/mnt/c/Users/Angel/Dropbox/Universidad/Tercero/modif/P2_2/ply/peon.ply");
+    Ply_Revolution aux_ply_revolution("/home/angel/Dropbox/Universidad/Tercero/modif/P2_2/ply/peon.ply");
     v_Ply_Revolution = aux_ply_revolution;
     v_Ply_Revolution.generateByRevolution('y', true);
 
@@ -55,6 +55,9 @@ void Models::initializeModels() {
     Tube aux_tube(4, 6);
     v_Tube = aux_tube;
     v_Tube.generateByRevolution('y', false);
+
+    v_Sphere.generateSphereProfile(2.0);
+    v_Sphere.generateByRevolution('y', false);
 }
 
 void Models::addStep(TypeObject object) {

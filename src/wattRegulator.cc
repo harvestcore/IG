@@ -109,7 +109,6 @@ void Laterales::draw(ViewMode mode) {
     glTranslatef(1.5,-13,0);
 
     glTranslatef(-10,13,0);
-    glScalef(0.009,0.009,0.009);
     show(mode, SPHERE);
     glPopMatrix();
 
@@ -122,7 +121,6 @@ void Laterales::draw(ViewMode mode) {
     glTranslatef(-1.5,-13,0);
 
     glTranslatef(10,13,0);
-    glScalef(0.009,0.009,0.009);
     show(mode, SPHERE);
     glPopMatrix();
 }
