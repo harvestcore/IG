@@ -25,6 +25,7 @@ class Light {
         _vertex4f specular;
         _vertex4f diffuse;
         GLfloat alpha, beta;
+        float dist;
         bool directional;
         ALLFIGURE sphere;
 
@@ -38,6 +39,7 @@ class Light {
         void setDirectional(bool dir);
         void setAlpha(GLfloat alpha);
         void setBeta(GLfloat beta);
+        void setDist(float dist);
         void enable();
         void disable();
 };

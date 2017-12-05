@@ -980,7 +980,7 @@ void Revolution3DObject::generateByRevolution(char axis, bool addCovers) {
     triangles = auxTriangles;
 }
 
-
+/*
 void Revolution3DObject::generateByRevolutionWithTexture() {
     float rotationAngle = 2 * PI / steps;
     unsigned int counter = points.size();
@@ -1024,6 +1024,87 @@ void Revolution3DObject::generateByRevolutionWithTexture() {
     triangles = aux_triangles;
 
     mapping(steps , counter);
+}
+*/
+
+void Revolution3DObject::generateByRevolutionWithTexture() {
+    float rotation_angle;
+    vector<_vertex3i> caras;
+    vector<_vertex3f> vertices(profile);
+
+    rotation_angle = (2.0 * PI) / steps;
+
+    // Generamos la parte principal
+
+    for (int step = 0; step < steps; step++)
+    {
+        vector<_vertex3f> siguientePerfil(profile.size());
+        // Generamos los puntos rodaso
+        for (unsigned int k = 0; k < profile.size(); k++)
+            siguientePerfil[k] = rotate_Y(profile[k], rotation_angle);
+
+        // Añadimos los vertices al final del vector
+        vertices.insert(vertices.end(), siguientePerfil.begin(), siguientePerfil.end() );
+
+        // Generamos las caras
+        unsigned int inicioPerfil, finPerfil;
+        inicioPerfil = step * profile.size();
+        finPerfil = inicioPerfil + profile.size();
+
+        for (unsigned int i = inicioPerfil+1, k = finPerfil+1; i < finPerfil; i++, k++)
+        {
+            caras.push_back(_vertex3i(i-1, k-1, k));
+            caras.push_back(_vertex3i(i-1, k,   i));
+        }
+
+        profile = siguientePerfil;
+
+    }
+
+    // Generamos las tapas
+
+    // Generamos la tapa de abajo
+    if (vertices.front().x) {
+        // Agregamos el punto central, aunque no es necesario porque solo pintamos las caras
+        _vertex3f puntoCentral(0.0, vertices.front().y, 0.0);
+        vertices.push_back(puntoCentral);
+
+        for (int step = 0; step < steps; step++)
+        {
+            int perfilactual = step * profile.size();
+            int siguientePerfil = perfilactual + profile.size();
+            caras.push_back(_vertex3i(vertices.size()-1, siguientePerfil, perfilactual));
+
+        }
+
+    }
+
+    // Generamos la tapa de arriba
+    if (vertices[profile.size() - 1].x)
+    {
+
+        // Agregamos el punto central, aunque no es necesario porque solo pintamos las caras
+        _vertex3f puntoCentral(0.0, vertices[profile.size() - 1].y, 0.0);
+        vertices.push_back(puntoCentral);
+
+        for (int step = 0; step < steps; step++)
+        {
+            int perfilactual = (step+1) * profile.size() -1;
+            int siguientePerfil = perfilactual + profile.size();
+            caras.push_back(_vertex3i(vertices.size()-1, perfilactual,siguientePerfil)); // Hay que ponerlos al revés que en la otra tapa para que calcule bien las normales
+
+        }
+
+    }
+
+    points.clear();
+    triangles.clear();
+    points = vertices;
+    triangles = caras;
+
+    // Calcular coordenadas de textura
+    mapping(steps, profile.size());
+
 }
 
 void Revolution3DObject::regenerate() {

@@ -41,14 +41,6 @@ class Plank {
         void decrementSide();
         void drawCube(ViewMode mode);
         void generatePlank(ViewMode mode);
-        void incrementTop();
-        void decrementTop();
-        void incrementBottom();
-        void decrementBottom();
-        void incrementLeft();
-        void decrementLeft();
-        void incrementRight();
-        void decrementRight();
 };
 
 #endif

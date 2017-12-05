@@ -59,10 +59,10 @@ void Texture::drawTexture(CoordenadasIMG img) {
 
     glColor3f(1, 1, 1);
     glBegin(GL_QUADS);
-        glTexCoord2f(1, 1);         glVertex3f(img.X_10, img.Y_10, img.thicc + 0.1);
-        glTexCoord2f(0, 1);         glVertex3f(img.X_00, img.Y_00, img.thicc + 0.1);
-        glTexCoord2f(0, 0);         glVertex3f(img.X_01, img.Y_01, img.thicc + 0.1);
-        glTexCoord2f(1, 0);         glVertex3f(img.X_11, img.Y_11, img.thicc + 0.1);
+        glTexCoord2f(1, 1);         glVertex3f(img.X_10, img.Y_10, img.thicc + 0.015);
+        glTexCoord2f(0, 1);         glVertex3f(img.X_00, img.Y_00, img.thicc + 0.015);
+        glTexCoord2f(0, 0);         glVertex3f(img.X_01, img.Y_01, img.thicc + 0.015);
+        glTexCoord2f(1, 0);         glVertex3f(img.X_11, img.Y_11, img.thicc + 0.015);
     glEnd();
 
     glBindTexture(GL_TEXTURE_2D, 0);

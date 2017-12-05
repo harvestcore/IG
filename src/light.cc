@@ -46,6 +46,10 @@ void Light::setBeta(GLfloat beta) {
     this->beta = beta;
 }
 
+void Light::setDist(float dist) {
+    this->dist = dist;
+}
+
 void Light::setDirectional(bool dir) {
     if(dir) {
         directional = true;
@@ -67,7 +71,7 @@ void Light::enable() {
 
     glPushMatrix();
     glTranslatef(position.x, position.y, position.z);
-    glScalef(0.001,0.001,0.001);
+    glScalef(0.5,0.5,0.5);
     sphere.drawFlatSmoothing();
     glPopMatrix();
 

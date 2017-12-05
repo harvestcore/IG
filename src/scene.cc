@@ -42,7 +42,7 @@ Revolution3DObject esfera_;
 vector<Materials> mat = {EMERALD,JADE,OBSIDIAN,PEARL,RUBY,TURQUOISE,BRASS,BRONCE,CHROME,COPPER,GOLD,SILVER,BLACK_PLASTIC,CYAN_PLASTIC,GREEN_PLASTIC,RED_PLASTIC,WHITE_PLASTIC,YELLOW_PLASTIC};
 int mat_index = 0;
 
-Texture foto("/home/angel/Dropbox/Universidad/Tercero/modif/P2_2/texturas/xd.jpg");
+Texture foto("/home/angel/Dropbox/Universidad/Tercero/Practica 4/texturas/google.jpg");
 Plank tablero(25,25,25);
 bool mostrarTablero = false;
 
@@ -58,6 +58,8 @@ Light luz, luz_inf;
 bool luz_ = false;
 bool luz1_ = false;
 float alfa = 1, beta = 1;
+float dist = 0.0;
+float alfa2 = 1, beta2 = 1;
 
 Plank p(30.0, 30.0, 2.0);
 
@@ -99,7 +101,9 @@ void initialize_ligths() {
     luz.setSpecular(_vertex4f(0.8,0.8,0.8,1));
 
     luz_inf.setID(GL_LIGHT1);
-    luz_inf.setDirectional(false);
+    luz_inf.setDirectional(true);
+    luz_inf.setAlpha(2.5);
+    luz_inf.setBeta(2.5);
     luz_inf.setPosition(_vertex4f(0,50,0,0));
     luz_inf.setAmbient(_vertex4f(0.2,0.2,0.2,1));
     luz_inf.setDiffuse(_vertex4f(0.8,0.8,0.8,1));
@@ -120,12 +124,12 @@ void initialize_objects() {
     tetraedro_.calculateNormalPoints();
     tetraedro_.setMaterial(2);
 
-    beethoven_.readPly("/home/angel/Dropbox/Universidad/Tercero/modif/P2_2/ply/beethoven.ply");
+    beethoven_.readPly("/home/angel/Dropbox/Universidad/Tercero/Practica 4/ply/beethoven.ply");
     beethoven_.calculateNormalTriangles();
     beethoven_.calculateNormalPoints();
     beethoven_.setMaterial(3);
 
-    peon_.readPly("/home/angel/Dropbox/Universidad/Tercero/modif/P2_2/ply/peon.ply");
+    peon_.readPly("/home/angel/Dropbox/Universidad/Tercero/Practica 4/ply/peon.ply");
     peon_.setProfile(peon_.getVectorPoints());
     peon_.generateByRevolution('y', true);
     peon_.calculateNormalTriangles();
@@ -411,7 +415,10 @@ void drawHUD() {
     printText(20, 230, "Modo: " + modotoString(actual_tab));
 
     if (help_) {
-        printText(20, 820, "Mover luz: (WASD)");
+        printText(20, 760, "Acercar luz 1: (R)");
+        printText(20, 780, "Alejar luz 1: (F)");
+        printText(20, 800, "Mover luz 1: (WASD)");
+        printText(20, 820, "Mover luz inf: (UHJK)");
         printText(20, 840, "Mover camara: (Arrows)");
         printText(20, 860, "Zoom+ : (AVPag)");
         printText(20, 880, "Zoom- : (REPag)");
@@ -733,6 +740,11 @@ void draw_objects() {
 
     luz.setAlpha(alfa);
     luz.setBeta(beta);
+    luz.setPosition(_vertex4f(0,0,40 + dist,1));
+
+    luz_inf.setAlpha(alfa2);
+    luz_inf.setBeta(beta2);
+
     fps.incrementFrames();
 	drawHUD();
 }
@@ -1069,7 +1081,7 @@ void toggle_masCubo() {
 }
 
 void toggle_menosCubo() {
-    if (tablero.getCubes() > 0)
+    if (tablero.getCubes() > 1)
         tablero.decrementSide();
     glutSetWindow(window_1);
     draw_scene();
@@ -1583,6 +1595,14 @@ void normal_keys(unsigned char Tecla1,int x,int y) {
         case 'D': alfa += 1; break;
         case 'W': beta -= 1; break;
         case 'S': beta += 1; break;
+
+        case 'H': alfa2 -= 1; break;
+        case 'K': alfa2 += 1; break;
+        case 'U': beta2 -= 1; break;
+        case 'J': beta2 += 1; break;
+
+        case 'R': dist -= 1.0; break;
+        case 'F': dist += 1.0; break;
 	}
 
 	draw_scene();

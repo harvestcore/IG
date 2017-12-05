@@ -89,8 +89,6 @@ void Plank::drawCube(ViewMode mode) {
 void Plank::generatePlank(ViewMode mode) {
     double ancho = width / cubes;
     double alto = height / cubes;
-    anchoCubo = ancho;
-    altoCubo = alto;
 
     double auxAncho = 0;
     double auxAlto = 0;
@@ -129,36 +127,4 @@ void Plank::generatePlank(ViewMode mode) {
     img.X_11 = width/2;
     img.Y_11 = height/2;
     img.thicc = 0.5/2;
-}
-
-void incrementTop() {
-
-}
-
-void decrementTop() {
-
-}
-
-void incrementBottom() {
-
-}
-
-void decrementBottom() {
-
-}
-
-void incrementLeft() {
-
-}
-
-void decrementLeft() {
-
-}
-
-void incrementRight() {
-
-}
-
-void decrementRight() {
-
 }
