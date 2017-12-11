@@ -25,39 +25,60 @@ bool Models::getModelsAreGenerated() {
 void Models::initializeModels() {
     Cube aux_cube(1);
     v_Cube = aux_cube;
+    v_Cube.calculateNormalTriangles();
+    v_Cube.calculateNormalPoints();
 
     Tetrahedron aux_tetrahedron(1);
     v_Tetrahedron = aux_tetrahedron;
+    v_Tetrahedron.calculateNormalTriangles();
+    v_Tetrahedron.calculateNormalPoints();
 
     Ply_Static aux_ply_static("/home/angel/Dropbox/Universidad/Tercero/Practica 4/ply/beethoven.ply");
     v_Ply_Static = aux_ply_static;
+    v_Ply_Static.calculateNormalTriangles();
+    v_Ply_Static.calculateNormalPoints();
 
     Ply_Revolution aux_ply_revolution("/home/angel/Dropbox/Universidad/Tercero/Practica 4/ply/peon.ply");
     v_Ply_Revolution = aux_ply_revolution;
     v_Ply_Revolution.generateByRevolution('y', true);
+    v_Ply_Revolution.calculateNormalTriangles();
+    v_Ply_Revolution.calculateNormalPoints();
 
     Cylinder aux_cylinder(4, 6);
     v_Cylinder = aux_cylinder;
     v_Cylinder.generateByRevolution('y', false);
+    v_Cylinder.calculateNormalTriangles();
+    v_Cylinder.calculateNormalPoints();
 
     Glass aux_glass(5, 3, 6);
     v_Glass = aux_glass;
     v_Glass.generateByRevolution('y', false);
+    v_Glass.calculateNormalTriangles();
+    v_Glass.calculateNormalPoints();
 
     Glass_Inverted aux_glass_inverted(5, 3, 6);
     v_Glass_Inverted = aux_glass_inverted;
     v_Glass_Inverted.generateByRevolution('y', false);
+    v_Glass_Inverted.calculateNormalTriangles();
+    v_Glass_Inverted.calculateNormalPoints();
 
     Cone aux_cone(4, 6);
     v_Cone = aux_cone;
     v_Cone.generateByRevolution('y', false);
+    v_Cone.calculateNormalTriangles();
+    v_Cone.calculateNormalPoints();
 
     Tube aux_tube(4, 6);
     v_Tube = aux_tube;
     v_Tube.generateByRevolution('y', false);
+    v_Tube.calculateNormalTriangles();
+    v_Tube.calculateNormalPoints();
 
-    v_Sphere.generateSphereProfile(2.0);
-    v_Sphere.generateByRevolution('y', false);
+    Sphere aux_sphere(2.0);
+    v_Sphere = aux_sphere;
+    v_Sphere.calculateNormalTriangles();
+    v_Sphere.calculateNormalPoints();
+
 }
 
 void Models::addStep(TypeObject object) {

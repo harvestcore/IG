@@ -13,6 +13,7 @@
 #define	__PLANK__H__
 
 #include <GL/glut.h>
+#include <utility>
 #include "models.h"
 #include "types.h"
 
@@ -21,7 +22,7 @@ class Plank {
         Cube cube;
         double height;
         double width;
-        double cubes;
+        int cubes;
         CoordenadasIMG img;
         double anchoCubo;
         double altoCubo;
@@ -29,8 +30,8 @@ class Plank {
 
     public:
         Plank();
-        Plank(double height, double width, double cubes);
-        void init(double height, double width, double cubes);
+        Plank(double height, double width, int cubes);
+        void init(double height, double width, int cubes);
         CoordenadasIMG getCoordenadas();
         int getCubes();
         void incrementHeight();
@@ -40,7 +41,7 @@ class Plank {
         void incrementSide();
         void decrementSide();
         void drawCube(ViewMode mode);
-        void generatePlank(ViewMode mode);
+        void generatePlank(ViewMode mode, CoordenadasIMG);
 };
 
 #endif

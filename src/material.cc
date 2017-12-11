@@ -46,26 +46,6 @@ GLfloat Material::getBrightness() {
     return brightness;
 }
 
-bool Material::gotTexture() {
-    return texture != nullptr;
-}
-
-void Material::loadTexture(const char *file) {
-    texture = new Texture(file);
-}
-
-Texture Material::getTexture() {
-    return *texture;
-}
-
-void Material::enableTexture() {
-    //texture->drawTexture();
-}
-
-void Material::disableTexture() {
-    //texture->disable();
-}
-
 void Material::enable() {
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();

@@ -24,7 +24,6 @@ class Material {
         _vertex4f specular;
         _vertex4f diffuse;
         GLfloat brightness;
-        Texture *texture;
 
     public:
         Material();
@@ -36,11 +35,6 @@ class Material {
         _vertex4f getSpecular();
         _vertex4f getDiffuse();
         GLfloat getBrightness();
-        bool gotTexture();
-        void loadTexture(const char *file);
-        Texture getTexture();
-        void enableTexture();
-        void disableTexture();
         void enable();
         void disable();
 };

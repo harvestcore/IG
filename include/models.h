@@ -170,6 +170,7 @@ class Sphere: public Revolution3DObject {
     private:
     public:
         Sphere();
+        Sphere(double radius);
 };
 
 #endif

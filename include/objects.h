@@ -39,8 +39,7 @@ class Models {
         Glass_Inverted v_Glass_Inverted;
         Cone v_Cone;
         Tube v_Tube;
-        Revolution3DObject v_Sphere;
-        Watt v_Watt;
+        Sphere v_Sphere;
 
         Models();
         void setModelsAreGenerated(bool mod);

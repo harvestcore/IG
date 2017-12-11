@@ -216,3 +216,8 @@ Sphere::Sphere() {
     generateSphereProfile(1.0);
     generateByRevolution('y', false);
 }
+
+Sphere::Sphere(double radius) {
+    generateSphereProfile(radius);
+    generateByRevolution('y', false);
+}

@@ -39,7 +39,7 @@ class Texture {
         void loadTexture(const char *file);
         unsigned int getHeight();
         unsigned int getWidth();
-        void drawTexture(CoordenadasIMG img);
+        void drawTexture(CoordenadasIMG cubo, CoordenadasIMG text);
         void drawTextureRevolution(vector<_vertex2f> map, vector<_vertex3f> points);
         void removeTexture();
 };

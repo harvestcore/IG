@@ -160,6 +160,7 @@ void Object3D::incrementMaterialID() {
     if (materialID > 18) {
         materialID = 18;
     }
+    updateMaterial();
 }
 
 void Object3D::decrementMaterialID() {
@@ -167,6 +168,7 @@ void Object3D::decrementMaterialID() {
     if (materialID < 1) {
         materialID = 1;
     }
+    updateMaterial();
 }
 
 void Object3D::changeMaterial(Materials mat) {
@@ -460,17 +462,8 @@ void Object3D::drawFlatSmoothing() {
     glBegin(GL_TRIANGLES);
     for(unsigned int i=0;i< triangles.size();i++){
         glNormal3f(normalTriangles[i].x, normalTriangles[i].y, normalTriangles[i].z);
-        if(!map.empty()) {
-            glTexCoord2f(map[triangles[i]._0].s,map[triangles[i]._0].t);
-        }
         glVertex3f(points[triangles[i]._0].x, points[triangles[i]._0].y, points[triangles[i]._0].z);
-        if(!map.empty()) {
-            glTexCoord2f(map[triangles[i]._1].s,map[triangles[i]._1].t);
-        }
         glVertex3f(points[triangles[i]._1].x, points[triangles[i]._1].y, points[triangles[i]._1].z);
-        if(!map.empty()) {
-            glTexCoord2f(map[triangles[i]._2].s,map[triangles[i]._2].t);
-        }
         glVertex3f(points[triangles[i]._2].x, points[triangles[i]._2].y, points[triangles[i]._2].z);
     }
     glEnd();
@@ -499,45 +492,12 @@ void Object3D::drawGouraudSmoothing() {
         }
         glNormal3f(normalPoints[triangles[i]._0].x, normalPoints[triangles[i]._0].y, normalPoints[triangles[i]._0].z);
         glVertex3f(points[triangles[i]._0].x, points[triangles[i]._0].y, points[triangles[i]._0].z);
-        if(!map.empty()) {
-            glTexCoord2f(map[triangles[i]._1].s,map[triangles[i]._1].t);
-        }
         glNormal3f(normalPoints[triangles[i]._1].x, normalPoints[triangles[i]._1].y, normalPoints[triangles[i]._1].z);
         glVertex3f(points[triangles[i]._1].x, points[triangles[i]._1].y, points[triangles[i]._1].z);
-        if(!map.empty()) {
-            glTexCoord2f(map[triangles[i]._2].s,map[triangles[i]._2].t);
-        }
         glNormal3f(normalPoints[triangles[i]._2].x, normalPoints[triangles[i]._2].y, normalPoints[triangles[i]._2].z);
         glVertex3f(points[triangles[i]._2].x, points[triangles[i]._2].y, points[triangles[i]._2].z);
     }
     glEnd();
-}
-
-void Object3D::mapping(unsigned int a, unsigned int b) {
-    vector<_vertex2f> aux_points(points.size());
-    float var = 1.0 / a;
-    vector<float> dist(b);
-    float suma = 0.0;
-    dist[0] = suma;
-
-    for (unsigned int i = 1; i < b; ++i) {
-        suma += sqrt(pow(points[i].x - points[i - 1].x,2) + pow(points[i].y - points[i - 1].y,2));
-        dist[i] = suma;
-    }
-
-    for (unsigned int i = 0; i < b; ++i) {
-        dist[i] /= suma;
-    }
-
-    for (unsigned int i = 0; i < a + 1; ++i) {
-        for (unsigned int j = 0; j < b; ++j) {
-            aux_points[i * b + j].s = 1 - i * var;
-            aux_points[i * b + j].t = 1 - dist[j];
-        }
-    }
-
-    map.clear();
-    map = aux_points;
 }
 
 vector<_vertex2f> Object3D::getMap() {
@@ -561,6 +521,7 @@ void Object3D::calculateNormalTriangles() {
         N.normalize();
         v_aux[i] = N;
     }
+    normalTriangles.clear();
     normalTriangles = v_aux;
 }
 
@@ -590,6 +551,7 @@ void Object3D::calculateNormalPoints() {
         v_aux[i].normalize();
     }
 
+    normalPoints.clear();
     normalPoints = v_aux;
 }
 
@@ -1101,14 +1063,10 @@ void Revolution3DObject::generateByRevolutionWithTexture() {
     triangles.clear();
     points = vertices;
     triangles = caras;
-
-    // Calcular coordenadas de textura
-    mapping(steps, profile.size());
-
 }
 
 void Revolution3DObject::regenerate() {
-    this->generateByRevolution('y', false);
+    generateByRevolution('y', false);
 }
 
 ALLFIGURE::ALLFIGURE() {

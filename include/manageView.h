@@ -15,15 +15,23 @@
 #include <GL/glut.h>
 #include <vector>
 #include <iostream>
+#include <string>
 #include "3DObject.h"
 #include "vertex.h"
 #include "models.h"
 #include "objects.h"
 #include "types.h"
+#include "plank.h"
+#include "wattRegulator.h"
 
-vector<ViewMode> changeMode(vector<ViewMode> oldMode, ViewMode newMode, int  i);
-ViewMode changeTab(ViewMode actual, ViewMode nuevo);
+//  Maneja el modo de visión y el objeto actual.
+ViewMode currentMode(ViewMode actual, ViewMode nuevo);
 TypeObject changeObject(TypeObject oldObject, TypeObject newObject);
-void drawModels(Models mods, TypeObject object, vector<ViewMode> mode);
+
+//  Texto en pantalla.
+string objectToString(TypeObject obj);
+string modotoString(ViewMode mode);
+string booltostring(bool bts);
+string materialIDtostring(int mat);
 
 #endif

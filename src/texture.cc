@@ -45,7 +45,16 @@ unsigned int Texture::getWidth() {
     return width;
 }
 
-void Texture::drawTexture(CoordenadasIMG img) {
+void Texture::drawTexture(CoordenadasIMG cubo, CoordenadasIMG text) {
+    double x00 = 1 / text.X_00;
+    double y00 = 1 / text.Y_00;
+    double x01 = 1 / text.X_01;
+    double y01 = 1 / text.Y_01;
+    double x10 = 1 / text.X_10;
+    double y10 = 1 / text.Y_10;
+    double x11 = 1 / text.X_11;
+    double y11 = 1 / text.Y_11;
+
     glEnable(GL_TEXTURE_2D);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, ID);
@@ -59,10 +68,10 @@ void Texture::drawTexture(CoordenadasIMG img) {
 
     glColor3f(1, 1, 1);
     glBegin(GL_QUADS);
-        glTexCoord2f(1, 1);         glVertex3f(img.X_10, img.Y_10, img.thicc + 0.015);
-        glTexCoord2f(0, 1);         glVertex3f(img.X_00, img.Y_00, img.thicc + 0.015);
-        glTexCoord2f(0, 0);         glVertex3f(img.X_01, img.Y_01, img.thicc + 0.015);
-        glTexCoord2f(1, 0);         glVertex3f(img.X_11, img.Y_11, img.thicc + 0.015);
+        glTexCoord2f(text.X_11, text.Y_11);         glVertex3f(cubo.X_10, cubo.Y_10, cubo.thicc + 0.015);
+        glTexCoord2f(text.X_01, text.Y_01);         glVertex3f(cubo.X_00, cubo.Y_00, cubo.thicc + 0.015);
+        glTexCoord2f(text.X_00, text.Y_00);         glVertex3f(cubo.X_01, cubo.Y_01, cubo.thicc + 0.015);
+        glTexCoord2f(text.X_10, text.Y_10);         glVertex3f(cubo.X_11, cubo.Y_11, cubo.thicc + 0.015);
     glEnd();
 
     glBindTexture(GL_TEXTURE_2D, 0);

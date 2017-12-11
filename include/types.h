@@ -48,6 +48,11 @@ enum Materials {
     NULL_MATERIAL
 };
 
+enum MaterialManagemement {
+    ADD,
+    SUBTRACT
+};
+
 struct CoordenadasIMG {
     float X_00;
     float Y_00;
@@ -59,6 +64,24 @@ struct CoordenadasIMG {
     float Y_11;
 
     float thicc;
+};
+
+struct DrawMode {
+    bool mesh = false;
+    bool edges = false;
+    bool solid = false;
+    bool chess = false;
+    bool flat = false;
+    bool smooth = false;
+
+    void allFalse() {
+        mesh = false;
+        edges = false;
+        solid = false;
+        chess = false;
+        flat = false;
+        smooth = false;
+    }
 };
 
 #endif

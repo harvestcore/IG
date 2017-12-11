@@ -21,11 +21,11 @@ Plank::Plank() {
     cube.setMaterial(1);
 }
 
-Plank::Plank(double height, double width, double cubes) {
+Plank::Plank(double height, double width, int cubes) {
     init(height, width, cubes);
 }
 
-void Plank::init(double height, double width, double cubes) {
+void Plank::init(double height, double width, int cubes) {
     this->height = height;
     this->width = width;
     this->cubes = cubes;
@@ -36,7 +36,7 @@ CoordenadasIMG Plank::getCoordenadas() {
 }
 
 int Plank::getCubes() {
-    return (int) cubes;
+    return cubes;
 }
 
 void Plank::incrementHeight() {
@@ -86,14 +86,12 @@ void Plank::drawCube(ViewMode mode) {
     }
 }
 
-void Plank::generatePlank(ViewMode mode) {
+void Plank::generatePlank(ViewMode mode, CoordenadasIMG coords) {
     double ancho = width / cubes;
     double alto = height / cubes;
 
     double auxAncho = 0;
     double auxAlto = 0;
-
-    int ind = 2;
 
     if (cubes == 1) {
         glMatrixMode(GL_MODELVIEW);
@@ -118,13 +116,16 @@ void Plank::generatePlank(ViewMode mode) {
         }
     }
 
-    img.X_00 = -width/2;
-    img.Y_00 = -height/2;
-    img.X_01 = -width/2;
-    img.Y_01 = height/2;
-    img.X_10 = width/2;
-    img.Y_10 = -height/2;
-    img.X_11 = width/2;
-    img.Y_11 = height/2;
-    img.thicc = 0.5/2;
+    double auxWidth = width / 2;
+    double auxHeight = height / 2;
+
+    img.X_00 = -auxWidth + (auxWidth * coords.X_00);
+    img.Y_00 = -auxHeight + (auxHeight * coords.Y_00);
+    img.X_01 = -auxWidth + (auxWidth * coords.X_01);
+    img.Y_01 = (height * coords.Y_01) - auxHeight;
+    img.X_10 = (width * coords.X_10) - auxWidth;
+    img.Y_10 = -auxHeight + (auxHeight * coords.Y_10);
+    img.X_11 = (width * coords.X_11) - auxWidth;
+    img.Y_11 = (height * coords.Y_11) - auxHeight;
+    img.thicc = coords.thicc / 2;
 }
