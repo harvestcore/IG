@@ -31,9 +31,10 @@ vector<ViewMode> modos = {NULL_,NULL_,NULL_,NULL_,NULL_,NULL_,NULL_};
 TypeObject objeto = _NULL;
 ViewMode current_mode = NULL_;
 
-Texture foto("/home/angel/Dropbox/Universidad/Tercero/Practica 4/texturas/xd.jpg");
-Plank tablero(10,20,5);
+Texture foto("./texturas/google.jpg");
+Plank tablero(10,20,6,4);
 bool mostrarTablero = false;
+bool mostrarimagen = false;
 
 DrawMode drawmode;
 
@@ -100,7 +101,7 @@ void initialize_ligths() {
     luz_inf.setSpecular(_vertex4f(1,1,1,1));
 }
 
-void initialize_models() {  
+void initialize_models() {
     cube_.createCube();
     cube_.calculateNormalTriangles();
     cube_.calculateNormalPoints();
@@ -111,12 +112,12 @@ void initialize_models() {
     tetraedro_.calculateNormalPoints();
     tetraedro_.setMaterial(1);
 
-    beethoven_.readPly("/home/angel/Dropbox/Universidad/Tercero/Practica 4/ply/beethoven.ply");
+    beethoven_.readPly("./ply/beethoven.ply");
     beethoven_.calculateNormalTriangles();
     beethoven_.calculateNormalPoints();
     beethoven_.setMaterial(1);
 
-    peon_.createPly_Revolution("/home/angel/Dropbox/Universidad/Tercero/Practica 4/ply/peon.ply");
+    peon_.createPly_Revolution("./ply/peon.ply");
     peon_.calculateNormalTriangles();
     peon_.calculateNormalPoints();
     peon_.setMaterial(1);
@@ -557,24 +558,41 @@ void draw_objects() {
         }
         menos_material = false;
     }
-    
+
     if (mostrarTablero) {
         switch (current_mode) {
             case MESH:
                 tablero.generatePlank(MESH, parsingCoord.first);
-                foto.drawTexture(tablero.getCoordenadas(), parsingCoord.second);
+                if (mostrarimagen)
+                    foto.drawTexture(tablero.getCoordenadas(), parsingCoord.second);
                 glutPostRedisplay();
                 break;
-            
+
             case SOLID:
                 tablero.generatePlank(SOLID, parsingCoord.first);
-                foto.drawTexture(tablero.getCoordenadas(), parsingCoord.second);
+                if (mostrarimagen)
+                    foto.drawTexture(tablero.getCoordenadas(), parsingCoord.second);
                 glutPostRedisplay();
                 break;
 
             case CHESS:
                 tablero.generatePlank(CHESS, parsingCoord.first);
-                foto.drawTexture(tablero.getCoordenadas(), parsingCoord.second);
+                if (mostrarimagen)
+                    foto.drawTexture(tablero.getCoordenadas(), parsingCoord.second);
+                glutPostRedisplay();
+                break;
+
+            case FLAT:
+                tablero.generatePlank(FLAT, parsingCoord.first);
+                if (mostrarimagen)
+                    foto.drawTexture(tablero.getCoordenadas(), parsingCoord.second);
+                glutPostRedisplay();
+                break;
+
+            case SMOOTH:
+                tablero.generatePlank(SMOOTH, parsingCoord.first);
+                if (mostrarimagen)
+                    foto.drawTexture(tablero.getCoordenadas(), parsingCoord.second);
                 glutPostRedisplay();
                 break;
         }
@@ -791,8 +809,14 @@ Button masMaterial, menosMaterial;
 Button leerCoordenadas, leerCoordenadasTextura;
 Button help;
 
+Button mostrar_imagen;
+
 void exit_program() {
 	exit(0);
+}
+
+void toggle_mostrarimagen() {
+	mostrarimagen = !mostrarimagen;
 }
 
 void toggle_leerCoordenadas() {
@@ -1084,7 +1108,7 @@ void toggle_masCubo() {
 }
 
 void toggle_menosCubo() {
-    if (tablero.getCubes() > 1)
+    if (tablero.getCubesx() > 1)
         tablero.decrementSide();
     glutSetWindow(window_1);
     draw_scene();
@@ -1185,6 +1209,8 @@ void draw_buttons() {
     menosAncho.display();
     masAlto.display();
     menosAlto.display();
+
+    mostrar_imagen.display();
 }
 
 void handle_motion(int x, int y) {
@@ -1192,6 +1218,7 @@ void handle_motion(int x, int y) {
     help.handlemotion(x,y);
     leerCoordenadas.handlemotion(x,y);
     leerCoordenadasTextura.handlemotion(x,y);
+    mostrar_imagen.handlemotion(x,y);
 
 	mesh.handlemotion(x,y);
 	lines.handlemotion(x,y);
@@ -1244,6 +1271,7 @@ void handle_mouse(int button, int state, int x, int y) {
     help.handlemouse(button,state,x,y);
     leerCoordenadas.handlemouse(button, state, x, y);
     leerCoordenadasTextura.handlemouse(button, state, x, y);
+    mostrar_imagen.handlemouse(button,state,x,y);
 
 	mesh.handlemouse(button,state,x,y);
 	lines.handlemouse(button,state,x,y);
@@ -1510,6 +1538,12 @@ void generate_buttons() {
     menosMaterial.setaction(toggle_menosMaterial);
     menosMaterial.setactive(true);
 
+    mostrar_imagen.setpos(-0.05,-0.1);
+    mostrar_imagen.setsize(0.4,0.15);
+    mostrar_imagen.setlabel("Img");
+    mostrar_imagen.setaction(toggle_mostrarimagen);
+    mostrar_imagen.setactive(true);
+
     tab.setpos(0.4,0.8);
     tab.setsize(0.4,0.15);
     tab.setlabel("Tablero");
@@ -1520,13 +1554,13 @@ void generate_buttons() {
     masCubo.setsize(0.4,0.15);
     masCubo.setlabel("++Cube");
     masCubo.setaction(toggle_masCubo);
-    masCubo.setactive(true);
+    masCubo.setactive(false);
 
     menosCubo.setpos(0.4,0.5);
     menosCubo.setsize(0.4,0.15);
     menosCubo.setlabel("--Cube");
     menosCubo.setaction(toggle_menosCubo);
-    menosCubo.setactive(true);
+    menosCubo.setactive(false);
 
     masAncho.setpos(0.4,0.35);
     masAncho.setsize(0.4,0.15);

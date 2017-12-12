@@ -1,0 +1,8 @@
+En PRADO está subida una versión de la práctica anterior a la actual. Esta nueva versión la terminé poco después de subir la version anterior a PRADO. No actualicé el archivo en prado pues la entrega ya se encontraba cerrada.
+
+Los cambios añadidos a la nueva version son los siguientes:
+
+	- Se han añadido los botones para leer coordenadas del tablero y textura. (scene.cc)
+	- Se ha modificado lo que muestra el boton "Help" y el texto en pantalla. (scene.cc)
+	- Se ha limpiado el código borrando objetos que no se usaban y líneas innecesarias. (scene.cc y manageView.cc)
+	- Se ha terminado de implementar la lectura de coordenadas (textura y tablero). En la versión anterior no se encuentra esto porque al ejecutar no funcionaba. Esto tambien lo he terminado en el día de la defensa de la práctica. (scene.cc y plank.cc)

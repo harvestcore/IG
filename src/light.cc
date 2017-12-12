@@ -71,7 +71,7 @@ void Light::enable() {
 
     glPushMatrix();
     glTranslatef(position.x, position.y, position.z);
-    glScalef(0.5,0.5,0.5);
+    glScalef(0.3,0.3,0.3);
     sphere.drawFlatSmoothing();
     glPopMatrix();
 

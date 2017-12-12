@@ -23,6 +23,9 @@ class Plank {
         double height;
         double width;
         int cubes;
+
+        int cubesx, cubesy;
+
         CoordenadasIMG img;
         double anchoCubo;
         double altoCubo;
@@ -30,10 +33,11 @@ class Plank {
 
     public:
         Plank();
-        Plank(double height, double width, int cubes);
-        void init(double height, double width, int cubes);
+        Plank(double height, double width, int cubesx, int cubesy);
+        void init(double height, double width, int cubesx, int cubesy);
         CoordenadasIMG getCoordenadas();
-        int getCubes();
+        int getCubesx();
+        int getCubesy();
         void incrementHeight();
         void decrementHeight();
         void incrementWidth();

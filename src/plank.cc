@@ -15,28 +15,39 @@ Plank::Plank() {
     height = 10;
     width = 10;
     cubes = 1;
+    cubesx = 6;
+    cubesy = 4;
 
     cube.calculateNormalTriangles();
     cube.calculateNormalPoints();
     cube.setMaterial(1);
 }
 
-Plank::Plank(double height, double width, int cubes) {
-    init(height, width, cubes);
+Plank::Plank(double height, double width, int cubesx, int cubesy) {
+    init(height, width, cubesx, cubesy);
 }
 
-void Plank::init(double height, double width, int cubes) {
+void Plank::init(double height, double width, int cubesx, int cubesy) {
     this->height = height;
     this->width = width;
-    this->cubes = cubes;
+    this->cubesx = cubesx;
+    this->cubesy = cubesy;
+
+    cube.calculateNormalTriangles();
+    cube.calculateNormalPoints();
+    cube.setMaterial(1);
 }
 
 CoordenadasIMG Plank::getCoordenadas() {
     return img;
 }
 
-int Plank::getCubes() {
-    return cubes;
+int Plank::getCubesx() {
+    return cubesx;
+}
+
+int Plank::getCubesy() {
+    return cubesy;
 }
 
 void Plank::incrementHeight() {
@@ -87,8 +98,8 @@ void Plank::drawCube(ViewMode mode) {
 }
 
 void Plank::generatePlank(ViewMode mode, CoordenadasIMG coords) {
-    double ancho = width / cubes;
-    double alto = height / cubes;
+    double ancho = width / cubesx;
+    double alto = height / cubesy;
 
     double auxAncho = 0;
     double auxAlto = 0;
@@ -100,11 +111,11 @@ void Plank::generatePlank(ViewMode mode, CoordenadasIMG coords) {
         drawCube(mode);
         glPopMatrix();
     } else {
-        for (int i = 0; i < cubes; ++i) {
-            for (int j = 0; j < cubes; ++j) {
+        for (int i = 0; i < cubesy; ++i) {
+            for (int j = 0; j < cubesx; ++j) {
                 glMatrixMode(GL_MODELVIEW);
                 glPushMatrix();
-                glTranslatef(-((cubes-1)*width)/(2*cubes),-((cubes-1)*height)/(2*cubes),0);
+                glTranslatef(-((cubesx-1)*width)/(2*cubesx),-((cubesy-1)*height)/(2*cubesy),0);
                 glTranslatef(auxAncho,auxAlto,0);
                 glScalef(ancho,alto,0.5);
                 drawCube(mode);

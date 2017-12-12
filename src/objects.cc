@@ -33,12 +33,12 @@ void Models::initializeModels() {
     v_Tetrahedron.calculateNormalTriangles();
     v_Tetrahedron.calculateNormalPoints();
 
-    Ply_Static aux_ply_static("/home/angel/Dropbox/Universidad/Tercero/Practica 4/ply/beethoven.ply");
+    Ply_Static aux_ply_static("./ply/beethoven.ply");
     v_Ply_Static = aux_ply_static;
     v_Ply_Static.calculateNormalTriangles();
     v_Ply_Static.calculateNormalPoints();
 
-    Ply_Revolution aux_ply_revolution("/home/angel/Dropbox/Universidad/Tercero/Practica 4/ply/peon.ply");
+    Ply_Revolution aux_ply_revolution("./ply/peon.ply");
     v_Ply_Revolution = aux_ply_revolution;
     v_Ply_Revolution.generateByRevolution('y', true);
     v_Ply_Revolution.calculateNormalTriangles();
