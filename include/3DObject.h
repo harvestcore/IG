@@ -15,6 +15,7 @@
 #include <GL/glut.h>
 #include <vector>
 #include <utility>
+#include <stdlib.h> 
 #include <math.h>
 #include "vertex.h"
 #include "file_ply_stl.h"
@@ -93,9 +94,12 @@ class Object3D: public Simple3DObject {
         vector<_vertex3f> normalPoints;
         vector<_vertex2f> map;
         int materialID = 1;
+        GLint r;
+        GLint g;
+        GLint b;
 
 	public:
-        Material *material;
+        Material* material = nullptr;
 
 		/**
 		*	Constructor por defecto de la clase. Hace un clear del vector de triángulos.
@@ -179,6 +183,14 @@ class Object3D: public Simple3DObject {
         void calculateNormalPoints();
 		void invertNormalTriangles();
         void invertNormalPoints();
+
+        void setColor(GLint rr, GLint gg, GLint bb);
+        void generateRandomColor();
+        bool compareColor(int rr, int gg, int bb);
+
+        GLint getR();
+        GLint getG();
+        GLint getB();
 };
 
 /**

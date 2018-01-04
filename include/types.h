@@ -1,6 +1,8 @@
 #ifndef __TYPES__
 #define __TYPES__
 
+#include <GL/glut.h>
+
 enum ViewMode {
     MESH,
     EDGES,
@@ -51,6 +53,26 @@ enum Materials {
 enum MaterialManagemement {
     ADD,
     SUBTRACT
+};
+
+enum CameraType {
+    PERSPECTIVE,
+    ORTHOGONAL
+};
+
+struct CameraPosition3 {
+    GLfloat x;
+    GLfloat y;
+    GLfloat z;
+};
+
+struct CameraPosition6 {
+    GLfloat x;
+    GLfloat y;
+    GLfloat z;
+    GLfloat t;
+    GLfloat u;
+    GLfloat v;
 };
 
 struct CoordenadasIMG {

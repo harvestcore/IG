@@ -22,7 +22,18 @@ ViewMode currentMode(ViewMode actual, ViewMode nuevo) {
     return actual;
 }
 
-TypeObject changeObject(TypeObject oldObject, TypeObject newObject) {
+ALLFIGURE* changeObject(ALLFIGURE* oldObject, ALLFIGURE* newObject) {
+    if (oldObject == nullptr)
+        oldObject = newObject;
+    else if (oldObject == newObject)
+        oldObject = nullptr;
+    else if (oldObject != newObject)
+        oldObject = newObject;
+
+    return oldObject;
+}
+
+TypeObject changeCurrentObject(TypeObject oldObject, TypeObject newObject) {
     if (oldObject == _NULL)
         oldObject = newObject;
     else if (oldObject == newObject)
@@ -130,4 +141,11 @@ string materialIDtostring(int mat) {
         case 18:
             return "YELLOW_PLASTIC";
     }
+}
+
+string unsignedtostring(unsigned int num) {
+    if (num == 0)
+        return "" + 0;
+    else
+        return "" + (int) num;
 }

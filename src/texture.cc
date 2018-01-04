@@ -46,15 +46,6 @@ unsigned int Texture::getWidth() {
 }
 
 void Texture::drawTexture(CoordenadasIMG cubo, CoordenadasIMG text) {
-    double x00 = 1 / text.X_00;
-    double y00 = 1 / text.Y_00;
-    double x01 = 1 / text.X_01;
-    double y01 = 1 / text.Y_01;
-    double x10 = 1 / text.X_10;
-    double y10 = 1 / text.Y_10;
-    double x11 = 1 / text.X_11;
-    double y11 = 1 / text.Y_11;
-
     glEnable(GL_TEXTURE_2D);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, ID);

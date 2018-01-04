@@ -59,6 +59,9 @@ void Simple3DObject::drawMesh() {
 Object3D::Object3D() {
     triangles.clear();
     points.clear();
+    r = 0;
+    g = 127;
+    b = 255;
 }
 
 Object3D::Object3D(vector<_vertex3i> newTriangles, vector<_vertex3f> newMesh) {
@@ -117,7 +120,11 @@ void Object3D::drawEdges() {
 }
 
 void Object3D::drawSolid() {
-    glColor3f(0,0.5,1);
+    double rr = r / 255.0;
+    double gg = g / 255.0;
+    double bb = b / 255.0;
+
+    glColor3f(rr, gg, bb);
     glPolygonMode(GL_FRONT,GL_FILL);
     glBegin(GL_TRIANGLES);
     for (unsigned int i = 0; i < triangles.size(); ++i) {
@@ -337,11 +344,15 @@ void Object3D::changeMaterial(Materials mat) {
 
         case NULL_MATERIAL:
             delete material;
+            material = nullptr;
             break;
     }
 }
 
 void Object3D::setMaterial(int ID) {
+    if (material = nullptr)
+        initMaterial();
+
     switch (ID) {
         case 1:
             changeMaterial(EMERALD);
@@ -556,13 +567,44 @@ void Object3D::calculateNormalPoints() {
 }
 
 void Object3D::invertNormalTriangles() {
-    for (int i = 0; i < normalTriangles.size(); ++i)
+    for (unsigned int i = 0; i < normalTriangles.size(); ++i)
         normalTriangles[i] = normalTriangles[i] * (-1);
 }
 
 void Object3D::invertNormalPoints() {
-    for (int i = 0; i < normalPoints.size(); ++i)
+    for (unsigned int i = 0; i < normalPoints.size(); ++i)
         normalPoints[i] = normalPoints[i] * (-1);
+}
+
+void Object3D::setColor(GLint rr, GLint gg, GLint bb) {
+    r = rr;
+    g = gg;
+    b = bb;
+}
+
+void Object3D::generateRandomColor() {
+    srand (time(NULL));
+    GLint rr = rand() % 256;
+    GLint gg = rand() % 256;
+    GLint bb = rand() % 256;
+
+    setColor(rr, gg, bb);
+}
+
+bool Object3D::compareColor(GLint rr, GLint gg, GLint bb) {
+    return ((r == rr) && (g == gg) && (b == bb));
+}
+
+GLint Object3D::getR() {
+    return r;
+}
+
+GLint Object3D::getG() {
+    return g;
+}
+
+GLint Object3D::getB() {
+    return b;
 }
 
 PlyObject::PlyObject() {}
@@ -1070,6 +1112,11 @@ void Revolution3DObject::regenerate() {
 }
 
 ALLFIGURE::ALLFIGURE() {
+    points.clear();
+    triangles.clear();
+    normalPoints.clear();
+    normalTriangles.clear();
+    setMaterial(1);
 }
 
 void ALLFIGURE::createCube() {

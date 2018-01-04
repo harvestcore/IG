@@ -26,12 +26,16 @@
 
 //  Maneja el modo de visión y el objeto actual.
 ViewMode currentMode(ViewMode actual, ViewMode nuevo);
-TypeObject changeObject(TypeObject oldObject, TypeObject newObject);
+ALLFIGURE* changeObject(ALLFIGURE* oldObject, ALLFIGURE* newObject);
+TypeObject changeCurrentObject(TypeObject oldObject, TypeObject newObject);
 
 //  Texto en pantalla.
 string objectToString(TypeObject obj);
 string modotoString(ViewMode mode);
 string booltostring(bool bts);
 string materialIDtostring(int mat);
+string unsignedtostring(unsigned int num);
+
+//  Manejar selección
 
 #endif
