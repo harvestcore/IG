@@ -1,11 +1,3 @@
-//**************************************************************************
-// Práctica 1
-//
-// Domingo Martin Perandres 2013-2016
-//
-// GPL
-//**************************************************************************
-
 #include "stdlib.h"
 #include "stdio.h"
 #include <GL/glut.h>
@@ -27,6 +19,7 @@
 using namespace std;
 
 vector<bool> selectItems(9, false);
+bool pickItem = false;
 
 TypeObject objeto = _NULL;
 ViewMode current_mode = NULL_;
@@ -350,7 +343,7 @@ void drawHUD() {
     printText(20, 150, "Spin: " + booltostring(watt_regulator.isSpinning()));
 
     if (current_mode == FLAT || current_mode == SMOOTH)
-        printText(20, 170, "Material: " + materialIDtostring(objectTomaterialID(objeto)));
+        printText(20, 170, "Material: " + materialIDtostring(actual_->getMaterialID()));
     else
         printText(20, 170, "Material: Off");
 
@@ -359,10 +352,12 @@ void drawHUD() {
     printText(20, 230, "Modo seleccion: " + booltostring(modoSeleccion));
 
     if (help_) {
+        printText(20, 700, "Menu raton: (Right Click)");
+        printText(20, 720, "(De)Seleccionar objeto: (Left Click)");
         printText(20, 740, "Leer coordenadas: (Terminal)");
         printText(20, 760, "Acercar luz 1: (R)");
         printText(20, 780, "Alejar luz 1: (F)");
-        printText(20, 800, "Mover luz 1: (WASD/RightClick+Mouse)");
+        printText(20, 800, "Mover luz 1: (WASD/MouseWheelClick+Mouse)");
         printText(20, 820, "Mover luz inf: (UHJK)");
         printText(20, 840, "Mover camara: (Mouse/Arrows)");
         printText(20, 860, "Zoom+ : (AVPag/Wheel)");
@@ -373,6 +368,21 @@ void drawHUD() {
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
 
+}
+
+void drawobjmode() {
+    if (drawmode.mesh)
+        actual_->drawMesh();
+    if (drawmode.edges)
+        actual_->drawEdges();
+    if (drawmode.solid)
+        actual_->drawSolid();
+    if (drawmode.chess)
+        actual_->drawChess();
+    if (drawmode.flat)
+        actual_->drawFlatSmoothing();
+    if (drawmode.smooth)
+        actual_->drawGouraudSmoothing();
 }
 
 //**************************************************************************
@@ -396,18 +406,7 @@ void draw_objects_names() {
                     actual_->setColorSolid(255, 255, 0);
                     actual_->setMaterial(5);
                     actual_->setColorChess(255, 0, 255, 0, 0, 0);
-                    if (drawmode.mesh)
-                        actual_->drawMesh();
-                    if (drawmode.edges)
-                        actual_->drawEdges();
-                    if (drawmode.solid)
-                        actual_->drawSolid();
-                    if (drawmode.chess)
-                        actual_->drawChess();
-                    if (drawmode.flat)
-                        actual_->drawFlatSmoothing();
-                    if (drawmode.smooth)
-                        actual_->drawGouraudSmoothing();
+                    drawobjmode();
                 }
             } else {
                 glTranslatef(7*j-7,0,7*i-7);
@@ -418,18 +417,7 @@ void draw_objects_names() {
                     actual_->setColorSolid(0, 128, 255);
                     actual_->setMaterial(1);
                     actual_->setColorChess(255, 0, 0, 0, 255, 0);
-                    if (drawmode.mesh)
-                        actual_->drawMesh();
-                    if (drawmode.edges)
-                        actual_->drawEdges();
-                    if (drawmode.solid)
-                        actual_->drawSolid();
-                    if (drawmode.chess)
-                        actual_->drawChess();
-                    if (drawmode.flat)
-                        actual_->drawFlatSmoothing();
-                    if (drawmode.smooth)
-                        actual_->drawGouraudSmoothing();
+                    drawobjmode();
                 }
             }
             glPopMatrix();
@@ -538,22 +526,12 @@ void draw_objects() {
         }
 
         if (actual_ != nullptr) {
-            if (drawmode.mesh)
-                actual_->drawMesh();
-            if (drawmode.edges)
-                actual_->drawEdges();
-            if (drawmode.solid)
-                actual_->drawSolid();
-            if (drawmode.chess)
-                actual_->drawChess();
-            if (drawmode.flat)
-                actual_->drawFlatSmoothing();
-            if (drawmode.smooth)
-                actual_->drawGouraudSmoothing();
+            drawobjmode();
         }
     }
 
     if (modoSeleccion) {
+        /*
         for (unsigned int i = 0; i < vobjects.size(); ++i) {
             if (vobjects[i] != nullptr) {
                 if (drawmode.mesh)
@@ -571,7 +549,6 @@ void draw_objects() {
             }
         }
 
-        /*
         if (addobject) {
             ALLFIGURE* aux = actual_;
             aux->generateRandomColor();
@@ -1542,7 +1519,7 @@ void special_keys(int Tecla1,int x,int y) {
 // Funcion del ratón
 //***************************************************************************
 bool left_button_pressed = false;
-bool right_button_pressed = false;
+bool middle_button_pressed = false;
 #define BUFFER_SIZE 100
 
 void colorpick(int x, int y) {
@@ -1565,7 +1542,6 @@ void colorpick(int x, int y) {
 
 #define BUFFER_SIZE 100
 #define MAX_SELECTION 64
-GLuint selection_buffer[BUFFER_SIZE]={0};
 int seleccionado;
 
 void glpick(int x, int y) {
@@ -1688,21 +1664,22 @@ void handle_mouse(int button, int state, int x, int y) {
             Observer_distance*=1.03;
             glutPostRedisplay();
         }
-    }
+    }     
 
-    if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
-        glpick(x,y);
-    }        
-
-    if (button == GLUT_LEFT_BUTTON)
+    if (button == GLUT_LEFT_BUTTON) {
         left_button_pressed = true;
+        pickItem = !pickItem;
+    }
     else
         left_button_pressed = false;
 
-    if (button == GLUT_RIGHT_BUTTON)
-        right_button_pressed = true;
+    if (button == GLUT_MIDDLE_BUTTON)
+        middle_button_pressed = true;
     else
-        right_button_pressed = false;
+        middle_button_pressed = false;
+
+    if (pickItem)
+        glpick(x, y);
 
     glutPostRedisplay();
 }
@@ -1728,7 +1705,7 @@ void handle_mouse_movement(int x, int y) {
         glutPostRedisplay();
     }
 
-    if (right_button_pressed) {
+    if (middle_button_pressed) {
         if (x > lastx)
             alfa += 0.25;
         if (x < lastx)
@@ -1782,46 +1759,115 @@ void initialize2(void) {
 	glClearColor(1,1,1,1);
 }
 
-static int window;
-static int menu_id;
-static int submenu_id;
 static int value = 0; 
 
 void menu(int num){
     if(num == 0){
-        glutDestroyWindow(window);
         exit(0);
     }else{
         value = num;
     }
 
     switch (value) {
-        case 1:
-            glutPostRedisplay();
-            break;
-
-        case 2:
-            toggle_sphere();
-            break;
-        
-        case 3:
-            toggle_cone();
-            break;
+        case -1: toggle_help(); break;
+        case 1: glutPostRedisplay(); break;
+        case 2: toggle_cube(); break;
+        case 3: toggle_tetrahedron(); break;
+        case 4: toggle_ply_static(); break;
+        case 5: toggle_ply_revolution(); break;
+        case 6: toggle_cylinder(); break;
+        case 7: toggle_glass(); break;
+        case 8: toggle_glass_inverted(); break;
+        case 9: toggle_cone(); break;
+        case 10: toggle_tube(); break;
+        case 11: toggle_sphere(); break;
+        case 12: toggle_watt(); break;
+        case 13: toggle_mesh(); break;
+        case 14: toggle_edges(); break;
+        case 15: toggle_solid(); break;
+        case 16: toggle_chess(); break;
+        case 17: toggle_flat(); break;
+        case 18: toggle_smooth(); break;
+        case 19: toggle_modo_objetos(); break;
+        case 20: toggle_modo_seleccion(); break;
+        case 21: toggle_luz(); break;
+        case 22: toggle_luz1(); break;
+        case 23: toggle_masMaterial(); break;
+        case 24: toggle_menosMaterial(); break;
+        case 25: toggle_tablero(); break;
+        case 26: toggle_mostrarimagen(); break;
+        case 27: toggle_leerCoordenadas(); break;
+        case 28: toggle_leerCoordenadasTextura(); break;
+        case 29: toggle_masVel(); break;
+        case 30: toggle_menosVel(); break;
+        case 31: toggle_spin(); break;
     }
 
     glutPostRedisplay();
 }
 
+static int menu_id;
+static int submenu_obj, submenu_viewmode, submenu_mode, submenu_lights, submenu_material, submenu_tablero, submenu_watt;
+
 void createMenu(void){
-    submenu_id = glutCreateMenu(menu);
-    glutAddMenuEntry("Sphere", 2);
-    glutAddMenuEntry("Cone", 3);
-    glutAddMenuEntry("Torus", 4);
-    glutAddMenuEntry("Teapot", 5);
+    submenu_obj = glutCreateMenu(menu);
+    glutAddMenuEntry("Cubo", 2);
+    glutAddMenuEntry("Tetraedro", 3);
+    glutAddMenuEntry("Ply", 4);
+    glutAddMenuEntry("Ply Rev", 5);
+    glutAddMenuEntry("Cilindro", 6);
+    glutAddMenuEntry("Vaso", 7);
+    glutAddMenuEntry("Vaso Inv", 8);
+    glutAddMenuEntry("Cono", 9);
+    glutAddMenuEntry("Tubo", 10);
+    glutAddMenuEntry("Esfera", 11);
+    glutAddMenuEntry("Watt", 12);
+    
+    submenu_viewmode = glutCreateMenu(menu);
+    glutAddMenuEntry("Puntos", 13);
+    glutAddMenuEntry("Lineas", 14);
+    glutAddMenuEntry("Solido", 15);
+    glutAddMenuEntry("Ajedrez", 16);
+    glutAddMenuEntry("Flat", 17);
+    glutAddMenuEntry("Smooth", 18);
+
+    submenu_mode = glutCreateMenu(menu);
+    glutAddMenuEntry("Objetos", 19);
+    glutAddMenuEntry("Seleccion", 20);
+
+    submenu_lights = glutCreateMenu(menu);
+    glutAddMenuEntry("Luz 1", 21);
+    glutAddMenuEntry("Luz inf", 22);
+
+    submenu_material = glutCreateMenu(menu);
+    glutAddMenuEntry("++Mat", 23);
+    glutAddMenuEntry("--Mat", 24);
+
+    submenu_tablero = glutCreateMenu(menu);
+    glutAddMenuEntry("On/Off", 25);
+    glutAddMenuEntry("On/Off Img", 26);
+    glutAddMenuEntry("Leer Tab", 27);
+    glutAddMenuEntry("Leer Img", 28);
+
+    submenu_watt = glutCreateMenu(menu);
+    glutAddMenuEntry("On/Off", 12);
+    glutAddMenuEntry("++Vel", 29);
+    glutAddMenuEntry("--Vel", 30);
+    glutAddMenuEntry("Spin", 31);
+
     menu_id = glutCreateMenu(menu);
-    glutAddMenuEntry("Redisplay", 1);
-    glutAddSubMenu("Draw", submenu_id);
-    glutAddMenuEntry("Quit", 0);     glutAttachMenu(GLUT_MIDDLE_BUTTON);
+    glutAddSubMenu("Mode", submenu_mode);
+    glutAddSubMenu("Draw", submenu_obj);
+    glutAddSubMenu("Viewmode", submenu_viewmode);
+    glutAddSubMenu("Lights", submenu_lights);
+    glutAddSubMenu("Material", submenu_material);
+    glutAddSubMenu("Tablero", submenu_tablero);
+    glutAddSubMenu("Watt", submenu_watt);
+    glutAddMenuEntry("Help", -1);
+    glutAddMenuEntry("Redisplay", 1);    
+    glutAddMenuEntry("Quit", 0);
+    
+    glutAttachMenu(GLUT_RIGHT_BUTTON);
 } 
 
 
@@ -1856,7 +1902,7 @@ int main(int argc, char **argv) {
 
 	// llamada para crear la ventana, indicando el titulo (no se visualiza hasta que se llama
 	// al bucle de eventos)
-	window_1 = glutCreateWindow("Practica 4. Angel Gomez Martin");
+	window_1 = glutCreateWindow("Practica 5. Angel Gomez Martin");
 
 	// asignación de la funcion llamada "dibujar" al evento de dibujo
 	glutDisplayFunc(draw_scene);
