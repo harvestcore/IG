@@ -26,7 +26,7 @@
 
 using namespace std;
 
-vector<bool> pintado(9, false);
+vector<bool> selectItems(9, false);
 
 TypeObject objeto = _NULL;
 ViewMode current_mode = NULL_;
@@ -378,6 +378,67 @@ void drawHUD() {
 //**************************************************************************
 // Funcion que dibuja los objetos
 //**************************************************************************
+void draw_objects_names() {
+    glMatrixMode(GL_MODELVIEW);
+    glInitNames();
+    glPushName(0);
+    
+    for(int i=0; i < 3; ++i) {
+        for(int j=0; j < 3; ++j) {
+            glPushMatrix();
+            glLoadName(i*3+j+1);
+            if(selectItems[i*3+j]) {
+                glTranslatef(7*j-7,0,7*i-7);
+                glScalef(0.5,0.5,0.5);
+                if (actual_ != nullptr) {
+                    actual_->calculateNormalTriangles();
+                    actual_->calculateNormalPoints();
+                    actual_->setColorSolid(255, 255, 0);
+                    actual_->setMaterial(5);
+                    actual_->setColorChess(255, 0, 255, 0, 0, 0);
+                    if (drawmode.mesh)
+                        actual_->drawMesh();
+                    if (drawmode.edges)
+                        actual_->drawEdges();
+                    if (drawmode.solid)
+                        actual_->drawSolid();
+                    if (drawmode.chess)
+                        actual_->drawChess();
+                    if (drawmode.flat)
+                        actual_->drawFlatSmoothing();
+                    if (drawmode.smooth)
+                        actual_->drawGouraudSmoothing();
+                }
+            } else {
+                glTranslatef(7*j-7,0,7*i-7);
+                glScalef(0.5,0.5,0.5);
+                if (actual_ != nullptr) {
+                    actual_->calculateNormalTriangles();
+                    actual_->calculateNormalPoints();
+                    actual_->setColorSolid(0, 128, 255);
+                    actual_->setMaterial(1);
+                    actual_->setColorChess(255, 0, 0, 0, 255, 0);
+                    if (drawmode.mesh)
+                        actual_->drawMesh();
+                    if (drawmode.edges)
+                        actual_->drawEdges();
+                    if (drawmode.solid)
+                        actual_->drawSolid();
+                    if (drawmode.chess)
+                        actual_->drawChess();
+                    if (drawmode.flat)
+                        actual_->drawFlatSmoothing();
+                    if (drawmode.smooth)
+                        actual_->drawGouraudSmoothing();
+                }
+            }
+            glPopMatrix();
+        }
+    }
+    
+    glPopName();
+}
+
 void draw_objects() {
 	glPointSize(3);
 	glLineWidth(1);
@@ -510,6 +571,7 @@ void draw_objects() {
             }
         }
 
+        /*
         if (addobject) {
             ALLFIGURE* aux = actual_;
             aux->generateRandomColor();
@@ -535,31 +597,9 @@ void draw_objects() {
         
             deleteobject = false;
         }
+        */
 
-        glMatrixMode(GL_MODELVIEW);
-        glInitNames();
-        glPushName(0);
-        
-        for(unsigned int i=0; i<3; i++) {
-            for(unsigned int j=0; j<3; j++) {
-                glPushMatrix();
-                glLoadName(i*3+j+1);
-                if(pintado[i*3+j]) {
-                    glTranslatef(j-1.0,0,0.75*i-0.75);
-                    glScalef(0.1,0.1,0.1);
-                    beethoven_->setColor(255, 255, 0);
-                    beethoven_->drawSolid();
-                } else {
-                    glTranslatef(j-1.0,0,0.75*i-0.75);
-                    glScalef(0.1,0.1,0.1);
-                    beethoven_->setColor(0, 128, 255);
-                    beethoven_->drawSolid();
-                }
-                glPopMatrix();
-            }
-        }
-        
-        glPopName();
+        draw_objects_names();
     }
 
     luz.setAlpha(alfa);
@@ -583,35 +623,6 @@ void draw_objects() {
     fps.incrementFrames();
 	drawHUD();
 }
-
-void draw_objects_names() {
-    glMatrixMode(GL_MODELVIEW);
-    glInitNames();
-    glPushName(0);
-    
-    for(unsigned int i=0; i<3; i++) {
-        for(unsigned int j=0; j<3; j++) {
-            glPushMatrix();
-            glLoadName(i*3+j+1);
-            if(pintado[i*3+j]) {
-                glTranslatef(j-1.0,0,0.75*i-0.75);
-                glScalef(0.1,0.1,0.1);
-                beethoven_->setColor(255, 255, 0);
-                beethoven_->drawSolid();
-            } else {
-                glTranslatef(j-1.0,0,0.75*i-0.75);
-                glScalef(0.1,0.1,0.1);
-                beethoven_->setColor(0, 128, 255);
-                beethoven_->drawSolid();
-            }
-            glPopMatrix();
-        }
-    }
-    
-
-    glPopName();
-}
-
 
 //**************************************************************************
 // DRAW ESCENA
@@ -668,23 +679,6 @@ Button modo_objetos, modo_seleccion;
 Button add_objeto, delete_objeto;
 
 void exit_program() {
-    /*
-    delete actual_;
-    delete cube_;
-    delete tetraedro_;
-    delete beethoven_;
-    delete peon_;
-    delete cilindro_;
-    delete vaso_;
-    delete vaso2_;
-    delete cono_;
-    delete tubo_;
-    delete esfera_;
-    for (unsigned int i = 0; i < vobjects.size(); ++i) {
-        delete vobjects[i];
-    }
-    */
-
 	exit(0);
 }
 
@@ -1423,13 +1417,13 @@ void generate_buttons() {
     add_objeto.setsize(0.4,0.15);
     add_objeto.setlabel("++Obj");
     add_objeto.setaction(toggle_add_objeto);
-    add_objeto.setactive(true);
+    add_objeto.setactive(false);
 
     delete_objeto.setpos(-0.05,-1);
     delete_objeto.setsize(0.4,0.15);
     delete_objeto.setlabel("--Obj");
     delete_objeto.setaction(toggle_delete_objeto);
-    delete_objeto.setactive(true);
+    delete_objeto.setactive(false);
 }
 
 void draw_scene_button(void) {
@@ -1574,29 +1568,6 @@ void colorpick(int x, int y) {
 GLuint selection_buffer[BUFFER_SIZE]={0};
 int seleccionado;
 
-void procesarHits(GLint hits, GLuint* buffer) {
-    if (hits == -1)
-        hits = MAX_SELECTION;
-
-    if (hits > 0) {
-        GLuint auxprof;
-        seleccionado = selection_buffer[(0*4)+3];
-        GLfloat prof = (float) selection_buffer[(0*4)+1];
-
-        for (GLuint i = 0; i < hits; i++) {
-            auxprof = selection_buffer[(i*4)+1];
-
-            if(auxprof < prof) {
-                prof = auxprof;
-                seleccionado = selection_buffer[(i*4)+3];
-            }
-        }
-
-    } else {
-        seleccionado = 0;
-    }
-}
-
 void glpick(int x, int y) {
     GLuint Hits, Selection_buffer[BUFFER_SIZE];
     GLint Viewport[4];
@@ -1610,7 +1581,7 @@ void glpick(int x, int y) {
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPickMatrix(x, Viewport[3] - y, 2, 2, Viewport);
+    gluPickMatrix(x, Viewport[3] - y, 1, 1, Viewport);
     glFrustum(-Window_width,Window_width,-Window_height,Window_height,Front_plane,Back_plane);
     
     glMatrixMode(GL_MODELVIEW);
@@ -1624,15 +1595,15 @@ void glpick(int x, int y) {
     int seleccionado = -1;
 
     if (Hits > 0) {
-        int z1;
+        int auxprof;
         seleccionado = Selection_buffer[(0*4)+3];
 
-        int z=Selection_buffer[(0*4)+1];
+        int prof = Selection_buffer[(0*4)+1];
 
-        for(GLuint i=0; i<Hits; i++) {
-            z1=Selection_buffer[(i*4)+1];
-            if (z1 < z) {
-                z=z1;
+        for(int i = 0; i < Hits; ++i) {
+            auxprof = Selection_buffer[(i*4)+1];
+            if (auxprof < prof) {
+                prof = auxprof;
                 seleccionado = Selection_buffer[(i*4)+3];
             }
         }
@@ -1643,69 +1614,66 @@ void glpick(int x, int y) {
 
     switch(seleccionado) {
             case 1:
-                if(pintado[0]) {
-                    pintado[0] = false;
-                } else {
-                    pintado[0] = true;
-                }
+                if (selectItems[0])
+                    selectItems[0] = false;
+                else
+                    selectItems[0] = true;
                 break;
+
             case 2:
-                if(pintado[1]) {
-                    pintado[1] = false;
-                } else {
-                    pintado[1] = true;
-                }
+                if (selectItems[1])
+                    selectItems[1] = false;
+                else
+                    selectItems[1] = true;
                 break;
+
             case 3:
-                if(pintado[2]) {
-                    pintado[2] = false;
-                } else {
-                    pintado[2] = true;
-                }
+                if (selectItems[2])
+                    selectItems[2] = false;
+                else
+                    selectItems[2] = true;
                 break;
+
             case 4:
-                if(pintado[3]) {
-                    pintado[3] = false;
-                } else {
-                    pintado[3] = true;
-                }
+                if (selectItems[3])
+                    selectItems[3] = false;
+                else
+                    selectItems[3] = true;
                 break;
+
             case 5:
-                if(pintado[4]) {
-                    pintado[4] = false;
-                } else {
-                    pintado[4] = true;
-                }
+                if (selectItems[4])
+                    selectItems[4] = false;
+                else
+                    selectItems[4] = true;
                 break;
+
             case 6:
-                if(pintado[5]) {
-                    pintado[5] = false;
-                } else {
-                    pintado[5] = true;
-                }
+                if (selectItems[5])
+                    selectItems[5] = false;
+                else
+                    selectItems[5] = true;
                 break;
+
             case 7:
-                if(pintado[6]) {
-                    pintado[6] = false;
-                } else {
-                    pintado[6] = true;
-                }
+                if (selectItems[6])
+                    selectItems[6] = false;
+                else
+                    selectItems[6] = true;
                 break;
+
             case 8:
-                if(pintado[7]) {
-                    pintado[7] = false;
-                } else {
-                    pintado[7] = true;
-                }
+                if (selectItems[7])
+                    selectItems[7] = false;
+                else
+                    selectItems[7] = true;
                 break;
+
             case 9:
-                if(pintado[8]) {
-                    pintado[8] = false;
-                } else {
-                    pintado[8] = true;
-                }
-                break;
-            default:
+                if (selectItems[8])
+                    selectItems[8] = false;
+                else
+                    selectItems[8] = true;
                 break;
         }
 }
@@ -1814,6 +1782,49 @@ void initialize2(void) {
 	glClearColor(1,1,1,1);
 }
 
+static int window;
+static int menu_id;
+static int submenu_id;
+static int value = 0; 
+
+void menu(int num){
+    if(num == 0){
+        glutDestroyWindow(window);
+        exit(0);
+    }else{
+        value = num;
+    }
+
+    switch (value) {
+        case 1:
+            glutPostRedisplay();
+            break;
+
+        case 2:
+            toggle_sphere();
+            break;
+        
+        case 3:
+            toggle_cone();
+            break;
+    }
+
+    glutPostRedisplay();
+}
+
+void createMenu(void){
+    submenu_id = glutCreateMenu(menu);
+    glutAddMenuEntry("Sphere", 2);
+    glutAddMenuEntry("Cone", 3);
+    glutAddMenuEntry("Torus", 4);
+    glutAddMenuEntry("Teapot", 5);
+    menu_id = glutCreateMenu(menu);
+    glutAddMenuEntry("Redisplay", 1);
+    glutAddSubMenu("Draw", submenu_id);
+    glutAddMenuEntry("Quit", 0);     glutAttachMenu(GLUT_MIDDLE_BUTTON);
+} 
+
+
 
 //***************************************************************************
 // Programa principal
@@ -1855,9 +1866,13 @@ int main(int argc, char **argv) {
 	glutKeyboardFunc(normal_keys);
 	// asignación de la funcion llamada "tecla_Especial" al evento correspondiente
 	glutSpecialFunc(special_keys);
+    // menu
+    createMenu();
+    
     // Raton
     glutMouseFunc(handle_mouse);
     glutMotionFunc(handle_mouse_movement);
+    
     
     // funcion de inicialización
 	initialize();

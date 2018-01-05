@@ -94,9 +94,10 @@ class Object3D: public Simple3DObject {
         vector<_vertex3f> normalPoints;
         vector<_vertex2f> map;
         int materialID = 1;
-        GLint r;
-        GLint g;
-        GLint b;
+        ColorRGB solid;
+        ColorRGB chessA;
+        ColorRGB chessB;
+        
 
 	public:
         Material* material = nullptr;
@@ -184,13 +185,15 @@ class Object3D: public Simple3DObject {
 		void invertNormalTriangles();
         void invertNormalPoints();
 
-        void setColor(GLint rr, GLint gg, GLint bb);
+        void setColorSolid(GLint rr, GLint gg, GLint bb);
+        void setColorChess(GLint r1, GLint g1, GLint b1, GLint r2, GLint g2, GLint b2);
         void generateRandomColor();
         bool compareColor(int rr, int gg, int bb);
 
-        GLint getR();
-        GLint getG();
-        GLint getB();
+        ColorRGB getColorSolid();
+        ColorRGB getColorChessA();
+        ColorRGB getColorChessB();
+
 };
 
 /**

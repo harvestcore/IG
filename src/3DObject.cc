@@ -59,9 +59,17 @@ void Simple3DObject::drawMesh() {
 Object3D::Object3D() {
     triangles.clear();
     points.clear();
-    r = 0;
-    g = 127;
-    b = 255;
+    solid.r = 0;
+    solid.g = 127;
+    solid.b = 255;
+
+    chessA.r = 255;
+    chessA.g = 0;
+    chessA.b = 0;
+
+    chessB.r = 0;
+    chessB.g = 255;
+    chessB.b = 0;
 }
 
 Object3D::Object3D(vector<_vertex3i> newTriangles, vector<_vertex3f> newMesh) {
@@ -120,9 +128,9 @@ void Object3D::drawEdges() {
 }
 
 void Object3D::drawSolid() {
-    double rr = r / 255.0;
-    double gg = g / 255.0;
-    double bb = b / 255.0;
+    double rr = solid.r / 255.0;
+    double gg = solid.g / 255.0;
+    double bb = solid.b / 255.0;
 
     glColor3f(rr, gg, bb);
     glPolygonMode(GL_FRONT,GL_FILL);
@@ -141,10 +149,10 @@ void Object3D::drawChess() {
     for (unsigned int i = 0; i < triangles.size(); ++i) {
         switch(i % 2) {
             case 0:
-                glColor3f(1,0,0);
+                glColor3f(chessA.r/255.0, chessA.g/255.0, chessA.b/255.0);
                 break;
             case 1:
-                glColor3f(0,1,0);
+                glColor3f(chessB.r/255.0, chessB.g/255.0, chessB.b/255.0);
                 break;
         }
         glVertex3fv((GLfloat *) &points[triangles[i]._0]);
@@ -576,10 +584,20 @@ void Object3D::invertNormalPoints() {
         normalPoints[i] = normalPoints[i] * (-1);
 }
 
-void Object3D::setColor(GLint rr, GLint gg, GLint bb) {
-    r = rr;
-    g = gg;
-    b = bb;
+void Object3D::setColorSolid(GLint rr, GLint gg, GLint bb) {
+    solid.r = rr;
+    solid.g = gg;
+    solid.b = bb;
+}
+
+void Object3D::setColorChess(GLint r1, GLint g1, GLint b1, GLint r2, GLint g2, GLint b2) {
+    chessA.r = r1;
+    chessA.g = g1;
+    chessA.b = b1;
+
+    chessB.r = r2;
+    chessB.g = g2;
+    chessB.b = b2;
 }
 
 void Object3D::generateRandomColor() {
@@ -588,23 +606,23 @@ void Object3D::generateRandomColor() {
     GLint gg = rand() % 256;
     GLint bb = rand() % 256;
 
-    setColor(rr, gg, bb);
+    setColorSolid(rr, gg, bb);
 }
 
 bool Object3D::compareColor(GLint rr, GLint gg, GLint bb) {
-    return ((r == rr) && (g == gg) && (b == bb));
+    return ((solid.r == rr) && (solid.g == gg) && (solid.b == bb));
 }
 
-GLint Object3D::getR() {
-    return r;
+ColorRGB Object3D::getColorSolid() {
+    return solid;
 }
 
-GLint Object3D::getG() {
-    return g;
+ColorRGB Object3D::getColorChessA() {
+    return chessA;
 }
 
-GLint Object3D::getB() {
-    return b;
+ColorRGB Object3D::getColorChessB() {
+    return chessB;
 }
 
 PlyObject::PlyObject() {}

@@ -60,6 +60,12 @@ enum CameraType {
     ORTHOGONAL
 };
 
+struct ColorRGB {
+    GLint r;
+    GLint g;
+    GLint b;
+};
+
 struct CameraPosition3 {
     GLfloat x;
     GLfloat y;
