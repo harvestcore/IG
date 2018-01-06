@@ -14,49 +14,45 @@
 
 #include <GL/glut.h>
 #include "types.h"
+#include "vertex.h"
 
 class Camera {
     private:
         CameraType type;
-
         
         GLfloat left;
         GLfloat right;
-        GLfloat up;
-        GLfloat down;
-        GLfloat backPlane;
-        GLfloat frontPlane;
+        GLfloat top;
+        GLfloat bottom;
+        GLfloat backplane;
+        GLfloat frontplane;
         
         GLfloat observerDistance;
-        GLfloat observerAngleX;
-        GLfloat observerAngleY;
+        _vertex2f observerAngle;
+        _vertex3f position;
+        _vertex3f center;
 
-        GLfloat cameraPosX;
-        GLfloat cameraPosY;
-        GLfloat cameraPosZ;
-
-        GLfloat cameraCenterPosX;
-        GLfloat cameraCenterPosY;
-        GLfloat cameraCenterPosZ;
-
-        GLfloat vectorX;
-        GLfloat vectorY;
-        GLfloat vectorZ;
+        _vertex3f offset;
 
         void projectPerspective();
         void projectOrthogonal();
 
     public:
         Camera();
-        Camera(CameraType newtype, CameraPosition3 pos, CameraPosition3 center, CameraPosition3 vector, CameraPosition3 observer, CameraPosition6 window);
-        CameraType getType();
+
         void setType(CameraType newtype);
-        void setCameraPosition(CameraPosition3 pos);
-        void setCameraCenter(CameraPosition3 center);
-        void setCameraVector(CameraPosition3 vector);
-        void setObserver(CameraPosition3 observer);
-        void setWindow(CameraPosition6 window);
+        void setPosition(_vertex3f pos);
+        void setCenter(_vertex3f center);
+        void setObserverAngle(_vertex2f angle);
+        void setObserverDistance(GLfloat observerDistance);
+        void setPlanes(GLfloat frontplane, GLfloat backplane);
+        void setCoordinates(GLfloat top, GLfloat bottom, GLfloat left, GLfloat right);
+        void setOffset(_vertex3f offset);
+
+        CameraType getType();
+
         void lookAt();
+        void move();
         void project();
         void moveForward();
         void moveBackward();

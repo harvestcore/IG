@@ -35,6 +35,7 @@ string modotoString(ViewMode mode);
 string booltostring(bool bts);
 string materialIDtostring(int mat);
 string unsignedtostring(unsigned int num);
+string cameratypetostring(CameraType type);
 
 //  Manejar selección
 

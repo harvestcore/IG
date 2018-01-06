@@ -14,50 +14,40 @@
 Camera::Camera() {
 }
 
-Camera::Camera(CameraType newtype, CameraPosition3 pos, CameraPosition3 center, CameraPosition3 vector, CameraPosition3 observer, CameraPosition6 window) {
-    setType(newtype);  
-    setCameraPosition(pos);
-    setCameraCenter(center);
-    setCameraVector(vector);
-    setObserver(observer);
-    setWindow(window);
+void Camera::setType(CameraType type) {
+    this->type = type;
 }
 
-void Camera::setType(CameraType newtype) {
-    type = newtype;
+void Camera::setPosition(_vertex3f position) {
+    this->position = position;
 }
 
-void Camera::setCameraPosition(CameraPosition3 pos) {
-    cameraPosX = pos.x;
-    cameraPosY = pos.y;
-    cameraPosZ = pos.z;
+void Camera::setCenter(_vertex3f center) {
+    this->center = center;
 }
 
-void Camera::setCameraCenter(CameraPosition3 center) {
-    cameraCenterPosX = center.x;
-    cameraCenterPosY = center.y;
-    cameraCenterPosZ = center.z;
+void Camera::setObserverAngle(_vertex2f observerAngle) {
+    this->observerAngle = observerAngle;
 }
 
-void Camera::setCameraVector(CameraPosition3 vector) {
-    vectorX = vector.x;
-    vectorY = vector.y;
-    vectorZ = vector.z;
+void Camera::setObserverDistance(GLfloat observerDistance) {
+    this->observerDistance = observerDistance;
 }
 
-void Camera::setObserver(CameraPosition3 observer) {
-    observerAngleX = observer.x;
-    observerAngleY = observer.y;
-    observerDistance = observer.z;
+void Camera::setPlanes(GLfloat frontplane, GLfloat backplane) {
+    this->frontplane = frontplane;
+    this->backplane = backplane;
 }
 
-void Camera::setWindow(CameraPosition6 window) {
-    left = window.x;
-    right = window.y;
-    up = window.z;
-    down = window.t;
-    backPlane = window.u;
-    frontPlane = window.v;
+void Camera::setCoordinates(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top) {
+    this->top = top;
+    this->bottom = bottom;
+    this->left = left;
+    this->right = right;
+}
+
+void Camera::setOffset(_vertex3f offset) {
+    this->offset = offset;
 }
 
 CameraType Camera::getType() {
@@ -65,15 +55,24 @@ CameraType Camera::getType() {
 }
 
 void Camera::projectPerspective() {
-    glFrustum(left,right,down,up,frontPlane,backPlane);
+    glFrustum(left, right, bottom, top, frontplane, backplane);
 }
 
 void Camera::projectOrthogonal() {
-    glOrtho(left,right,down,up,frontPlane,backPlane);
+    glOrtho(left, right, bottom, top, frontplane, backplane);
 }
 
 void Camera::lookAt() {
-    gluLookAt(cameraPosX, cameraPosY, cameraPosZ, cameraCenterPosX, cameraCenterPosY, cameraCenterPosZ, vectorX, vectorY, vectorZ);
+    glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+    //gluLookAt(position.x, position.y, position.z, center.x, center.y, center.z, 0, 1, 0);
+}
+
+void Camera::move() {
+    glTranslatef(0,0,-observerDistance);
+	glRotatef(observerAngle.x,1,0,0);
+	glRotatef(observerAngle.y,0,1,0);
+    glTranslatef(offset.x,offset.y,offset.z);
 }
 
 void Camera::project() {
@@ -84,25 +83,25 @@ void Camera::project() {
 }
 
 void Camera::moveForward() {
-    cameraPosZ -= 0.5;
+    position.z -= 0.5;
 }
 
 void Camera::moveBackward() {
-    cameraPosZ += 0.5;
+    position.z += 0.5;
 }
 
 void Camera::moveLeft() {
-    cameraPosX -= 0.5;
+    position.x -= 0.5;
 }
 
 void Camera::moveRight() {
-    cameraPosX += 0.5;
+    position.x += 0.5;
 }
 
 void Camera::moveUp() {
-    cameraPosY += 0.5;
+    position.y += 0.5;
 }
 
 void Camera::moveDown() {
-    cameraPosY -= 0.5;
+    position.y -= 0.5;
 }

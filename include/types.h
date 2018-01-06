@@ -70,6 +70,12 @@ struct CameraPosition3 {
     GLfloat x;
     GLfloat y;
     GLfloat z;
+
+    CameraPosition3(GLfloat xx, GLfloat yy, GLfloat zz) {
+        x = xx;
+        y = yy;
+        z = zz;
+    }
 };
 
 struct CameraPosition6 {
@@ -79,6 +85,15 @@ struct CameraPosition6 {
     GLfloat t;
     GLfloat u;
     GLfloat v;
+
+    CameraPosition6(GLfloat xx, GLfloat yy, GLfloat zz, GLfloat tt, GLfloat uu, GLfloat vv) {
+        x = xx;
+        y = yy;
+        z = zz;
+        t = tt;
+        u = uu;
+        v = vv;
+    }
 };
 
 struct CoordenadasIMG {

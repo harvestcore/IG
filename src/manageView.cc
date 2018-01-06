@@ -149,3 +149,10 @@ string unsignedtostring(unsigned int num) {
     else
         return "" + (int) num;
 }
+
+string cameratypetostring(CameraType type) {
+    if (type == ORTHOGONAL)
+        return "ORTHOGONAL";
+    if (type == PERSPECTIVE)
+        return "PERSPECTIVE";
+}

@@ -15,6 +15,7 @@
 #include "fps.h"
 #include "light.h"
 #include "plank.h"
+#include "camera.h"
 
 using namespace std;
 
@@ -244,6 +245,24 @@ void readTextureCoords() {
     parsingCoord.second.thicc = 0.5;
 }
 
+//**************************************************************************
+// Cámaras
+//**************************************************************************
+Camera* escena_cam;
+Camera* objeto_cam;
+bool proyeccionParalela = false;
+bool proyeccionPerspectiva = true;
+
+void initialize_cameras() {
+    escena_cam = new Camera();
+    escena_cam->setType(PERSPECTIVE);
+    escena_cam->setPlanes(Front_plane, Back_plane);
+    escena_cam->setCoordinates(-Window_width, Window_width, -Window_height, Window_height);
+    escena_cam->setObserverAngle({Observer_angle_x, Observer_angle_y});
+    escena_cam->setObserverDistance(Observer_distance);
+
+    objeto_cam = escena_cam;
+}
 
 //**************************************************************************
 //	ClearWindow
@@ -255,15 +274,13 @@ void clear_window() {
 //**************************************************************************
 // Funcion para definir la transformación de proyeccion
 //**************************************************************************
-
 void change_projection() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-    //gluPerspective(60, ratio, 0.01, 100);
-	// formato(x_minimo,x_maximo, y_minimo, y_maximo,Front_plane, plano_traser)
-	//  Front_plane>0  Back_plane>PlanoDelantero)
     float aspect = GLfloat(glutGet(GLUT_WINDOW_WIDTH)) / GLfloat(glutGet(GLUT_WINDOW_HEIGHT));
-    glFrustum(-Window_width*aspect, Window_width*aspect, -Window_height, Window_height, Front_plane, Back_plane);
+
+    escena_cam->setCoordinates(-Window_width*aspect, Window_width*aspect, -Window_height, Window_height);
+    escena_cam->project();
 }
 
 //**************************************************************************
@@ -271,12 +288,13 @@ void change_projection() {
 //**************************************************************************
 
 void change_observer() {
-	// posicion del observador
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glTranslatef(0,0,-Observer_distance);
-	glRotatef(Observer_angle_x,1,0,0);
-	glRotatef(Observer_angle_y,0,1,0);
+    if (modoSeleccion)
+        objeto_cam->move();
+    else
+        escena_cam->move();
+
 }
 
 //**************************************************************************
@@ -350,6 +368,11 @@ void drawHUD() {
     printText(20, 190, "Tablero: " + booltostring(mostrarTablero));
     printText(20, 210, "Modo objetos: " + booltostring(modoObjetos));
     printText(20, 230, "Modo seleccion: " + booltostring(modoSeleccion));
+    
+    if (modoSeleccion)
+        printText(20, 250, "Proyeccion: " + cameratypetostring(objeto_cam->getType()));
+    if (modoObjetos)
+        printText(20, 250, "Proyeccion: " + cameratypetostring(escena_cam->getType()));
 
     if (help_) {
         printText(20, 700, "Menu raton: (Right Click)");
@@ -655,8 +678,29 @@ Button mostrar_imagen;
 Button modo_objetos, modo_seleccion;
 Button add_objeto, delete_objeto;
 
+Button proyeccion;
+
 void exit_program() {
 	exit(0);
+}
+
+void toggle_proyeccion() {
+    proyeccionParalela = !proyeccionParalela;
+    proyeccionPerspectiva = !proyeccionPerspectiva;
+
+    if (proyeccionParalela) {
+        escena_cam->setType(ORTHOGONAL);
+        objeto_cam->setType(ORTHOGONAL);
+    }
+
+    if (proyeccionPerspectiva) {
+        escena_cam->setType(PERSPECTIVE);
+        objeto_cam->setType(PERSPECTIVE);
+    }
+
+    glutSetWindow(window_1);
+	draw_scene();
+	glutSetWindow(window_2);
 }
 
 void toggle_add_objeto() {
@@ -665,7 +709,6 @@ void toggle_add_objeto() {
 
 void toggle_delete_objeto() {
     deleteobject = true;
-
 }
 
 void toggle_modo_objetos() {
@@ -1045,6 +1088,8 @@ void draw_buttons() {
     modo_seleccion.display();
     add_objeto.display();
     delete_objeto.display();
+
+    proyeccion.display();
 }
 
 void handle_motion(int x, int y) {
@@ -1095,6 +1140,8 @@ void handle_motion(int x, int y) {
     modo_seleccion.handlemotion(x,y);
     add_objeto.handlemotion(x,y);
     delete_objeto.handlemotion(x,y);
+
+    proyeccion.handlemotion(x,y);
 }
 
 void handle_mouse_buttons(int button, int state, int x, int y) {
@@ -1145,6 +1192,8 @@ void handle_mouse_buttons(int button, int state, int x, int y) {
     modo_seleccion.handlemouse(button,state,x,y);
     add_objeto.handlemouse(button,state,x,y);
     delete_objeto.handlemouse(button,state,x,y);
+
+    proyeccion.handlemouse(button,state,x,y);
 }
 
 void generate_buttons() {
@@ -1401,6 +1450,12 @@ void generate_buttons() {
     delete_objeto.setlabel("--Obj");
     delete_objeto.setaction(toggle_delete_objeto);
     delete_objeto.setactive(false);
+
+    proyeccion.setpos(-0.95,-1);
+    proyeccion.setsize(0.4,0.15);
+    proyeccion.setlabel("Proyec");
+    proyeccion.setaction(toggle_proyeccion);
+    proyeccion.setactive(true);
 }
 
 void draw_scene_button(void) {
@@ -1427,7 +1482,6 @@ void change_window_size(GLsizei width, GLsizei height) {
     glutPostRedisplay();
 }
 
-
 //***************************************************************************
 // Funcion llamada cuando se produce aprieta una tecla normal
 //
@@ -1439,28 +1493,6 @@ void change_window_size(GLsizei width, GLsizei height) {
 void normal_keys(unsigned char Tecla1,int x,int y) {
 	switch (toupper(Tecla1)) {
 		case 'Q': exit(0); break;
-/*
-		case 'P': modos = changeMode(modos, MESH, 0); break;
-		case 'L': modos = changeMode(modos, EDGES, 1); break;
-		case 'F': modos = changeMode(modos, SOLID, 2); break;
-		case 'C': modos = changeMode(modos, CHESS, 3); break;
-        case '2': drawflat = !drawflat; drawsmooth = false; modos = changeMode(modos, NULL_, 6); break;
-        case '3': drawsmooth = !drawsmooth; drawflat = false; modos = changeMode(modos, NULL_, 6); break;
-		case 'T': restar = true; break;
-        case 'Y': sumar = true; break;
-        case 'A': watt_regulator.toggleSpinning(); break;
-        case 'G': luz_ = !luz_; break;
-        case 'H': luz1_ = !luz1_; break;
-        case 'B': tablero.incrementSide(); break;
-        case 'N': tablero.decrementSide(); break;
-        case 'J': tablero.incrementWidth(); break;
-        case 'K': tablero.decrementWidth(); break;
-        case 'S': tablero.incrementHeight(); break;
-        case 'D': tablero.decrementHeight(); break;
-        case '1': mostrarTablero = !mostrarTablero; break;
-		case 'X': watt_regulator.aumentarVelocidad(); break;
-		case 'Z': watt_regulator.decrementarVelocidad(); break;
-*/
 
         case 'A': alfa -= 1; break;
         case 'D': alfa += 1; break;
@@ -1497,21 +1529,10 @@ void special_keys(int Tecla1,int x,int y) {
 		case GLUT_KEY_DOWN:Observer_angle_x++;break;
 		case GLUT_KEY_PAGE_UP:Observer_distance*=1.2;break;
 		case GLUT_KEY_PAGE_DOWN:Observer_distance/=1.2;break;
-
-    /*
-		case GLUT_KEY_F1: objeto = changeObject(objeto, CUBE); break;
-		case GLUT_KEY_F2: objeto = changeObject(objeto, TETRAHEDRON); break;
-		case GLUT_KEY_F3: objeto = changeObject(objeto, PLY_STATIC); break;
-		case GLUT_KEY_F4: objeto = changeObject(objeto, PLY_REVOLUTION); break;
-		case GLUT_KEY_F5: objeto = changeObject(objeto, CYLINDER); break;
-		case GLUT_KEY_F6: objeto = changeObject(objeto, GLASS); break;
-		case GLUT_KEY_F7: objeto = changeObject(objeto, GLASS_INVERTED); break;
-		case GLUT_KEY_F8: objeto = changeObject(objeto, CONE); break;
-		case GLUT_KEY_F9: objeto = changeObject(objeto, TUBE); break;
-		case GLUT_KEY_F10: objeto = changeObject(objeto, SPHERE); break;
-		case GLUT_KEY_F11: objeto = changeObject(objeto, WATT); break;
-    */
 	}
+
+    escena_cam->setObserverAngle({Observer_angle_x, Observer_angle_y});
+    escena_cam->setObserverDistance(Observer_distance);
 	glutPostRedisplay();
 }
 
@@ -1544,6 +1565,11 @@ void colorpick(int x, int y) {
 #define MAX_SELECTION 64
 int seleccionado;
 
+void restoreoffset() {
+    objeto_cam = escena_cam;
+    objeto_cam->setOffset({0,0,0});
+}
+
 void glpick(int x, int y) {
     GLuint Hits, Selection_buffer[BUFFER_SIZE];
     GLint Viewport[4];
@@ -1558,15 +1584,20 @@ void glpick(int x, int y) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPickMatrix(x, Viewport[3] - y, 1, 1, Viewport);
-    glFrustum(-Window_width,Window_width,-Window_height,Window_height,Front_plane,Back_plane);
-    
+    if (modoObjetos)
+        escena_cam->project();
+    if (modoSeleccion)
+        objeto_cam->project();
     glMatrixMode(GL_MODELVIEW);
     draw_scene_names();
     Hits = glRenderMode(GL_RENDER);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glFrustum(-Window_width,Window_width,-Window_height,Window_height,Front_plane,Back_plane);
+    if (modoObjetos)
+        escena_cam->project();
+    if (modoSeleccion)
+        objeto_cam->project();
 
     int seleccionado = -1;
 
@@ -1589,80 +1620,126 @@ void glpick(int x, int y) {
     }
 
     switch(seleccionado) {
-            case 1:
-                if (selectItems[0])
-                    selectItems[0] = false;
-                else
-                    selectItems[0] = true;
-                break;
+        case 1:
+            if (selectItems[0]) {
+                selectItems[0] = false;
+                restoreoffset();
+            } else {
+                selectItems[0] = true;
+                objeto_cam = escena_cam;
+                objeto_cam->setOffset({7,0,7});
+            }
+            break;
 
-            case 2:
-                if (selectItems[1])
-                    selectItems[1] = false;
-                else
-                    selectItems[1] = true;
-                break;
+        case 2:
+            if (selectItems[1]) {
+                selectItems[1] = false;
+                restoreoffset();
+            } else {
+                selectItems[1] = true;
+                objeto_cam = escena_cam;
+                objeto_cam->setOffset({0,0,7});
+            }
+            break;
 
-            case 3:
-                if (selectItems[2])
-                    selectItems[2] = false;
-                else
-                    selectItems[2] = true;
-                break;
+        case 3:
+            if (selectItems[2]) {
+                selectItems[2] = false;
+                restoreoffset();
+            } else {
+                selectItems[2] = true;
+                objeto_cam = escena_cam;
+                objeto_cam->setOffset({-7,0,7});
+            }
+            break;
 
-            case 4:
-                if (selectItems[3])
-                    selectItems[3] = false;
-                else
-                    selectItems[3] = true;
-                break;
+        case 4:
+            if (selectItems[3]) {
+                selectItems[3] = false;
+                restoreoffset();
+            } else {
+                selectItems[3] = true;
+                objeto_cam = escena_cam;
+                objeto_cam->setOffset({7,0,0});
+            }
+            break;
 
-            case 5:
-                if (selectItems[4])
-                    selectItems[4] = false;
-                else
-                    selectItems[4] = true;
-                break;
+        case 5:
+            if (selectItems[4]) {
+                selectItems[4] = false;
+                restoreoffset();
+            } else {
+                selectItems[4] = true;
+                objeto_cam = escena_cam;
+                objeto_cam->setOffset({0,0,0});
+            }
+            break;
 
-            case 6:
-                if (selectItems[5])
-                    selectItems[5] = false;
-                else
-                    selectItems[5] = true;
-                break;
+        case 6:
+            if (selectItems[5]) {
+                selectItems[5] = false;
+                restoreoffset();
+            } else {
+                selectItems[5] = true;
+                objeto_cam = escena_cam;
+                objeto_cam->setOffset({-7,0,0});
+            }
+            break;
 
-            case 7:
-                if (selectItems[6])
-                    selectItems[6] = false;
-                else
-                    selectItems[6] = true;
-                break;
+        case 7:
+            if (selectItems[6]) {
+                selectItems[6] = false;
+                restoreoffset();
+            } else {
+                selectItems[6] = true;
+                objeto_cam = escena_cam;
+                objeto_cam->setOffset({7,0,-7});
+            }
+            break;
 
-            case 8:
-                if (selectItems[7])
-                    selectItems[7] = false;
-                else
-                    selectItems[7] = true;
-                break;
+        case 8:
+            if (selectItems[7]) {
+                selectItems[7] = false;
+                restoreoffset();
+            } else {
+                selectItems[7] = true;
+                objeto_cam = escena_cam;
+                objeto_cam->setOffset({0,0,-7});
+            }
+            break;
 
-            case 9:
-                if (selectItems[8])
-                    selectItems[8] = false;
-                else
-                    selectItems[8] = true;
-                break;
-        }
+        case 9:
+            if (selectItems[8]) {
+                selectItems[8] = false;
+                restoreoffset();
+            } else {
+                selectItems[8] = true;
+                objeto_cam = escena_cam;
+                objeto_cam->setOffset({-7,0,-7});
+            }
+            break;
+    }
 }
 
 void handle_mouse(int button, int state, int x, int y) {
     if (state = GLUT_UP) {
         if (button == 3) {
-            Observer_distance/=1.03;
+            Observer_distance /= 1.03;
             glutPostRedisplay();
-        }
+
+            if (proyeccionParalela) {
+                escena_cam->moveBackward();
+                objeto_cam->moveBackward();
+            }
+        }        
         else if(button == 4) {
-            Observer_distance*=1.03;
+            Observer_distance *= 1.03;
             glutPostRedisplay();
+
+            if (proyeccionParalela) {
+                escena_cam->moveForward();
+                objeto_cam->moveForward();
+            }
         }
     }     
 
@@ -1681,6 +1758,7 @@ void handle_mouse(int button, int state, int x, int y) {
     if (pickItem)
         glpick(x, y);
 
+    escena_cam->setObserverDistance(Observer_distance);
     glutPostRedisplay();
 }
 
@@ -1695,13 +1773,14 @@ void handle_mouse_movement(int x, int y) {
             Observer_angle_y -= 0.6;    
         
         if (y > lasty)
-        Observer_angle_x += 0.6;
+            Observer_angle_x += 0.6;
         if (y < lasty)
-            Observer_angle_x -= 0.6; 
+            Observer_angle_x -= 0.6;
         
         lastx = x;
         lasty = y;
         
+        escena_cam->setObserverAngle({Observer_angle_x, Observer_angle_y});
         glutPostRedisplay();
     }
 
@@ -1731,7 +1810,7 @@ void initialize(void) {
 	// se inicalizan la ventana y los planos de corte
 	Window_width=5;
 	Window_height=5;
-	Front_plane=5;
+	Front_plane=10;
 	Back_plane=10000;
 
 	// se inicia la posicion del observador, en el eje z
@@ -1739,6 +1818,7 @@ void initialize(void) {
 	Observer_angle_x=0;
 	Observer_angle_y=0;
 
+    initialize_cameras();
     initialize_ligths();
     initialize_models();
     initialize_parsingCoord();
@@ -1769,6 +1849,7 @@ void menu(int num){
     }
 
     switch (value) {
+        case -2: toggle_proyeccion(); break;
         case -1: toggle_help(); break;
         case 1: glutPostRedisplay(); break;
         case 2: toggle_cube(); break;
@@ -1856,6 +1937,7 @@ void createMenu(void){
     glutAddMenuEntry("Spin", 31);
 
     menu_id = glutCreateMenu(menu);
+    glutAddMenuEntry("Proyeccion", -2);
     glutAddSubMenu("Mode", submenu_mode);
     glutAddSubMenu("Draw", submenu_obj);
     glutAddSubMenu("Viewmode", submenu_viewmode);
@@ -1869,8 +1951,6 @@ void createMenu(void){
     
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 } 
-
-
 
 //***************************************************************************
 // Programa principal
@@ -1918,8 +1998,7 @@ int main(int argc, char **argv) {
     // Raton
     glutMouseFunc(handle_mouse);
     glutMotionFunc(handle_mouse_movement);
-    
-    
+
     // funcion de inicialización
 	initialize();
 
@@ -1930,8 +2009,6 @@ int main(int argc, char **argv) {
 	glutDisplayFunc(draw_scene_button);
 	glutPassiveMotionFunc(handle_motion);
 	glutMouseFunc(handle_mouse_buttons);
-	//glutKeyboardFunc(normal_keys);
-	//glutSpecialFunc(special_keys);
 	initialize2();
 
 	// inicio del bucle de eventos
