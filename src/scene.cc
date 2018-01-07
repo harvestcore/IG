@@ -697,7 +697,8 @@ void toggle_proyeccion() {
     }
 
     glutSetWindow(window_1);
-    change_observer();
+    glutPostRedisplay();
+    draw_scene();
     glutSetWindow(window_2);
 }
 
@@ -1526,8 +1527,7 @@ void normal_keys(unsigned char Tecla1,int x,int y) {
 // posicion y del raton
 
 //***************************************************************************
-
-void special_keys(int Tecla1,int x,int y) {
+void special_keys(int Tecla1, int x, int y) {
 	switch (Tecla1){
 		case GLUT_KEY_LEFT:Observer_angle_y--;break;
 		case GLUT_KEY_RIGHT:Observer_angle_y++;break;
@@ -1535,13 +1535,13 @@ void special_keys(int Tecla1,int x,int y) {
 		case GLUT_KEY_DOWN:Observer_angle_x++;break;
 
 		case GLUT_KEY_PAGE_UP:
-            escena_cam->zoomIn();
-            objeto_cam->zoomIn();
+            escena_cam->zoomOut();
+            objeto_cam->zoomOut();
             break;
 		
         case GLUT_KEY_PAGE_DOWN:
-            escena_cam->zoomOut();
-            objeto_cam->zoomOut();
+            escena_cam->zoomIn();
+            objeto_cam->zoomIn();
             break;
 	}
 
