@@ -250,6 +250,7 @@ void readTextureCoords() {
 //**************************************************************************
 Camera* escena_cam;
 Camera* objeto_cam;
+Camera* actual_cam;
 bool proyeccionParalela = false;
 bool proyeccionPerspectiva = true;
 
@@ -262,6 +263,7 @@ void initialize_cameras() {
     escena_cam->setObserverDistance(Observer_distance);
 
     objeto_cam = escena_cam;
+    actual_cam = escena_cam;
 }
 
 //**************************************************************************
@@ -288,13 +290,9 @@ void change_projection() {
 //**************************************************************************
 
 void change_observer() {
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-    if (modoSeleccion)
-        objeto_cam->move();
-    else
-        escena_cam->move();
-
+    if (!modoSeleccion && !modoObjetos)
+        actual_cam = escena_cam;
+    actual_cam->move();
 }
 
 //**************************************************************************
@@ -699,8 +697,8 @@ void toggle_proyeccion() {
     }
 
     glutSetWindow(window_1);
-	draw_scene();
-	glutSetWindow(window_2);
+    change_observer();
+    glutSetWindow(window_2);
 }
 
 void toggle_add_objeto() {
@@ -714,6 +712,10 @@ void toggle_delete_objeto() {
 void toggle_modo_objetos() {
     modoObjetos = !modoObjetos;
     modoSeleccion = false;
+
+    if (modoObjetos)
+        actual_cam = escena_cam;
+
     glutSetWindow(window_1);
 	draw_scene();
 	glutSetWindow(window_2);
@@ -722,6 +724,10 @@ void toggle_modo_objetos() {
 void toggle_modo_seleccion() {
     modoSeleccion = !modoSeleccion;
     modoObjetos = false;
+
+    if (modoSeleccion)
+        actual_cam = objeto_cam;
+
     glutSetWindow(window_1);
 	draw_scene();
 	glutSetWindow(window_2);
@@ -1527,12 +1533,19 @@ void special_keys(int Tecla1,int x,int y) {
 		case GLUT_KEY_RIGHT:Observer_angle_y++;break;
 		case GLUT_KEY_UP:Observer_angle_x--;break;
 		case GLUT_KEY_DOWN:Observer_angle_x++;break;
-		case GLUT_KEY_PAGE_UP:Observer_distance*=1.2;break;
-		case GLUT_KEY_PAGE_DOWN:Observer_distance/=1.2;break;
+
+		case GLUT_KEY_PAGE_UP:
+            escena_cam->zoomIn();
+            objeto_cam->zoomIn();
+            break;
+		
+        case GLUT_KEY_PAGE_DOWN:
+            escena_cam->zoomOut();
+            objeto_cam->zoomOut();
+            break;
 	}
 
     escena_cam->setObserverAngle({Observer_angle_x, Observer_angle_y});
-    escena_cam->setObserverDistance(Observer_distance);
 	glutPostRedisplay();
 }
 
@@ -1568,6 +1581,7 @@ int seleccionado;
 void restoreoffset() {
     objeto_cam = escena_cam;
     objeto_cam->setOffset({0,0,0});
+    actual_cam = objeto_cam;
 }
 
 void glpick(int x, int y) {
@@ -1584,20 +1598,17 @@ void glpick(int x, int y) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPickMatrix(x, Viewport[3] - y, 1, 1, Viewport);
-    if (modoObjetos)
-        escena_cam->project();
-    if (modoSeleccion)
-        objeto_cam->project();
+    
+    actual_cam->project();
+    
     glMatrixMode(GL_MODELVIEW);
     draw_scene_names();
     Hits = glRenderMode(GL_RENDER);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    if (modoObjetos)
-        escena_cam->project();
-    if (modoSeleccion)
-        objeto_cam->project();
+
+    actual_cam->project();
 
     int seleccionado = -1;
 
@@ -1626,7 +1637,6 @@ void glpick(int x, int y) {
                 restoreoffset();
             } else {
                 selectItems[0] = true;
-                objeto_cam = escena_cam;
                 objeto_cam->setOffset({7,0,7});
             }
             break;
@@ -1637,7 +1647,6 @@ void glpick(int x, int y) {
                 restoreoffset();
             } else {
                 selectItems[1] = true;
-                objeto_cam = escena_cam;
                 objeto_cam->setOffset({0,0,7});
             }
             break;
@@ -1648,7 +1657,6 @@ void glpick(int x, int y) {
                 restoreoffset();
             } else {
                 selectItems[2] = true;
-                objeto_cam = escena_cam;
                 objeto_cam->setOffset({-7,0,7});
             }
             break;
@@ -1659,7 +1667,6 @@ void glpick(int x, int y) {
                 restoreoffset();
             } else {
                 selectItems[3] = true;
-                objeto_cam = escena_cam;
                 objeto_cam->setOffset({7,0,0});
             }
             break;
@@ -1670,7 +1677,6 @@ void glpick(int x, int y) {
                 restoreoffset();
             } else {
                 selectItems[4] = true;
-                objeto_cam = escena_cam;
                 objeto_cam->setOffset({0,0,0});
             }
             break;
@@ -1681,7 +1687,6 @@ void glpick(int x, int y) {
                 restoreoffset();
             } else {
                 selectItems[5] = true;
-                objeto_cam = escena_cam;
                 objeto_cam->setOffset({-7,0,0});
             }
             break;
@@ -1692,7 +1697,6 @@ void glpick(int x, int y) {
                 restoreoffset();
             } else {
                 selectItems[6] = true;
-                objeto_cam = escena_cam;
                 objeto_cam->setOffset({7,0,-7});
             }
             break;
@@ -1703,7 +1707,6 @@ void glpick(int x, int y) {
                 restoreoffset();
             } else {
                 selectItems[7] = true;
-                objeto_cam = escena_cam;
                 objeto_cam->setOffset({0,0,-7});
             }
             break;
@@ -1714,7 +1717,6 @@ void glpick(int x, int y) {
                 restoreoffset();
             } else {
                 selectItems[8] = true;
-                objeto_cam = escena_cam;
                 objeto_cam->setOffset({-7,0,-7});
             }
             break;
@@ -1724,22 +1726,14 @@ void glpick(int x, int y) {
 void handle_mouse(int button, int state, int x, int y) {
     if (state = GLUT_UP) {
         if (button == 3) {
-            Observer_distance /= 1.03;
+            escena_cam->zoomOut();
+            objeto_cam->zoomOut();
             glutPostRedisplay();
-
-            if (proyeccionParalela) {
-                escena_cam->moveBackward();
-                objeto_cam->moveBackward();
-            }
         }        
         else if(button == 4) {
-            Observer_distance *= 1.03;
+            escena_cam->zoomIn();
+            objeto_cam->zoomIn();
             glutPostRedisplay();
-
-            if (proyeccionParalela) {
-                escena_cam->moveForward();
-                objeto_cam->moveForward();
-            }
         }
     }     
 
@@ -1758,7 +1752,6 @@ void handle_mouse(int button, int state, int x, int y) {
     if (pickItem)
         glpick(x, y);
 
-    escena_cam->setObserverDistance(Observer_distance);
     glutPostRedisplay();
 }
 
@@ -1814,7 +1807,7 @@ void initialize(void) {
 	Back_plane=10000;
 
 	// se inicia la posicion del observador, en el eje z
-	Observer_distance=2*Front_plane;
+	Observer_distance=3*Front_plane;
 	Observer_angle_x=0;
 	Observer_angle_y=0;
 
@@ -1824,14 +1817,11 @@ void initialize(void) {
     initialize_parsingCoord();
 
 	// se indica cual sera el color para limpiar la ventana	(r,v,a,al)
-	// blanco=(1,1,1,1) rojo=(1,0,0,1), ...
 	glClearColor(1,1,1,1);
 
 	// se habilita el z-bufer
 	glEnable(GL_DEPTH_TEST);
-	//
 	change_projection();
-	//
 	glViewport(0,0,UI_window_width,UI_window_height);
 }
 
@@ -1839,18 +1829,11 @@ void initialize2(void) {
 	glClearColor(1,1,1,1);
 }
 
-static int value = 0; 
-
 void menu(int num){
-    if(num == 0){
-        exit(0);
-    }else{
-        value = num;
-    }
-
-    switch (value) {
+    switch (num) {
         case -2: toggle_proyeccion(); break;
         case -1: toggle_help(); break;
+        case 0: exit(0); break;
         case 1: glutPostRedisplay(); break;
         case 2: toggle_cube(); break;
         case 3: toggle_tetrahedron(); break;

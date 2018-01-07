@@ -26,6 +26,8 @@ class Camera {
         GLfloat bottom;
         GLfloat backplane;
         GLfloat frontplane;
+
+        GLfloat scale;
         
         GLfloat observerDistance;
         _vertex2f observerAngle;
@@ -48,20 +50,23 @@ class Camera {
         void setPlanes(GLfloat frontplane, GLfloat backplane);
         void setCoordinates(GLfloat top, GLfloat bottom, GLfloat left, GLfloat right);
         void setOffset(_vertex3f offset);
+        void setScale(GLfloat scale);
 
         CameraType getType();
 
         void lookAt();
         void move();
         void project();
+        void zoomIn();
+        void zoomOut();
+
+    //  Unused
         void moveForward();
         void moveBackward();
         void moveLeft();
         void moveRight();
         void moveUp();
         void moveDown();
-
-
 };
 
 #endif

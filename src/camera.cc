@@ -12,6 +12,7 @@
 #include "camera.h"
 
 Camera::Camera() {
+    scale = 1.0;
 }
 
 void Camera::setType(CameraType type) {
@@ -50,6 +51,10 @@ void Camera::setOffset(_vertex3f offset) {
     this->offset = offset;
 }
 
+void Camera::setScale(GLfloat scale) {
+    this->scale = scale;
+}
+
 CameraType Camera::getType() {
     return type;
 }
@@ -69,10 +74,21 @@ void Camera::lookAt() {
 }
 
 void Camera::move() {
-    glTranslatef(0,0,-observerDistance);
-	glRotatef(observerAngle.x,1,0,0);
-	glRotatef(observerAngle.y,0,1,0);
-    glTranslatef(offset.x,offset.y,offset.z);
+    glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+    if (type == PERSPECTIVE) {
+        glTranslatef(0,0,-observerDistance);
+        glRotatef(observerAngle.x,1,0,0);
+        glRotatef(observerAngle.y,0,1,0);
+        glTranslatef(offset.x,offset.y,offset.z);
+    } else if (type == ORTHOGONAL) {
+        glTranslatef(0,0,-observerDistance);
+        glRotatef(observerAngle.x,1,0,0);
+        glRotatef(observerAngle.y,0,1,0);
+        glScalef(10/observerDistance, 10/observerDistance, 10/observerDistance);
+        glTranslatef(offset.x,offset.y,offset.z);
+    }
+    
 }
 
 void Camera::project() {
@@ -80,6 +96,8 @@ void Camera::project() {
         projectPerspective();
     else if (type == ORTHOGONAL)
         projectOrthogonal();
+
+    glutPostRedisplay();
 }
 
 void Camera::moveForward() {
@@ -104,4 +122,12 @@ void Camera::moveUp() {
 
 void Camera::moveDown() {
     position.y -= 0.5;
+}
+
+void Camera::zoomIn() {
+    observerDistance *= 1.025;
+}
+
+void Camera::zoomOut() {
+    observerDistance /= 1.025;
 }
