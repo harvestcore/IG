@@ -68,7 +68,7 @@ Otras funcionalidades/aclaraciones del programa:
     En el botón "Help" puedes ver rápidamente los controles básicos.
 
 
-Resumen de los archivos que componen la práctica:
+Resumen de los archivos/clases que componen la práctica:
 
     3DObject:
         Contiene 5 clases en su interior:
