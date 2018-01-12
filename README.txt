@@ -24,6 +24,8 @@ Lista de modificaciones respecto a la práctica 4:
         Mantener click izquierdo para mover la cámara.
         Rueda del ratón para aumentar o disminuir el zoom.
         Mantener pulsado el botón de la rueda del ratón para mover la luz 1 (tiene que estar activada).
+        Click derecho para abrir un menú secundario.
+        Click en el botón de la rueda para orbitar el objeto seleccionado.
 
     Selección:
         He implementado la selección de OpenGL.
@@ -109,7 +111,7 @@ Resumen de los archivos/clases que componen la práctica:
         Contiene clases para crear todos los tipos de figuras (cubo, tetraedro, esfera...)
 
     objects:
-        Contiene una clase "Models" que tiene en su interior un objeto de cada tipo.
+        Contiene una clase "Models" que tiene en su interior un objeto de cada tipo (un objeto de cada clase que hay en "models").
 
     plank:
         Encapsula un tablero y permite trabajar con él.
@@ -127,10 +129,9 @@ Resumen de los archivos/clases que componen la práctica:
 
 COMPILACIÓN Y EJECUCIÓN:
     Ejecutar "make" en el directorio principal del programa.
-    En caso de error instalar lo siguiente (necesario para cargar las texturas):
+    En caso de error instalar lo siguiente:
+        sudo apt-get install freeglut3-dev
         sudo apt-get install magic
         sudo apt-get install imagemagick
-    
-    Para ejecutar: ./bin/main
 
-    
+    Para ejecutar: ./bin/main

@@ -33,13 +33,20 @@ bool mostrarimagen = false;
 bool modoObjetos = false;
 bool modoSeleccion = false;
 
+//  Controla el modo de visualización
+//  Contiene todos los modos (mesh, lines, flat, ...)
+//  Si una de estas componentes se encuentra a true se dibujará el objeto de esta manera.
 DrawMode drawmode;
 
+//  Este vector y los dos booleanos sólo se usan en la selección por color.
 vector<ALLFIGURE* > vobjects;
 bool addobject = false;
 bool deleteobject = false;
 
+// *selected solo se usa en la selección por color.
 ALLFIGURE* selected;
+
+//  Objeto actual.
 ALLFIGURE* actual_;
 
 ALLFIGURE* cube_;
@@ -53,28 +60,35 @@ ALLFIGURE* cono_;
 ALLFIGURE* tubo_;
 ALLFIGURE* esfera_;
 
+//  Regulador de Watt.
 Watt watt_regulator;
 bool drawWatt_ = false;
 
+//  Booleanos usados para cambiar el material de las figuras.
 bool mas_material = false;
 bool menos_material = false;
+
+//  Controla si se muestra o no la ayuda.
 bool help_ = false;
 
+//  Luces
 Light luz, luz_inf;
 bool luz_ = false;
 bool luz_inf_ = false;
 
+//  Variables usadas para el movimiento de las luces.
 float alfa = 1, beta_ = 1;
 float dist = 0.0;
 float alfa2 = 1, beta2 = 1;
 
-// Contador de FPS
+//  Contador de FPS.
 FPScounter fps;
 bool showFPS = false;
 
-// Ventanas
+//  Ventanas.
 int window_1, window_2;
 
+//  Booleanos usados para añadir o quitar divisiones a los objetos de revolución.
 bool sumar = false;
 bool restar = false;
 
@@ -115,7 +129,7 @@ void initialize_ligths() {
     luz_inf.setSpecular(_vertex4f(1,1,1,1));
 }
 
-void initialize_models() {    
+void initialize_models() {
     actual_ = nullptr;
 
     cube_ = new ALLFIGURE();
@@ -170,7 +184,7 @@ void initialize_models() {
     esfera_->calculateNormalPoints();
 }
 //**************************************************************************
-//	Entrada texto tablero
+//	Entrada texto tablero/textura
 //**************************************************************************
 pair<CoordenadasIMG, CoordenadasIMG> parsingCoord;
 
@@ -248,11 +262,12 @@ void readTextureCoords() {
 //**************************************************************************
 // Cámaras
 //**************************************************************************
-Camera* escena_cam;
-Camera* objeto_cam;
-Camera* actual_cam;
+Camera* escena_cam;         //  Cámara del modo objetos.
+Camera* objeto_cam;         //  Cámara del modo selección.
+Camera* actual_cam;         //  Cámara actual.
+
 bool proyeccionParalela = false;
-bool proyeccionPerspectiva = true;
+bool proyeccionPerspectiva = true;      //  Por defecto se muestra la proyección perspectiva.
 
 void initialize_cameras() {
     escena_cam = new Camera();
@@ -318,11 +333,6 @@ void draw_axis() {
 //**************************************************************************
 // Texto en pantalla
 //**************************************************************************
-int objectTomaterialID(TypeObject obj) {
-    if (actual_ != nullptr)
-        actual_->getMaterialID();
-}
-
 string dts(double i){
 	stringstream out;
 	out << i;
@@ -332,7 +342,7 @@ string dts(double i){
 void printText(int x, int y, string text) {
     glRasterPos2f(x,y);
 
-    for (int i=0; i<text.size(); i++) {
+    for (int i = 0; i < text.size(); ++i) {
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, text[i]);
     }
 }
@@ -366,7 +376,7 @@ void drawHUD() {
     printText(20, 190, "Tablero: " + booltostring(mostrarTablero));
     printText(20, 210, "Modo objetos: " + booltostring(modoObjetos));
     printText(20, 230, "Modo seleccion: " + booltostring(modoSeleccion));
-    
+
     if (modoSeleccion)
         printText(20, 250, "Proyeccion: " + cameratypetostring(objeto_cam->getType()));
     if (modoObjetos)
@@ -388,9 +398,12 @@ void drawHUD() {
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
-
 }
 
+
+//**************************************************************************
+// Funcion que dibuja el objeto actual en el modo de visualizado actual
+//**************************************************************************
 void drawobjmode() {
     if (drawmode.mesh)
         actual_->drawMesh();
@@ -413,7 +426,7 @@ void draw_objects_names() {
     glMatrixMode(GL_MODELVIEW);
     glInitNames();
     glPushName(0);
-    
+
     for(int i=0; i < 3; ++i) {
         for(int j=0; j < 3; ++j) {
             glPushMatrix();
@@ -444,7 +457,7 @@ void draw_objects_names() {
             glPopMatrix();
         }
     }
-    
+
     glPopName();
 }
 
@@ -588,11 +601,11 @@ void draw_objects() {
                     if (vobjects[i] != nullptr) {
                         if (vobjects[i]->compareColor(r, g, b)) {
                             vobjects[i] = nullptr;
-                        } 
+                        }
                     }
                 }
             }
-        
+
             deleteobject = false;
         }
         */
@@ -1538,7 +1551,7 @@ void special_keys(int Tecla1, int x, int y) {
             escena_cam->zoomOut();
             objeto_cam->zoomOut();
             break;
-		
+
         case GLUT_KEY_PAGE_DOWN:
             escena_cam->zoomIn();
             objeto_cam->zoomIn();
@@ -1584,6 +1597,28 @@ void restoreoffset() {
     actual_cam = objeto_cam;
 }
 
+void allfalse() {
+    for (int i = 0; i < 9; ++i)
+        selectItems[i] = false;
+}
+
+bool oneselected() {
+    for (int i = 0; i < 9; ++i)
+        if (selectItems[i])
+            return true;
+        else return false;
+}
+
+int getselected() {
+    for (int i = 0; i < 9; ++i)
+        if (selectItems[i])
+            return i;
+        else return -1;
+}
+
+int anterior = 5;
+_vertex3f currentOffset;
+
 void glpick(int x, int y) {
     GLuint Hits, Selection_buffer[BUFFER_SIZE];
     GLint Viewport[4];
@@ -1598,9 +1633,9 @@ void glpick(int x, int y) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPickMatrix(x, Viewport[3] - y, 1, 1, Viewport);
-    
+
     actual_cam->project();
-    
+
     glMatrixMode(GL_MODELVIEW);
     draw_scene_names();
     Hits = glRenderMode(GL_RENDER);
@@ -1636,8 +1671,12 @@ void glpick(int x, int y) {
                 selectItems[0] = false;
                 restoreoffset();
             } else {
+                allfalse();
                 selectItems[0] = true;
-                objeto_cam->setOffset({7,0,7});
+                currentOffset.x = 7;
+                currentOffset.y = 0;
+                currentOffset.z = 7;
+                anterior = 0;
             }
             break;
 
@@ -1646,8 +1685,12 @@ void glpick(int x, int y) {
                 selectItems[1] = false;
                 restoreoffset();
             } else {
+                allfalse();
                 selectItems[1] = true;
-                objeto_cam->setOffset({0,0,7});
+                currentOffset.x = 0;
+                currentOffset.y = 0;
+                currentOffset.z = 7;
+                anterior = 1;
             }
             break;
 
@@ -1656,8 +1699,12 @@ void glpick(int x, int y) {
                 selectItems[2] = false;
                 restoreoffset();
             } else {
+                allfalse();
                 selectItems[2] = true;
-                objeto_cam->setOffset({-7,0,7});
+                currentOffset.x = -7;
+                currentOffset.y = 0;
+                currentOffset.z = 7;
+                anterior = 2;
             }
             break;
 
@@ -1666,8 +1713,12 @@ void glpick(int x, int y) {
                 selectItems[3] = false;
                 restoreoffset();
             } else {
+                allfalse();
                 selectItems[3] = true;
-                objeto_cam->setOffset({7,0,0});
+                currentOffset.x = 7;
+                currentOffset.y = 0;
+                currentOffset.z = 0;
+                anterior = 3;
             }
             break;
 
@@ -1676,8 +1727,12 @@ void glpick(int x, int y) {
                 selectItems[4] = false;
                 restoreoffset();
             } else {
+                allfalse();
                 selectItems[4] = true;
-                objeto_cam->setOffset({0,0,0});
+                currentOffset.x = 0;
+                currentOffset.y = 0;
+                currentOffset.z = 0;
+                anterior = 4;
             }
             break;
 
@@ -1686,8 +1741,12 @@ void glpick(int x, int y) {
                 selectItems[5] = false;
                 restoreoffset();
             } else {
+                allfalse();
                 selectItems[5] = true;
-                objeto_cam->setOffset({-7,0,0});
+                currentOffset.x = -7;
+                currentOffset.y = 0;
+                currentOffset.z = 0;
+                anterior = 5;
             }
             break;
 
@@ -1696,8 +1755,12 @@ void glpick(int x, int y) {
                 selectItems[6] = false;
                 restoreoffset();
             } else {
+                allfalse();
                 selectItems[6] = true;
-                objeto_cam->setOffset({7,0,-7});
+                currentOffset.x = 7;
+                currentOffset.y = 0;
+                currentOffset.z = -7;
+                anterior = 6;
             }
             break;
 
@@ -1706,8 +1769,12 @@ void glpick(int x, int y) {
                 selectItems[7] = false;
                 restoreoffset();
             } else {
+                allfalse();
                 selectItems[7] = true;
-                objeto_cam->setOffset({0,0,-7});
+                currentOffset.x = 0;
+                currentOffset.y = 0;
+                currentOffset.z = -7;
+                anterior = 7;
             }
             break;
 
@@ -1716,33 +1783,46 @@ void glpick(int x, int y) {
                 selectItems[8] = false;
                 restoreoffset();
             } else {
+                allfalse();
                 selectItems[8] = true;
-                objeto_cam->setOffset({-7,0,-7});
+                currentOffset.x = -7;
+                currentOffset.y = 0;
+                currentOffset.z = -7;
+                anterior = 8;
+            }
+            break;
+
+        case 0:
+            if (!oneselected()) {
+                allfalse();
             }
             break;
     }
 }
 
 void handle_mouse(int button, int state, int x, int y) {
-    if (state = GLUT_UP) {
+    if (state == GLUT_UP) {
         if (button == 3) {
             escena_cam->zoomOut();
             objeto_cam->zoomOut();
             glutPostRedisplay();
-        }        
+        }
         else if(button == 4) {
             escena_cam->zoomIn();
             objeto_cam->zoomIn();
             glutPostRedisplay();
         }
-    }     
+    }
 
     if (button == GLUT_LEFT_BUTTON) {
         left_button_pressed = true;
-        pickItem = !pickItem;
     }
     else
         left_button_pressed = false;
+
+    if (button == GLUT_LEFT_BUTTON && !oneselected()) {
+        pickItem = !pickItem;
+    }
 
     if (button == GLUT_MIDDLE_BUTTON)
         middle_button_pressed = true;
@@ -1751,6 +1831,9 @@ void handle_mouse(int button, int state, int x, int y) {
 
     if (pickItem)
         glpick(x, y);
+
+    if (middle_button_pressed)
+        objeto_cam->setOffset(currentOffset);
 
     glutPostRedisplay();
 }
@@ -1763,16 +1846,16 @@ void handle_mouse_movement(int x, int y) {
         if (x > lastx)
             Observer_angle_y += 0.6;
         if (x < lastx)
-            Observer_angle_y -= 0.6;    
-        
+            Observer_angle_y -= 0.6;
+
         if (y > lasty)
             Observer_angle_x += 0.6;
         if (y < lasty)
             Observer_angle_x -= 0.6;
-        
+
         lastx = x;
         lasty = y;
-        
+
         escena_cam->setObserverAngle({Observer_angle_x, Observer_angle_y});
         glutPostRedisplay();
     }
@@ -1781,8 +1864,8 @@ void handle_mouse_movement(int x, int y) {
         if (x > lastx)
             alfa += 0.25;
         if (x < lastx)
-            alfa -= 0.25;    
-        
+            alfa -= 0.25;
+
         if (y > lasty)
             beta_ += 0.25;
         if (y < lasty)
@@ -1790,7 +1873,7 @@ void handle_mouse_movement(int x, int y) {
 
         lastx = x;
         lasty = y;
-        
+
         glutPostRedisplay();
     }
 }
@@ -1803,11 +1886,11 @@ void initialize(void) {
 	// se inicalizan la ventana y los planos de corte
 	Window_width=5;
 	Window_height=5;
-	Front_plane=10;
+	Front_plane=5;
 	Back_plane=10000;
 
 	// se inicia la posicion del observador, en el eje z
-	Observer_distance=3*Front_plane;
+	Observer_distance=6*Front_plane;
 	Observer_angle_x=0;
 	Observer_angle_y=0;
 
@@ -1886,7 +1969,7 @@ void createMenu(void){
     glutAddMenuEntry("Tubo", 10);
     glutAddMenuEntry("Esfera", 11);
     glutAddMenuEntry("Watt", 12);
-    
+
     submenu_viewmode = glutCreateMenu(menu);
     glutAddMenuEntry("Puntos", 13);
     glutAddMenuEntry("Lineas", 14);
@@ -1929,11 +2012,11 @@ void createMenu(void){
     glutAddSubMenu("Tablero", submenu_tablero);
     glutAddSubMenu("Watt", submenu_watt);
     glutAddMenuEntry("Help", -1);
-    glutAddMenuEntry("Redisplay", 1);    
+    glutAddMenuEntry("Redisplay", 1);
     glutAddMenuEntry("Quit", 0);
-    
+
     glutAttachMenu(GLUT_RIGHT_BUTTON);
-} 
+}
 
 //***************************************************************************
 // Programa principal
@@ -1977,7 +2060,7 @@ int main(int argc, char **argv) {
 	glutSpecialFunc(special_keys);
     // menu
     createMenu();
-    
+
     // Raton
     glutMouseFunc(handle_mouse);
     glutMotionFunc(handle_mouse_movement);
